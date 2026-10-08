@@ -25,7 +25,7 @@
 
 ### Git 现场与成果保存
 - 项目 GitHub 仓库：`https://github.com/kn3nan3-gif/Folia-pioneer.git`。用户已明确授权同步当前成果；同步前 `git ls-remote` 成功且无 refs。此次同步是带已知阻塞的开发检查点，不是发布批准；不携带第三方音源、scratch产物或凭据。`origin` 指向该仓库，保留 `folia-local` 参考远端。推送结果及精确提交以实际远端回读为准。
-- 本次只读核对：分支 `main`，HEAD `e4b1c5c13b8f480d5b5c8b9a887a52c1468f21a4`；新增功能尚在大量未提交工作区（含未跟踪文件）。不得 checkout/reset/clean 覆盖。
+- 用户授权同步后，当前成果已保存为本地 `main` 开发检查点 `99b8f7fc`（基于 `e4b1c5c13b8f480d5b5c8b9a887a52c1468f21a4`）。推送被 GitHub 鉴权拒绝（Invalid username or token），尚未同步成功；需修复登录后推送并回读远端SHA。没有创建QuickJS实验分支；不要把本地提交当远端备份。
 - 已授权的正式直接依赖仍是 `@tootallnate/quickjs-emscripten: 0.23.0`。WASI 及其他候选仅在 scratch，不在正式依赖。
 - 迁移前需完整快照/备份，然后再确定本地检查点和分支布局；本节不表示已经建立分支。
 
