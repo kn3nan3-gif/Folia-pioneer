@@ -7,6 +7,13 @@ test('initialization accepts only declared wy musicUrl qualities', () => {
   assert.throws(() => validateInit({ sources: { wy: { actions: ['search'], qualitys: ['128k'] } } }), /wy/);
   assert.throws(() => validateInit({ sources: { wy: { actions: ['musicUrl'], qualitys: ['fake'] } } }), /quality/);
 });
+test('initialization intersects supported qualities in host order without expanding platforms', () => {
+  const init = qualitys => ({ sources: { wy: { type: 'music', actions: ['musicUrl'], qualitys }, kw: { type: 'music', actions: ['musicUrl'], qualitys: ['320k'] } } });
+  assert.deepEqual(validateInit(init(['flac', 'future', '128k', 'flac'])), ['128k', 'flac']);
+  for (const values of [[], ['future'], ['future', 128], ['128k', 128], '128k', null]) assert.throws(() => validateInit(init(values)), /quality/);
+  for (const type of ['video', null, 1]) assert.throws(() => validateInit({ sources: { wy: { type, actions: ['musicUrl'], qualitys: ['128k'] } } }), /type/);
+  assert.throws(() => validateInit({ sources: { kw: { type: 'music', actions: ['musicUrl'], qualitys: ['128k'] } } }), /wy/);
+});
 test('audio URLs and unsupported qualities fail closed', () => {
   assert.equal(validateAudioUrl('https://audio.example/a.mp3'), 'https://audio.example/a.mp3');
   for (const value of ['file:///etc/passwd', 'https://u:p@audio.example/a', {}, 'x'.repeat(2049)]) assert.throws(() => validateAudioUrl(value));

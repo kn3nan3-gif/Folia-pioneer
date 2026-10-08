@@ -5,8 +5,12 @@ const scriptDigest = script => crypto.createHash('sha256').update(script).digest
 function validateInit(data) {
     const wy = data?.sources?.wy;
     if (!wy || !Array.isArray(wy.actions) || !wy.actions.includes('musicUrl')) throw new Error('LX: wy musicUrl not declared');
-    if (!Array.isArray(wy.qualitys) || !wy.qualitys.length || wy.qualitys.some(q => !Object.values(QUALITY).includes(q))) throw new Error('LX: invalid quality declaration');
-    return [...new Set(wy.qualitys)];
+    // Preserve the slice's legacy omitted type; an explicit incompatible type is never music.
+    if (Object.hasOwn(wy, 'type') && wy.type !== 'music') throw new Error('LX: invalid source type');
+    if (!Array.isArray(wy.qualitys) || wy.qualitys.some(q => typeof q !== 'string')) throw new Error('LX: invalid quality declaration');
+    const qualities = Object.values(QUALITY).filter(q => wy.qualitys.includes(q));
+    if (!qualities.length) throw new Error('LX: invalid quality declaration (no supported quality)');
+    return qualities;
 }
 function validateAudioUrl(value) {
     if (typeof value !== 'string' || value.length > 2048) throw new Error('LX: invalid audio URL');

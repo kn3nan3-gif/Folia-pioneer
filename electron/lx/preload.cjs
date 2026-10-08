@@ -36,7 +36,10 @@ ipcRenderer.on(channel, (_event, text) => {
             ).catch(() => post({ kind: 'fatal', error: 'LX: result delivery failed' }));
         } else if (message.kind === 'networkResult') {
             const callback = callbacks.get(message.id); callbacks.delete(message.id);
-            if (callback) callback(message.error ? new Error(message.error) : null, message.response, message.body);
+            if (callback) {
+                if (message.error) callback(new Error(message.error), null, null);
+                else callback(null, { ...message.response, body: message.body }, message.body);
+            }
         } else throw new Error('LX: host event');
     } catch (_error) { post({ kind: 'fatal', error: 'LX: bridge callback failed' }); }
 });

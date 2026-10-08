@@ -68,8 +68,40 @@ QuickJS 保留分支：experiment/quickjs-checkpoint，指向上述提交。
 
 历史标题 opacity 失败两轮均未复现，不能认定本次回归或既有故障；历史注册超时存在日志，但原 trace 不在当前产物且网络证据 JSON 为空，无法独立确认 ERR_NETWORK_CHANGED 归因。允许保存带已知边界的开发检查点，不得声称扩展回归稳定性全绿、完整平台或产品验收。父任务按已获授权进行本地提交和 main/QuickJS 保存分支同步，成功与精确 SHA 以远端回读为准。
 
+### 9.6 两个已授权用户音源：当前浏览器路线复测
+
+基线 `4f68d27b5810d7c6c0cbbdec1894d55129bec6df`。仅复测原候选两文件；未扫描/执行其他22源。当前 `electron/lx/*.cjs` 及两套相关acceptance文件共11文件同步ext4、逐文件SHA相同；两原音源执行前后SHA与历史静态报告一致。scratch证据根 `~/.hermes/cache/scratch/folia-lx/browser-two-retest/`：`sync-{before,after}.json`、`static.json`、`results.json`、`exit-final.json`；本计划改前备份 `browser-script-runtime.before.md`。不提交第三方脚本、完整日志或临时音频URL。
+
+静态核对：当前派生词法报告均findings=[]，不是AST/安全证明；与历史可读代码及精确SHA一致，未发现新增风险。稳定源报告列出api.injahow.cn、cyapi.top、kw-api.cenguigui.cn、lxmusic.toside.cn；幻音列出music-dl.sayqz.com、api.xcvts.cn。测试仅分别授予api.injahow.cn和music-dl.sayqz.com，其他域名不授权/不调用。复测继承用户既定两候选授权及已披露WebRTC风险，通过真实manager.importLocal→派生review核对→manager.enable提交当前digest、reviewVersion=lexical-1、riskVersion=browser-webrtc-1、acknowledged=true；未直接构造或手工置active绕门禁。批准payload存scratch；透明网络观测仍调用未改authorizeUrl，公网DNS/IP固定及逐跳授权不变。
+
+- `稳定版音源 v1.0.3.js` SHA256 `5e5f39c1a51b6c005104f382b22cd0a3e0af2ba30c7003e4fd03bfcf9f6a088a`：真实初始化通过，声明128k/320k/flac/flac24bit；仅网易5275429 standard/128k请求。api.injahow.cn公网IPv4授权通过、真实HTTP404，脚本拒绝获取链接；无有效URL/媒体token，不进行Audio。
+- `幻音音源 v3.js` SHA256 `4a81129240ecae3ebf6b42f28c73e2d37bbcb6fccac9a73a401d90cdd36bee5f`：真实初始化通过，同四质量；相同样本/质量。返回候选地址进入宿主授权后music-dl.sayqz.com DNS ENOTFOUND，HTTP未发生、未签发媒体token；不进行Audio。
+- 两者运行时实测sandbox=true、nodeIntegration=false；导入未执行、manager启用成功回读、禁用及新manager重启disabled已断言。没有新增域名、权限、私网、账号、下载、会员/DRM步骤；没有更换接口或修改脚本。
+
+命令（ext4 folia-work，PATH前置scratch/node24/bin）：`timeout 80 xvfb-run -a --server-args='-screen 0 1280x1024x24' ./node_modules/electron/dist/electron /home/administrator/.hermes/cache/scratch/folia-lx/browser-two-retest/run.cjs`。Node24.21.0/Electron43.7.5，最终exit0仅表示harness完成，不表示音源可播放。首次scratch harness错误用绝对包路径require Electron，app未定义并超时exit124；改为原生require('electron')后运行完成，非产品失败。原音源及同步模块结束后摘要再次相同；git diff --check通过。
+
+当前阻塞仍为外部404/DNS失败，而非已证实浏览器初始化缺口。音频URL有效性/真实播放/长时播放未获证据；不得借此扩域或更改音源凑PASS。下一切片建议由父决定以最小自有fixture覆盖resp.body及质量交集等历史兼容契约；本次不改产品、不加依赖、不更新AGENTS、不commit/push。
+
+### 9.7 resp.body 与 wy 音质交集最小切片（待独立审查）
+
+- 改前备份 `../Folia-pioneer-backups/lx-body-quality-20261008-180609/` 保存触及既有文件及SHA manifest；保留§9.6原修改，AGENTS由父更新。无提交/推送、新依赖、第三方音源执行或扩域。
+- 原LX只读语义来源 `../lx-music-desktop/src/main/modules/userApi/renderer/preload.js`：29–35固定音质表，146–155仅type=music且按宿主顺序求交集；213–231把原始响应转UTF8、尝试JSON解析，callback第三参数与response.body相同，错误为(err,null,null)；247–251重复inited拒绝。类型定义 `src/common/types/user_api.d.ts:3–10` 为music/actions/qualitys。没有照搬statusMessage/raw/bytes、formData或新增平台。
+- `preload.cjs` 成功回调在realm内组装response.body，复用同一个body值（含对象身份）；失败回调两个null。broker仍只传单份body，未增大网络回复体积或修改固定IP逐跳授权。`contract.cjs` wy四质量按宿主顺序交集去重，忽略未知字符串；空交集拒绝，非字符串/非数组拒绝，明确非music type拒绝。保留首切片既有省略type兼容，不扩为原LX的所有平台或允许空源成功。
+- 新 `test/lx-body-acceptance.cjs` 使用owned HTTP JSON/text/HTTP404/断连，测试authorize只准精确owned origin；生产私网策略不变。真实sandbox=true，覆盖混合/全不支持、kw不提升到wy、高音质未声明拒绝及重复init：caught只拒绝该调用且原声明保留；discarded在ready前失败关闭（执行结果拒绝或native监测）。Node合同回归同时拒绝混合合法字符串和非法值。
+- TDD：原preload `timeout 45 xvfb-run -a ./node_modules/electron/dist/electron test/lx-body-acceptance.cjs` RED exit1（response.body alias missing）；补丁首GREEN exit0。原contract `node --test test/lx-custom-source.test.cjs` RED exit1，扩展Electron同命令RED exit1（invalid quality）；新contract最终两者GREEN exit0。中间一次断言过窄只期待native原因而实际得到LX:initialization，以及原rejection回归依赖invalid quality前缀，两次exit1均保留日志；修正测试原因范围与保留旧错误前缀后通过，未放松fatal合同。
+- Node v24.21.0（指定node24/bin缺失，从既有node24.tar.xz解包至scratch/node24-x）、Electron43.7.5，ext4 folia-work/Xvfb不禁sandbox。全部LX模块及直接LX测试同步SHA清单 scratch `lx-body-sync-{red,final}.json`。最终`node --test`七文件（custom-source/manager/approval/persistence-regression/request-options/media/media-stream）41 PASS exit0；上述body以及browser-rejection/browser-lifecycle/runtime-security/runtime-acceptance/quality-acceptance/request-options-acceptance七套Electron逐个同样timeout/Xvfb命令exit0。scratch日志`lx-body-*-final.log`，RED另见`lx-body-red.log`、`lx-quality-{red,electron-red}.log`；git diff --check exit0。
+- 无TS公共类型改动，未跑typecheck/完整构建/UI/Windows/第三方音源或长时Audio。旧queued/async/discarded/timer fatal、审批/manager/网络/媒体最小回归保留通过；独立spec→quality仍由父另派，不能称已验收。
+
+### 9.8 最小契约切片独立审查
+
+resp.body 与 wy 支持音质交集切片已获独立规格 PASS、独立质量 APPROVED，仅限本切片。规格审查真实 Electron body/rejection 均 exit0；质量审查原仓 Node custom-source/request-options 共28项 PASS，Electron body/rejection/security 均 exit0，运行前后相关模块摘要与 ext4 副本一致，sandbox 未关闭。父任务提交前再次原仓运行上述28项测试及 diff-check 均通过。
+
+非阻塞补强：JSON 标量、非 ASCII 正文和回调抛异常尚无新增直接 body 用例；异常 fatal 路径已静态审查。不代表完整 LX、Windows 或长时播放验收。两用户源结果见 §9.6，仍无可用音频 URL。
+
+此前浏览器功能检查点 main=4f68d27b5810d7c6c0cbbdec1894d55129bec6df、QuickJS 保存分支=aec7eac310cd6b204a77ea821c4c0d75b6a39bdc 均已推送并远端回读。AGENTS.md 的推送状态补写曾因保护审批超时未完成，其中“实验分支尚未推送”是过时信息；未绕过保护。当前本切片按用户已授权保存开发检查点，精确提交与同步结果以实际远端回读为准。
+
 ### 9.2 待审查与明确边界
 
 没有直接可打包AST parser；不增加依赖。报告是保守文本词法提示，注释/字符串可误报，别名/动态属性/编码/远端代码可漏报，绝非AST/数据流/安全证明。WebRTC仍可达，域名授权仅约束broker而非浏览器全部网络；UI明确披露。MAIN world事件监听不是恶意可信脚本无法篡改的防线，150ms settle窗口仅覆盖初始化常见迟发事件，晚异常会停用，不保证任意未来错误在ready前发生。浏览器资源不继承QuickJS堆/CPU/jobs/timer预算，保留host请求/消息/网络预算与超时，不宣称不可信代码沙箱。
 
-`render-process-gone` 用真实webContents信号注入验证清理，未证明原生崩溃通知在此平台可靠。仅wy/musicUrl首切片；未执行第三方用户音源，没有完整LX API/真实端点/长时媒体/Windows/Web验收。QuickJS旧验收用例继续属于实验分支路线，不用于浏览器安全声称。独立规格及质量审查由父任务继续执行；AGENTS.md由父更新。
+`render-process-gone` 用真实webContents信号注入验证清理，未证明原生崩溃通知在此平台可靠。仅wy/musicUrl首切片；第一切片审查阶段未执行第三方用户音源，随后两候选复测见§9.6，仍没有完整LX API/可用音频端点/长时媒体/Windows/Web验收。QuickJS旧验收用例继续属于实验分支路线，不用于浏览器安全声称。独立规格及质量审查由父任务继续执行；AGENTS.md由父更新。
