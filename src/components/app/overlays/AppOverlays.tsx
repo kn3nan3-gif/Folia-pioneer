@@ -1,4 +1,5 @@
 import React from 'react';
+import AppPlaylistHost from '../playlists/AppPlaylistHost';
 import FloatingPlayerControls from '../../FloatingPlayerControls';
 import SearchWorkspace from '../search/SearchWorkspace';
 import DevDebugOverlay from '../../DevDebugOverlay';
@@ -26,6 +27,7 @@ const AppOverlays: React.FC<AppOverlaysProps> = ({ model }) => {
 
     return (
         <>
+            {model.appPlaylists && <AppPlaylistHost {...model.appPlaylists} />}
             {searchOverlay && <SearchWorkspace {...searchOverlay} />}
 
             {debugOverlay && <DevDebugOverlay {...debugOverlay} />}

@@ -1,6 +1,39 @@
 
 
 export default {
+  "lxSources": {
+    "title": "LX 自定义音源", "close": "关闭", "import": "导入本地 .js",
+    "hint": "仅桌面 wy → 网易云 musicUrl，不提供搜索。重启后须重新启用。不提供 Cookie、登录及加密工具。启用后的错误不会静默回退。仅导入可信且有权使用的脚本。",
+    "domains": "授权域名（英文逗号分隔）", "authorize": "我授权此 SHA-256 脚本仅访问这些公网 HTTP(S) 域名（包含音频地址）。",
+    "enable": "授权并启用", "disable": "停用", "enabled": "已启用", "disabled": "已停用", "remove": "移除", "removeConfirm": "移除此脚本及其域名授权？"
+  },
+  "appPlaylists": {
+    "title": "应用列表",
+    "hint": "仅保存在本机，与平台歌单分开；无同步、不强迁旧本地歌单。JSON仅含引用，异机需重新关联本地库与Navidrome服务器。暂不支持Stage。",
+    "name": "列表名称",
+    "create": "创建列表",
+    "rename": "重命名列表",
+    "delete": "删除列表",
+    "current": "添加当前歌曲",
+    "queue": "保存混合队列",
+    "search": "搜索结果",
+    "add": "添加到列表",
+    "remove": "移除歌曲",
+    "up": "上移",
+    "down": "下移",
+    "play": "播放整列表",
+    "export": "导出JSON",
+    "import": "导入为新列表",
+    "json": "引用JSON",
+    "close": "关闭应用列表",
+    "select": "选择列表",
+    "unknown": "{{count}}个引用可用性未知，已保留；请检查网络或权限后重试。",
+    "missing": "保留了{{count}}个失效引用，请重新关联本地文件或Navidrome服务器后重试。",
+    "error": "操作失败：{{message}}",
+    "empty": "先创建一个列表。",
+    "source": "来源",
+    "confirm": "删除此应用列表？"
+},
   "libraryTui": {
     "back": "返回",
     "sourceOnline": "在线 · {{provider}}",
@@ -445,6 +478,7 @@ export default {
       }
     },
     "commands": {
+      "lx-sources": { "title": "LX 自定义音源", "description": "管理本地脚本及显式域名授权" },
       "settings-ponder-hints": { "title": "思索教程提示", "description": "设置长按 G 的提示什么时候出现" },
       "ponder-hints-always": { "title": "思索提示：始终显示", "description": "所有可教学的控件都提示长按 G" },
       "ponder-hints-unseen": { "title": "思索提示：仅未看过的区域", "description": "某个控件的教程看过之后就不再提示它" },
@@ -1010,6 +1044,12 @@ export default {
     "syncFailedHint": "还有歌曲没加载成功（{{error}}）。点击从中断处继续加载"
   },
   "search": {
+    "sourceAllOnline": "全部在线来源",
+    "sourceLoading": "搜索中",
+    "sourceComplete": "完成",
+    "sourceCount": "{{count}} 首",
+    "sourceTimeout": "请求超时（忽略晚回）",
+    "sourcesChanged": "没有可搜索来源或来源已变化，请重新搜索。",
     "placeholder": "搜索歌曲...",
     "sourceNetease": "网易云",
     "sourceLocal": "本地",

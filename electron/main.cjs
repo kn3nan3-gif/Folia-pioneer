@@ -1,4 +1,6 @@
 const { app, BrowserWindow, ipcMain, session, screen, dialog, shell, nativeImage, desktopCapturer, Menu, Tray, nativeTheme, powerSaveBlocker, safeStorage, protocol, crashReporter, net: electronNet } = require('electron');
+const { configurePioneerIdentity } = require('./pioneerIdentity.cjs');
+configurePioneerIdentity(app);
 const fs = require('fs');
 const http = require('http');
 const path = require('path');
@@ -77,6 +79,7 @@ const linuxGraphicsMode =
 // command-line switches, so a second call silently strips those privileges
 // from the schemes registered earlier.
 protocol.registerSchemesAsPrivileged([
+  { scheme: 'folia-lx-media', privileges: { standard: true, secure: true, supportFetchAPI: true, corsEnabled: true, stream: true } },
   {
     scheme: 'folia-cover',
     privileges: {
@@ -183,7 +186,7 @@ if (process.platform === 'darwin' && process.arch === 'x64') {
   app.commandLine.appendSwitch('enable-gpu-rasterization');
 }
 
-const store = new Store({ projectName: 'Folia' });
+const store = new Store({ projectName: 'Folia-pioneer' });
 const transcodeService = createTranscodeService({
   app,
   protocol,
@@ -1848,12 +1851,10 @@ const MOD_SYSTEM_ENABLED_SETTING_KEY = 'MOD_SYSTEM_ENABLED';
 const DEFAULT_STAGE_API_PORT = 32107;
 const DEFAULT_OBS_BROWSER_SOURCE_PORT = 32108;
 const DEFAULT_LYRIC_API_PORT = 32109;
-const FOLIA_RELEASES_URL = 'https://github.com/chthollyphile/folia-major/releases';
-const FOLIA_GITHUB_REPOSITORY = {
-  owner: 'chthollyphile',
-  repo: 'folia-major',
-};
-const WINDOWS_APP_USER_MODEL_ID = 'top.izuna.foliamajor';
+// Pioneer has no update authority yet. Never inherit an official Folia feed.
+const FOLIA_RELEASES_URL = null;
+const FOLIA_GITHUB_REPOSITORY = null;
+const WINDOWS_APP_USER_MODEL_ID = 'local.folia.pioneer';
 const REMOTE_CONTROL_WINDOW_TITLE = 'Folia Remote';
 const WINDOW_PLAYBACK_HANDOFF_REQUEST_TIMEOUT_MS = 800;
 const bundledAppIconPath = path.join(__dirname, '../build/icon.png');
@@ -3129,12 +3130,11 @@ async function fetchWithOptionalSystemProxy(url, options, useSystemProxy) {
 }
 
 function getUpdateCheckEnabled() {
-  const configured = store.get(ENABLE_UPDATE_CHECK_SETTING_KEY);
-  return configured === undefined ? true : Boolean(configured);
+  return false;
 }
 
 function getAutoUpdateEnabled() {
-  return Boolean(store.get(ENABLE_AUTO_UPDATE_SETTING_KEY));
+  return false;
 }
 
 function normalizeVersion(value) {
@@ -3164,7 +3164,7 @@ function normalizeUpdateChannelSelection(value) {
 }
 
 function getUpdateCheckSupportReason() {
-  return getCurrentReleaseChannel().updateEnabled ? null : 'channel';
+  return 'channel';
 }
 
 function isUpdateCheckSupported() {
@@ -3172,7 +3172,7 @@ function isUpdateCheckSupported() {
 }
 
 function isDevUpdatePreviewEnabled() {
-  return process.env.ELECTRON_DEV === 'true' && process.env.FOLIA_DEV_UPDATE_PREVIEW === 'true';
+  return false;
 }
 
 // Builds a believable next patch version so the preview stays aligned with package metadata.
@@ -3198,10 +3198,7 @@ function isAutoUpdaterSupported() {
 }
 
 function getAutoUpdateSupportReason() {
-  if (!getCurrentReleaseChannel().updateEnabled) {
-    return 'channel';
-  }
-  return process.platform === 'win32' ? null : 'system';
+  return 'channel';
 }
 
 function isPackagedUpdateRuntime() {
@@ -3255,6 +3252,7 @@ function setUpdateState(patch) {
 
 // Load electron-updater lazily so updater failures don't block the main window.
 function ensureAutoUpdater() {
+  if (!isUpdateCheckSupported()) return null;
   if (autoUpdater !== null) {
     return autoUpdater;
   }
@@ -3398,6 +3396,11 @@ async function downloadAvailableUpdate() {
 }
 
 async function checkForUpdates({ manual = false } = {}) {
+  // This hard boundary applies even to manual checks and saved upstream channel settings.
+  if (!isUpdateCheckSupported()) {
+    setUpdateState({ status: 'unsupported', availableVersion: null, error: null, downloadProgress: null });
+    return getUpdateStatus();
+  }
   if (isDevUpdatePreviewEnabled()) {
     const availableVersion = getDevUpdatePreviewVersion();
     setUpdateState({
@@ -3451,6 +3454,10 @@ async function checkForUpdates({ manual = false } = {}) {
 }
 
 async function checkForManualUpdateAvailability() {
+  if (!isUpdateCheckSupported()) {
+    setUpdateState({ status: 'unsupported', availableVersion: null, error: null, downloadProgress: null });
+    return getUpdateStatus();
+  }
   const releaseChannel = getCurrentReleaseChannel();
   const discovery = getUpdateDiscoveryConfig(releaseChannel, FOLIA_GITHUB_REPOSITORY);
   if (!discovery) {
@@ -3522,6 +3529,7 @@ function markUpdateSeen(version) {
 }
 
 async function openUpdateReleasePage(version) {
+  if (!isUpdateCheckSupported()) return false;
   const normalizedVersion = normalizeVersion(version || updateState.availableVersion);
   const url = normalizedVersion
     ? getReleaseUrl(getCurrentReleaseChannel().id, normalizedVersion, FOLIA_RELEASES_URL)
@@ -5374,6 +5382,7 @@ app.whenReady().then(async () => {
     }
   }
 
+  require('./lx/manager.cjs').registerLxSources(require('electron'), () => mainWindow);
   setupFileSystemAccessPermissionHandlers();
   setupCorsBypassHandlers();
   localCoverAssetStore.registerProtocolHandler(protocol, electronNet);

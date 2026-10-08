@@ -10,6 +10,8 @@ import {
     useSearchNavigationStore,
 } from '../../../stores/useSearchNavigationStore';
 import SearchResultsList from './SearchResultsList';
+import SearchProviderStatus from './SearchProviderStatus';
+import { getAggregateProviders } from '../../../services/onlineMusic/aggregateSearch';
 import { useCollectionNavigationStore } from '../../../stores/useCollectionNavigationStore';
 import { useOnlineProviderAccountStore } from '../../../stores/useOnlineProviderAccountStore';
 import { omni } from '../../../services/onlineMusic/omni';
@@ -67,9 +69,20 @@ const SearchWorkspace: React.FC<SearchWorkspaceProps> = ({
     })));
     const results = searchResults || [];
     const activeOnlineProviderId = useOnlineProviderAccountStore(state => state.activeProviderId);
-    const sources = useMemo<SearchSource[]>(() => [activeOnlineProviderId, 'local', 'navidrome'], [activeOnlineProviderId]);
+    const sources = useMemo<SearchSource[]>(() => [activeOnlineProviderId, 'all-online', 'local', 'navidrome'], [activeOnlineProviderId]);
+    const providerSignature = getAggregateProviders().sort().join('|');
+    useEffect(() => {
+        const reconcile = () => useSearchNavigationStore.getState().reconcileAggregateProviders();
+        const unsubscribeProviders = omni.subscribeProviders(reconcile);
+        const unsubscribeAccounts = useOnlineProviderAccountStore.subscribe(reconcile);
+        return () => { unsubscribeProviders(); unsubscribeAccounts(); };
+    }, []);
+    useEffect(() => {
+        if (searchSourceTab === 'all-online') useSearchNavigationStore.getState().reconcileAggregateProviders();
+    }, [providerSignature, searchSourceTab]);
     const hasCollection = useCollectionNavigationStore(state => Boolean(state.snapshot?.stack.length));
     const getSourceLabel = (source: SearchSource) => {
+        if (source === 'all-online') return t('search.sourceAllOnline');
         if (source === 'local') return t('search.sourceLocal');
         if (source === 'navidrome') return t('search.sourceNavidrome');
         return omni.getProviderLabel(source);
@@ -165,10 +178,11 @@ const SearchWorkspace: React.FC<SearchWorkspaceProps> = ({
                                 </button>
                             ))}
                         </nav>
+                        {searchSourceTab === 'all-online' && <SearchProviderStatus />}
                     </header>
 
                     <div className="mx-auto mt-3 min-h-0 w-full max-w-5xl flex-1">
-                        {isSearching ? (
+                        {isSearching && results.length === 0 ? (
                             <div className="flex h-full items-center justify-center">
                                 <Loader2 className="h-9 w-9 animate-spin opacity-45" />
                             </div>
@@ -202,7 +216,7 @@ const SearchWorkspace: React.FC<SearchWorkspaceProps> = ({
                                         onOpenAlbum={onOpenAlbum}
                                     />
                                 </div>
-                                {searchError ? (
+                                {searchSourceTab === 'all-online' ? null : searchError ? (
                                     <div className="flex shrink-0 items-center justify-center gap-3 py-3 text-sm">
                                         <span className="opacity-60">{t('search.error')}</span>
                                         <button

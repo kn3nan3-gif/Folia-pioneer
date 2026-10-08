@@ -38,7 +38,7 @@ export const cachePlayedTrackAssets = async (
 
     // Audio needs a source that can actually be refetched: a blob: URL is this session's own handle
     // to bytes that are either already cached or on disk, so there is nothing to fetch and store.
-    if (src && !src.startsWith('blob:') && !await hasCachedSongAudio(song)) {
+    if (src && !src.startsWith('blob:') && !src.startsWith('folia-lx-media:') && !await hasCachedSongAudio(song)) {
         console.log('[Cache] Caching fully played song:', song.name);
         try {
             const response = await fetch(src);

@@ -48,6 +48,13 @@ describe('cachePlayedTrackAssets', () => {
         vi.spyOn(console, 'log').mockImplementation(() => { });
     });
 
+    it('does not persist revocable LX media into the shared provider audio cache', async () => {
+        const written = await cachePlayedTrackAssets(onlineSong, 'folia-lx-media://audio/' + 'a'.repeat(64), null);
+        expect(written.audio).toBe(false);
+        expect(saveAudioBlob).not.toHaveBeenCalled();
+        expect(fetch).not.toHaveBeenCalled();
+    });
+
     it('stores both when neither is cached', async () => {
         const written = await cachePlayedTrackAssets(onlineSong, 'https://cdn.example/audio.mp3');
 

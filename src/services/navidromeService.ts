@@ -62,10 +62,13 @@ export const getNavidromeConfig = (): NavidromeConfig | null => {
     return null;
 };
 
+// Same-tab consumers need notification; native storage events only reach other tabs.
+export const NAVIDROME_CONFIG_CHANGED = 'folia-navidrome-config-changed';
 // Save configuration
 export const saveNavidromeConfig = (config: NavidromeConfig): void => {
     clearStableUrlSaltCache();
     localStorage.setItem(CONFIG_KEY, JSON.stringify(config));
+    if (typeof window !== 'undefined') window.dispatchEvent(new Event(NAVIDROME_CONFIG_CHANGED));
 };
 
 // Clear configuration
@@ -73,6 +76,7 @@ export const clearNavidromeConfig = (): void => {
     clearStableUrlSaltCache();
     localStorage.removeItem(CONFIG_KEY);
     clearNavidromeServerProfile();
+    if (typeof window !== 'undefined') window.dispatchEvent(new Event(NAVIDROME_CONFIG_CHANGED));
 };
 
 export const getCachedNavidromeServerProfile = (): NavidromeServerProfile | null => {
@@ -657,7 +661,14 @@ export const navidromeApi = {
             album: displayAlbum,
             durationMs: song.duration * 1000, // Convert to milliseconds
             isNavidrome: true,
-            sourceRef: { kind: 'navidrome', mediaId: song.id },
+            sourceRef: { kind: 'navidrome', mediaId: song.id, ...(() => {
+                // Preserve only credential-free origin/path provenance at creation time.
+                try {
+                    const url = new URL(config.serverUrl);
+                    if (!['http:', 'https:'].includes(url.protocol) || url.username || url.password || url.search || url.hash) return {};
+                    return { serverUrl: url.href.replace(/\/$/, '') };
+                } catch { return {}; }
+            })() },
             navidromeData: {
                 id: song.id,
                 streamUrl: navidromeApi.getStreamUrl(config, song.id),

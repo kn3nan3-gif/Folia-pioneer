@@ -1,4 +1,5 @@
 import Dexie, { type Table } from 'dexie';
+import type { AppPlaylist } from '../types/appPlaylist';
 import type { LocalSong } from '../types';
 import type { LocalLibraryAssignment, LocalLibraryEntity } from '../types/localLibrary';
 import type { LocalCoverAsset } from '../types/localCover';
@@ -24,6 +25,7 @@ export interface ThemeRegistryRecord {
 }
 
 export class AppDatabase extends Dexie {
+  app_playlists!: Table<AppPlaylist, string>;
   session!: Table<unknown, string>;
   api_cache!: Table<StoredCacheEntry, string>;
   user_cache!: Table<StoredCacheEntry, string>;
@@ -96,6 +98,9 @@ export class AppDatabase extends Dexie {
       local_library_assignments: 'songId, *artistEntityIds, albumEntityId, artistOrigin, albumOrigin',
       local_cover_assets: 'id',
     });
+
+    // Dexie retains every previous store when adding this application-owned table.
+    this.version(1).stores({ app_playlists: 'id, createdAt, updatedAt' });
 
     this.on('versionchange', event => {
       this.close();

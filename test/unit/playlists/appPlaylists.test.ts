@@ -1,0 +1,97 @@
+import 'fake-indexeddb/auto';
+import { afterEach, expect, it } from 'vitest';
+import { appDatabase, AppDatabase } from '../../../src/services/appDatabase';
+import { AppPlaylistRepository } from '../../../src/services/repositories/appPlaylistRepository';
+import { AppPlaylistService } from '../../../src/services/appPlaylistService';
+import type { UnifiedSong } from '../../../src/types';
+import Dexie from 'dexie';
+import { vi } from 'vitest';
+import { clearCacheTables } from '../../../src/services/repositories/cacheRepository';
+// Persistent application lists exercise real Dexie, not the cache facade.
+it('upgrades 0.9 without deleting old data and survives cache clearing/reopen', async () => {
+    const name = `upgrade-${crypto.randomUUID()}`;
+    const old = new Dexie(name);
+    old.version(0.9).stores({ local_music: 'id, localCoverAssetId', api_cache: 'key', session: '', user_cache: 'key', media_cache: 'key', metadata_cache: 'key', theme_registry: 'fingerprint', local_library_entities: 'id, kind, *normalizedAliases, mergedInto, needsReview, createdAt', local_library_assignments: 'songId, *artistEntityIds, albumEntityId, artistOrigin, albumOrigin', local_cover_assets: 'id' });
+    await old.table('local_music').put({ id: 'legacy', title: 'Preserved' });
+    old.close();
+    db = new AppDatabase(name);
+    const repo = new AppPlaylistRepository(db);
+    await repo.create('Saved');
+    await db.api_cache.put({ key: 'playlist_cached', data: [], timestamp: 1 });
+    await db.api_cache.clear();
+    db.close();
+    db = new AppDatabase(name);
+    expect((await new AppPlaylistRepository(db).list())[0].name).toBe('Saved');
+    expect(await db.local_music.get('legacy')).toMatchObject({ title: 'Preserved' });
+});
+it('propagates transaction write failure and leaves the previous list intact', async () => {
+    db = new AppDatabase(`failure-${crypto.randomUUID()}`);
+    const service = new AppPlaylistService(new AppPlaylistRepository(db));
+    const list = await service.create('Before');
+    const spy = vi.spyOn(db.app_playlists, 'put').mockRejectedValueOnce(new Error('disk-full'));
+    await expect(service.rename(list.id, 'After')).rejects.toThrow('disk-full');
+    spy.mockRestore();
+    expect((await service.list())[0].name).toBe('Before');
+});
+const track = (providerId: string, id = 1): UnifiedSong => ({ id, name: providerId, artists: [{ id: 1, name: 'Artist' }], album: { id: 1, name: 'Album', coverUrl: 'https://private/token' }, durationMs: 1000, sourceRef: { kind: 'online', providerId, mediaId: String(id), providerData: { cookie: 'secret', hash: 'hash' } } });
+it('adds mixed-source identities, dedupes only same source and strips volatile fields', async () => {
+    db = new AppDatabase(`mix-${crypto.randomUUID()}`);
+    const service = new AppPlaylistService(new AppPlaylistRepository(db));
+    const list = await service.create('Mix');
+    await service.add(list.id, [track('netease'), track('kugou'), track('netease')]);
+    const [saved] = await service.list();
+    expect(saved.entries.map(e => e.key)).toEqual(['online:netease:1', 'online:kugou:1']);
+    expect(JSON.stringify(saved)).not.toMatch(/cookie|secret|coverUrl|private/);
+    expect(saved.entries[1].sourceRef).toMatchObject({ providerData: { hash: 'hash' } });
+    await expect(service.add(list.id, [{ ...track('netease'), sourceRef: { kind: 'stage', mediaId: '1' } }])).rejects.toThrow('stage-unsupported');
+});
+it('persists localRef and distinguishes Navidrome servers without storing their live carriers', async () => {
+    db = new AppDatabase(`sources-${crypto.randomUUID()}`);
+    const service = new AppPlaylistService(new AppPlaylistRepository(db));
+    const list = await service.create('Sources');
+    const local = { ...track('local'), isLocal: true, localRef: { songId: 'file' }, sourceRef: { kind: 'local' as const, mediaId: 'file' } };
+    await service.add(list.id, [local, local]);
+    const navi = { ...track('navi'), sourceRef: { kind: 'navidrome' as const, mediaId: 'same', serverUrl: 'https://first.test' }, navidromeData: { streamUrl: 'https://secret?t=token', cookie: 'secret' } } as UnifiedSong;
+    await service.add(list.id, [navi], 'https://first.test');
+    await service.add(list.id, [{ ...navi, sourceRef: { kind: 'navidrome', mediaId: 'same', serverUrl: 'https://second.test' } }]);
+    const saved = (await service.list())[0];
+    expect(saved.entries).toHaveLength(3);
+    expect(saved.entries[0].localRef).toEqual({ songId: 'file' });
+    expect(saved.entries.slice(1).map(e => e.navidromeRef?.serverUrl)).toEqual(['https://first.test', 'https://second.test']);
+    expect(JSON.stringify(saved)).not.toMatch(/secret|streamUrl|cookie/);
+});
+it('renames, removes, orders exact identities and deletes without losing concurrent additions', async () => {
+    db = new AppDatabase(`crud-${crypto.randomUUID()}`);
+    const service = new AppPlaylistService(new AppPlaylistRepository(db));
+    const list = await service.create('Mix');
+    await Promise.all([service.add(list.id, [track('netease')]), service.add(list.id, [track('kugou')])]);
+    await service.rename(list.id, ' Renamed ');
+    await service.reorder(list.id, ['online:kugou:1', 'online:netease:1']);
+    expect((await service.list())[0]).toMatchObject({ name: 'Renamed', entries: [{ key: 'online:kugou:1' }, { key: 'online:netease:1' }] });
+    await expect(service.reorder(list.id, ['online:kugou:1'])).rejects.toThrow('invalid-order');
+    await service.remove(list.id, 'online:kugou:1');
+    expect((await service.list())[0].entries).toHaveLength(1);
+    await service.delete(list.id);
+    expect(await service.list()).toEqual([]);
+});
+it('actual cache cleanup leaves application-owned lists intact', async () => {
+    await appDatabase.app_playlists.clear();
+    const repo = new AppPlaylistRepository();
+    const list = await repo.create('Not cache');
+    await appDatabase.api_cache.put({ key: 'playlist_cached', data: [], timestamp: 1 });
+    await clearCacheTables([]);
+    expect((await repo.list()).map(p => p.id)).toContain(list.id);
+    expect(await appDatabase.api_cache.get('playlist_cached')).toBeUndefined();
+    await appDatabase.delete();
+});
+let db: AppDatabase;
+afterEach(async () => { if (db) await db.delete(); });
+it('creates an application list and restores it after database reopen', async () => {
+    const name = `app-playlists-${crypto.randomUUID()}`;
+    db = new AppDatabase(name);
+    const repo = new AppPlaylistRepository(db);
+    await repo.create('Mix');
+    db.close();
+    db = new AppDatabase(name);
+    expect((await new AppPlaylistRepository(db).list()).map(p => p.name)).toEqual(['Mix']);
+});

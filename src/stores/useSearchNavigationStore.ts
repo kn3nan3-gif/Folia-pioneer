@@ -8,11 +8,12 @@ import {
     type LocalLibraryDisplayCatalog,
 } from '../services/playbackAdapters';
 import { omni } from '../services/onlineMusic/omni';
+import { getAggregateProviders, searchAggregatePage, uniqueSearchSongs, type AggregateSourceState } from '../services/onlineMusic/aggregateSearch';
 import { isLocalPlaybackSong, isNavidromePlaybackSong } from '../utils/appPlaybackGuards';
 
 const LAST_HOME_VIEW_TAB_KEY = 'last_home_view_tab';
 const DEFAULT_SEARCH_LIMIT = 30;
-export type SearchSource = OnlineProviderId | 'local' | 'navidrome';
+export type SearchSource = OnlineProviderId | 'local' | 'navidrome' | 'all-online';
 export type SearchReturnView = 'home' | 'player';
 
 type SearchExecutorDeps = {
@@ -28,6 +29,7 @@ type SearchExecutionResult = {
 };
 
 type SearchCacheEntry = {
+    aggregateSources?: Record<string, AggregateSourceState>;
     results: UnifiedSong[];
     offset: number;
     hasMore: boolean;
@@ -50,6 +52,9 @@ interface SearchNavigationState {
     hasMore: boolean;
     scrollTop: number;
     searchCache: Record<string, SearchCacheEntry>;
+    aggregateSources: Record<string, AggregateSourceState>;
+    loadAggregateSource: (providerId: OnlineProviderId) => Promise<void>;
+    reconcileAggregateProviders: () => void;
     setHomeViewTab: (tab: HomeViewTab) => void;
     setSearchQuery: (query: string) => void;
     setSearchScrollTop: (scrollTop: number) => void;
@@ -80,6 +85,7 @@ export const resolveCommandPaletteSearchSource = (
 ): SearchSource => {
     if (currentSong && isLocalPlaybackSong(currentSong)) return 'local';
     if (currentSong && isNavidromePlaybackSong(currentSong)) return 'navidrome';
+    if (searchSourceTab === 'all-online') return 'all-online';
     if (currentSong || searchSourceTab === 'netease') return activeOnlineProviderId;
     return searchSourceTab;
 };
@@ -192,13 +198,14 @@ export const useSearchNavigationStore = create<SearchNavigationState>((set, get)
     hasMore: false,
     scrollTop: 0,
     searchCache: {},
+    aggregateSources: {},
     setHomeViewTab: (tab) => {
         if (typeof window !== 'undefined') {
             localStorage.setItem(LAST_HOME_VIEW_TAB_KEY, tab);
         }
         set({ homeViewTab: tab });
     },
-    setSearchQuery: (query) => set({ searchQuery: query }),
+    setSearchQuery: (query) => set(state => query === state.searchQuery ? state : ({ searchQuery: query, requestId: state.requestId + 1, aggregateSources: {}, searchResults: null, isSearching: false, isLoadingMore: false, hasMore: false })),
     setSearchScrollTop: (scrollTop) => set(state => {
         const cacheKey = getSearchCacheKey(state.searchQuery, state.searchSourceTab);
         const cached = state.searchCache[cacheKey];
@@ -213,8 +220,11 @@ export const useSearchNavigationStore = create<SearchNavigationState>((set, get)
         };
     }),
     restoreSearch: ({ query, sourceTab, returnView = 'home' }) => set(state => {
-        const cached = state.searchCache[getSearchCacheKey(query, sourceTab)];
+        let cached: SearchCacheEntry | undefined = state.searchCache[getSearchCacheKey(query, sourceTab)];
+        if (sourceTab === 'all-online' && Object.keys(cached?.aggregateSources ?? {}).sort().join('|') !== getAggregateProviders().sort().join('|')) cached = undefined;
         return {
+            requestId: state.requestId + 1,
+            aggregateSources: Object.fromEntries(Object.entries(cached?.aggregateSources ?? {}).map(([id, source]) => [id, { ...source, loading: false }])),
             searchQuery: query,
             searchSourceTab: sourceTab,
             searchReturnView: returnView,
@@ -228,8 +238,10 @@ export const useSearchNavigationStore = create<SearchNavigationState>((set, get)
             isSearchOpen: true,
         };
     }),
-    hideSearchOverlay: () => set({ isSearchOpen: false, searchReturnView: 'home' }),
+    hideSearchOverlay: () => set(state => ({ isSearchOpen: false, searchReturnView: 'home', requestId: state.requestId + 1, isSearching: false, isLoadingMore: false, aggregateSources: Object.fromEntries(Object.entries(state.aggregateSources).map(([id, source]) => [id, { ...source, loading: false }])) })),
     resetRuntime: (onlineProviderId) => set(state => ({
+        aggregateSources: {},
+        searchCache: {},
         searchQuery: '',
         searchSourceTab: onlineProviderId ?? state.searchSourceTab,
         searchResults: null,
@@ -248,9 +260,9 @@ export const useSearchNavigationStore = create<SearchNavigationState>((set, get)
     // away), so this keeps it in step. Local and Navidrome are left alone, and the results stay: clearing
     // them is the switch's job.
     followOnlineProvider: (providerId) => set(state => (
-        state.searchSourceTab === 'local' || state.searchSourceTab === 'navidrome' || state.searchSourceTab === providerId
+        state.searchSourceTab === 'all-online' || state.searchSourceTab === 'local' || state.searchSourceTab === 'navidrome' || state.searchSourceTab === providerId
             ? state
-            : { searchSourceTab: providerId }
+            : { searchSourceTab: providerId, requestId: state.requestId + 1, isSearching: false, isLoadingMore: false }
     )),
     submitSearch: async ({ query, sourceTab, deps, returnView = 'home' }) => {
         const trimmedQuery = (query ?? get().searchQuery).trim();
@@ -274,6 +286,13 @@ export const useSearchNavigationStore = create<SearchNavigationState>((set, get)
             scrollTop: 0,
         });
 
+        if (sourceTab === 'all-online') {
+            const providers = getAggregateProviders();
+            set({ aggregateSources: Object.fromEntries(providers.map(providerId => [providerId, { providerId, items: [], nextOffset: 0, hasMore: true, loading: false, error: null }])), searchResults: [], isSearching: false });
+            await Promise.all(providers.map(providerId => get().loadAggregateSource(providerId)));
+            return true;
+        }
+        set({ aggregateSources: {} });
         try {
             const result = await executeSearch(trimmedQuery, sourceTab, 0, get().limit, deps);
             if (get().requestId !== requestId) {
@@ -310,7 +329,47 @@ export const useSearchNavigationStore = create<SearchNavigationState>((set, get)
             return true;
         }
     },
+    reconcileAggregateProviders: () => {
+        const state = get();
+        if (state.searchSourceTab !== 'all-online') return;
+        if (Object.keys(state.aggregateSources).sort().join('|') !== getAggregateProviders().sort().join('|')) {
+            set({ requestId: state.requestId + 1, aggregateSources: {}, searchResults: null, hasMore: false, isSearching: false, isLoadingMore: false });
+        }
+    },
+    // A source owns its cursor. Session identity cancels application, not transport.
+    loadAggregateSource: async (providerId) => {
+        get().reconcileAggregateProviders();
+        const state = get();
+        const source = state.aggregateSources[providerId];
+        if (state.searchSourceTab !== 'all-online' || !state.isSearchOpen || !state.searchQuery.trim() || !source || source.loading || (!source.hasMore && !source.error)) return;
+        const { requestId, searchQuery, limit } = state;
+        const publish = (next: AggregateSourceState) => set(current => {
+            const aggregateSources = { ...current.aggregateSources, [providerId]: next };
+            const sources = Object.values(aggregateSources);
+            const results = uniqueSearchSongs(sources.flatMap(s => s.items));
+            const hasMore = sources.some(s => s.hasMore);
+            return { aggregateSources, searchResults: results, hasMore, isSearching: sources.some(s => s.loading),
+                searchCache: { ...current.searchCache, [getSearchCacheKey(searchQuery, 'all-online')]: { results, hasMore, offset: 0, scrollTop: current.scrollTop, aggregateSources } } };
+        });
+        publish({ ...source, loading: true, error: null });
+        const isCurrent = () => {
+            get().reconcileAggregateProviders();
+            return get().requestId === requestId && get().isSearchOpen && get().searchSourceTab === 'all-online' && get().searchQuery === searchQuery;
+        };
+        try {
+            const page = await searchAggregatePage(providerId, searchQuery, source.nextOffset, limit);
+            if (!isCurrent()) return;
+            publish({ ...source, items: uniqueSearchSongs([...source.items, ...page.items]), nextOffset: page.nextOffset, hasMore: page.hasMore, loading: false, error: null });
+        } catch (error) {
+            if (!isCurrent()) return;
+            publish({ ...source, loading: false, error: error instanceof Error ? error.message : 'search_failed' });
+        }
+    },
     loadMoreSearchResults: async ({ deps }) => {
+        if (get().searchSourceTab === 'all-online') {
+            await Promise.all(Object.keys(get().aggregateSources).map(id => get().loadAggregateSource(id as OnlineProviderId)));
+            return;
+        }
         const {
             searchQuery,
             searchSourceTab,

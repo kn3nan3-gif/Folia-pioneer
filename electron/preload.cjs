@@ -289,6 +289,14 @@ contextBridge.exposeInMainWorld('electron', {
         return () => ipcRenderer.removeListener('stage-player-queue-request', listener);
     },
     debugGetRenderedFonts: (selector) => ipcRenderer.invoke('debug-get-rendered-fonts', selector),
+    lxSources: {
+        list: () => ipcRenderer.invoke('folia-lx:list'),
+        importLocal: () => ipcRenderer.invoke('folia-lx:import'),
+        enable: (digest, domains) => ipcRenderer.invoke('folia-lx:enable', digest, domains),
+        disable: () => ipcRenderer.invoke('folia-lx:disable'),
+        remove: (digest) => ipcRenderer.invoke('folia-lx:remove', digest),
+        resolve: (song, quality) => ipcRenderer.invoke('folia-lx:resolve', song, quality),
+    },
     mods: {
         listMods: () => ipcRenderer.invoke('folia-mods:list'),
         setModEnabled: (modId, enabled) => ipcRenderer.invoke('folia-mods:set-enabled', modId, enabled),

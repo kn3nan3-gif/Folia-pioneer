@@ -15,6 +15,7 @@ import PlayerPanel from './components/app/PlayerPanel';
 import ThemeQuickEditorHost from './components/panelTab/ThemeQuickEditor';
 import AppDialogs from './components/app/dialogs/AppDialogs';
 import { useSettingsDialogModel } from './components/app/dialogs/useSettingsDialogModel';
+import LxSourceHost from './components/app/lxSources/LxSourceHost';
 import AppOverlays from './components/app/overlays/AppOverlays';
 import AutomixModelReminder from './components/modal/AutomixModelReminder';
 import PonderHost from './components/ponder/PonderHost';
@@ -2233,7 +2234,9 @@ export default function App() {
         localLibraryCatalog,
         navigateToCollection,
     });
+    const appPlaylistHost = useMemo(() => ({ theme, localSongs, onPlay: playSong }), [theme, localSongs, playSong]);
     const appOverlaysModel = useAppOverlaysModel({
+        appPlaylists: appPlaylistHost,
         theme,
         closeSearchView,
         handleSearchOverlaySubmit,
@@ -2717,6 +2720,7 @@ export default function App() {
                 playerCapConnectionStatus={playerCapConnectionStatus}
             />
 
+            <LxSourceHost theme={theme} />
             <AppOverlays model={appOverlaysModel} />
 
             {/* Folium `app.overlay` stage layers: above the whole app, inert unless a layer opts in. */}

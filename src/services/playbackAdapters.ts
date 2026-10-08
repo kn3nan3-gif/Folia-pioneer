@@ -254,7 +254,7 @@ export function buildUnifiedNavidromeSong(
         isPureMusic: navidromeSong.lyricsSource === 'online' ? navidromeSong.matchedIsPureMusic : false,
         isNavidrome: true,
         navidromeData: navidromeSong,
-        sourceRef: { kind: 'navidrome', mediaId: navidromeSong.navidromeData.id },
+        sourceRef: { kind: 'navidrome', mediaId: navidromeSong.navidromeData.id, ...(navidromeSong.sourceRef?.kind === 'navidrome' && navidromeSong.sourceRef.serverUrl ? { serverUrl: navidromeSong.sourceRef.serverUrl } : {}) },
         matchedLyricsSource: options?.matchedLyricsSource,
         matchedLyricsProviderPlatform: options?.matchedLyricsProviderPlatform
     } as SongResult;

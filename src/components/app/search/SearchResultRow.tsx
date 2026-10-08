@@ -7,6 +7,8 @@ import { formatSongName } from '../../../utils/songNameFormatter';
 import { getSizedCoverUrl } from '../../../utils/coverUrl';
 import { getSongUnavailableLabel, isSongUnavailable } from '../../../services/onlineMusic/songAvailability';
 import { canResolveSongCatalogRef } from '../../../services/onlineMusic/catalogRefs';
+import { omni } from '../../../services/onlineMusic/omni';
+import { getPlaybackSourceRef } from '../../../utils/appPlaybackGuards';
 import { getProviderSongMetadata } from '../../../services/onlineMusic/songMetadata';
 
 // src/components/app/search/SearchResultRow.tsx
@@ -40,6 +42,7 @@ const SearchResultRow: React.FC<SearchResultRowProps> = ({
     const { t } = useTranslation();
     const isUnavailable = isSongUnavailable(track);
     const unavailableLabel = getSongUnavailableLabel(track, t('status.songUnavailableTag'));
+    const source = getPlaybackSourceRef(track);
     const metadata = getProviderSongMetadata(track);
     const coverUrl = getSizedCoverUrl(metadata.coverUrl, 120);
     const artists = metadata.artists;
@@ -91,6 +94,7 @@ const SearchResultRow: React.FC<SearchResultRowProps> = ({
                         >
                             {formatSongName(track)}
                         </button>
+                        {source.kind === 'online' && <span className="shrink-0 rounded-full border border-current/10 px-2 py-0.5 text-[10px] opacity-60">{omni.getProviderLabel(source.providerId)}</span>}
                         {isUnavailable && (
                             <span className="shrink-0 rounded-full border border-current/10 px-2 py-0.5 text-[10px] opacity-60">
                     {unavailableLabel}

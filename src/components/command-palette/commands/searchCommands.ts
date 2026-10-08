@@ -45,7 +45,15 @@ const runSearch = async (
         return false;
     }
 
-    const didSearch = await context.search.submitSearch({
+    // Establish history before IO: restoring history invalidates outstanding search sessions.
+    // Completion must never restore it again or reopen a query the listener has left.
+    context.search.navigateToSearch({
+        query: trimmedQuery,
+        sourceTab,
+        replace: typeof window !== 'undefined' && Boolean(window.history.state?.search),
+        returnView: 'player',
+    });
+    return context.search.submitSearch({
         query: trimmedQuery,
         sourceTab,
         deps: {
@@ -55,17 +63,6 @@ const runSearch = async (
         },
         returnView: 'player',
     });
-
-    if (didSearch) {
-        context.search.navigateToSearch({
-            query: trimmedQuery,
-            sourceTab,
-            replace: typeof window !== 'undefined' && Boolean(window.history.state?.search),
-            returnView: 'player',
-        });
-    }
-
-    return didSearch;
 };
 
 const createSearchCommand = (

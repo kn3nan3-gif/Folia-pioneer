@@ -1,3 +1,4 @@
+import { resolveLxAudio } from '../lxSources/bridge';
 import type { SongResult, UnifiedSong } from '../../types';
 import type {
     AudioQualityPreference,
@@ -471,6 +472,8 @@ export const omni = {
     },
 
     async getAudioSource(song: SongResult, quality: AudioQualityPreference): Promise<OmniAudioSource | null> {
+        const custom = await resolveLxAudio(song, quality);
+        if (custom) return custom;
         const source = await (providerForSong(song).playback?.getAudioSource(song, quality) ?? null);
         // Written here rather than at either caller because this is the only moment a provider ever
         // states a track's ReplayGain, and both callers - the prefetch pass and playback itself -

@@ -782,7 +782,15 @@ export function usePlaybackQueueController({
         }
         const sourceTab = requestedSource ?? searchSourceTab;
 
-        const didSearch = await searchDeps.submitSearch({
+        // Establish history before requests expose interactive partial results. Restoring the
+        // search on completion would invalidate pagination/retries already started by the user.
+        navigateToSearch({
+            query: trimmedQuery,
+            sourceTab,
+            replace: Boolean(window.history.state?.search),
+            returnView: searchReturnView,
+        });
+        await searchDeps.submitSearch({
             query: trimmedQuery,
             sourceTab,
             deps: {
@@ -792,15 +800,6 @@ export function usePlaybackQueueController({
             },
             returnView: searchReturnView,
         });
-
-        if (didSearch) {
-            navigateToSearch({
-                query: trimmedQuery,
-                sourceTab,
-                replace: Boolean(window.history.state?.search),
-                returnView: searchReturnView,
-            });
-        }
     }, [
         localLibraryCatalog,
         localSongs,

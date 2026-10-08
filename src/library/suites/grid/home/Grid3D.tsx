@@ -269,7 +269,9 @@ export const Grid3D: React.FC<Grid3DProps> = (props) => {
         if (!query) return;
 
         const searchSource = isOnlineTab ? activeProviderId : resolveSearchSource(homeViewTab);
-        const didSearch = await submitSearch({
+        // Establish history before starting IO; late completion must not restore an old session.
+        onSearchCommitted(query, searchSource);
+        await submitSearch({
             query,
             sourceTab: searchSource,
             deps: {
@@ -278,10 +280,6 @@ export const Grid3D: React.FC<Grid3DProps> = (props) => {
                 t: (key, fallback) => t(key, fallback ?? ''),
             },
         });
-
-        if (didSearch) {
-            onSearchCommitted(query, searchSource);
-        }
     };
 
     const isSearchingActive = isSearching;

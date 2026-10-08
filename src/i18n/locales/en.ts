@@ -1,6 +1,39 @@
 
 
 export default {
+  "lxSources": {
+    "title": "LX custom sources", "close": "Close", "import": "Import local .js",
+    "hint": "Desktop only: wy → Netease musicUrl; not search. Scripts start disabled after restart. No cookies, login or crypto utilities. Enabled errors do not silently fall back. Only import scripts you trust and have permission to use.",
+    "domains": "Authorized domains (comma-separated)", "authorize": "I authorize this SHA-256 script to access exactly these public HTTP(S) domains, including audio URLs.",
+    "enable": "Authorize & enable", "disable": "Disable", "enabled": "Enabled", "disabled": "Disabled", "remove": "Remove", "removeConfirm": "Remove this imported script and its domain grant?"
+  },
+  "appPlaylists": {
+    "title": "Application lists",
+    "hint": "Stored on this machine only. Separate from platform playlists; no sync or legacy-list migration. JSON contains references only; another machine must reassociate its local library and Navidrome server. Stage is unsupported.",
+    "name": "List name",
+    "create": "Create list",
+    "rename": "Rename list",
+    "delete": "Delete list",
+    "current": "Add current song",
+    "queue": "Save mixed queue",
+    "search": "Search results",
+    "add": "Add to list",
+    "remove": "Remove song",
+    "up": "Move up",
+    "down": "Move down",
+    "play": "Play whole list",
+    "export": "Export JSON",
+    "import": "Import as new list",
+    "json": "Reference JSON",
+    "close": "Close lists",
+    "select": "Select list",
+    "unknown": "Availability unknown: {{count}}. References retained; retry after checking network or permissions.",
+    "missing": "Unavailable references retained: {{count}}. Reassociate local files or the Navidrome server, then retry.",
+    "error": "Action failed: {{message}}",
+    "empty": "Create a list to start.",
+    "source": "Source",
+    "confirm": "Delete this application list?"
+},
   "libraryTui": {
     "back": "Back",
     "sourceOnline": "online · {{provider}}",
@@ -445,6 +478,7 @@ export default {
       }
     },
     "commands": {
+      "lx-sources": { "title": "LX custom sources", "description": "Manage local scripts and explicit domain grants" },
       "settings-ponder-hints": { "title": "Ponder tutorial hints", "description": "Choose when the hold-G tutorial hint appears" },
       "ponder-hints-always": { "title": "Ponder hints: always show", "description": "Show the hold-G hint on every teachable control" },
       "ponder-hints-unseen": { "title": "Ponder hints: only where I have not looked", "description": "Stop hinting a control once its tutorial has been watched" },
@@ -1013,6 +1047,12 @@ export default {
   "search": {
     "placeholder": "Search songs...",
     "sourceNetease": "NetEase",
+    "sourceAllOnline": "All online sources",
+    "sourceLoading": "Searching",
+    "sourceComplete": "Complete",
+    "sourceCount": "{{count}} tracks",
+    "sourceTimeout": "Timed out (late responses ignored)",
+    "sourcesChanged": "No searchable sources, or sources changed. Search again.",
     "sourceLocal": "Local",
     "sourceNavidrome": "Navidrome",
     "playTrack": "Play track",

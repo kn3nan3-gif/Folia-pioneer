@@ -1,11 +1,13 @@
 import { ListMusic } from 'lucide-react';
 import type { CommandPaletteCommand } from '../types';
-import { createPanelCommand } from '../commandFactories';
+import { createPanelCommand, defineCommand } from '../commandFactories';
+import { getLxBridge } from '../../../services/lxSources/bridge';
 
 // src/components/command-palette/commands/panelCommands.ts
 // Commands in the `panel` group: opening the unified side panel on a given tab.
 
 export const panelCommands: CommandPaletteCommand[] = [
+    defineCommand({ id: 'lx-sources', group: 'panel', title: 'LX custom sources', description: 'Manage local scripts and explicit domain grants', keywords: ['lx sources', 'custom source', '自定义音源', '网络授权'], platform: ['electron'], isAvailable: () => Boolean(getLxBridge()), execute: () => { window.dispatchEvent(new Event('folia-lx-open')); return true; } }),
     createPanelCommand('cover', 'Panel: cover', 'Open the cover panel tab', ['cover panel', '封面'], undefined, { executeShortcut: 'c' }),
     createPanelCommand('controls', 'Panel: controls', 'Open the controls panel tab', ['controls panel', '控制']),
     createPanelCommand('queue', 'Panel: queue', 'Open the queue panel tab', ['queue panel', '队列'], ListMusic),

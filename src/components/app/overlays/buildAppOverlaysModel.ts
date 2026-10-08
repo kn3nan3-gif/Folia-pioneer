@@ -1,4 +1,5 @@
 import type React from 'react';
+import type { AppPlaylistHostProps } from '../playlists/AppPlaylistHost';
 import type { MotionValue } from 'framer-motion';
 import type FloatingPlayerControls from '../../FloatingPlayerControls';
 import type SearchWorkspace from '../search/SearchWorkspace';
@@ -25,6 +26,7 @@ type MemoryMonitorProps = React.ComponentProps<typeof MemoryMonitorWindow>;
 type NowPlayingToastProps = React.ComponentProps<typeof NowPlayingToast>;
 
 export type AppOverlaysModel = {
+    appPlaylists?: AppPlaylistHostProps;
     searchOverlay?: SearchOverlayProps | null;
     debugOverlay?: DebugOverlayProps | null;
     memoryMonitor?: MemoryMonitorProps | null;
@@ -79,6 +81,7 @@ type AppOverlaysAmbient = {
 
 // What only the caller can supply: controller callbacks and values App.tsx computes.
 export type AppOverlaysDeps = {
+    appPlaylists?: AppPlaylistHostProps;
     theme: any;
     closeSearchView: () => void;
     handleSearchOverlaySubmit: SearchOverlayProps['onSubmitSearch'];
@@ -123,6 +126,7 @@ type BuildAppOverlaysModelParams = AppOverlaysAmbient & AppOverlaysDeps;
 
 // Builds the full overlay model, including detail overlays and floating playback controls.
 export const buildAppOverlaysModel = ({
+    appPlaylists,
     currentView,
     isSearchOpen,
     theme,
@@ -212,6 +216,7 @@ export const buildAppOverlaysModel = ({
                     : stageTrackPillOpenSongCardLabel,
         }
         : null,
+    appPlaylists,
     searchOverlay: currentView === 'home'
         ? {
             theme,

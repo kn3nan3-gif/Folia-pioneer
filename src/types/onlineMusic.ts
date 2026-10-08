@@ -25,7 +25,7 @@ export type PlaybackSourceRef =
         providerData?: Record<string, JsonValue>;
     }
     | { kind: 'local'; mediaId: string }
-    | { kind: 'navidrome'; mediaId: string }
+    | { kind: 'navidrome'; mediaId: string; serverUrl?: string }
     | { kind: 'stage'; mediaId: string };
 
 export interface ProviderCapabilities {

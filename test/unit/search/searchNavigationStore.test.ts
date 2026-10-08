@@ -54,6 +54,12 @@ describe('useSearchNavigationStore', () => {
         });
     });
 
+    it('preserves the aggregate selection when following the active provider', () => {
+        useSearchNavigationStore.setState({ searchSourceTab: 'all-online' });
+        useSearchNavigationStore.getState().followOnlineProvider('kugou');
+        expect(useSearchNavigationStore.getState().searchSourceTab).toBe('all-online');
+    });
+
     it('uses the active online provider for command palette searches', () => {
         expect(resolveCommandPaletteSearchSource({
             id: 1,

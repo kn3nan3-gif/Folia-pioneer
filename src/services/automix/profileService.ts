@@ -247,7 +247,8 @@ const readBytes = async (
         }
 
         const blob = await (await fetch(audioUrl)).blob();
-        if (!isLocal) {
+        if (!isLocal && !audioUrl.startsWith('folia-lx-media:')) {
+            // LX capabilities are revocable and must not escape into the shared provider cache.
             // The same write the audio bridge would have done after playback. Fetching once and
             // feeding both is the whole reason a full read is allowed here at all.
             await saveAudioBlob(getSongResourceCacheKey('audio', song), blob);
