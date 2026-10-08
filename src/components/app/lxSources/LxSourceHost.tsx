@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Radio, X } from 'lucide-react';
+import LxReviewReport from './LxReviewReport';
 import type { Theme } from '../../../types';
 import { getLxBridge, type LxSourceRecord } from '../../../services/lxSources/bridge';
 // Native import and grants are main-owned; dangerous enable/remove actions have no shortcut.
@@ -11,11 +12,23 @@ export default function LxSourceHost({ theme }: { theme: Theme }) {
     const [domains, setDomains] = useState<Record<string, string>>({}), [approved, setApproved] = useState<Record<string, boolean>>({});
     const [busy, setBusy] = useState(false), [error, setError] = useState('');
     const bridge = getLxBridge();
+    const updates = useRef(0), operation = useRef(0);
+    useEffect(() => {
+        const unsubscribe = bridge?.onStateChanged(next => {
+            updates.current++; setRecords(next); setApproved({});
+        });
+        return () => { unsubscribe?.(); updates.current++; operation.current++; };
+    }, [bridge]);
     useEffect(() => { const show = () => setOpen(true); window.addEventListener(LX_SOURCES_OPEN, show); return () => window.removeEventListener(LX_SOURCES_OPEN, show); }, []);
     const run = async (action: () => Promise<LxSourceRecord[]>) => {
+        const update = updates.current, current = ++operation.current;
         setBusy(true); setError('');
-        try { setRecords(await action()); } catch (error) { setError(String(error instanceof Error ? error.message : error)); }
-        finally { setBusy(false); }
+        try {
+            const next = await action();
+            // A newer host event wins over an older in-flight IPC snapshot.
+            if (current === operation.current && update === updates.current) { setRecords(next); setApproved({}); }
+        } catch (error) { if (current === operation.current) setError(String(error instanceof Error ? error.message : error).slice(0, 256)); }
+        finally { if (current === operation.current) setBusy(false); }
     };
     useEffect(() => { if (open && bridge) void run(() => bridge.list()); }, [open, bridge]);
     if (!bridge) return null;
@@ -30,10 +43,12 @@ export default function LxSourceHost({ theme }: { theme: Theme }) {
                 <h3>{record.name} · {record.enabled ? t('lxSources.enabled') : t('lxSources.disabled')}</h3>
                 <code className="block break-all text-xs">SHA-256: {record.digest}</code>
                 <p>{record.qualities.join(' / ')}</p>
+                {record.failure && <p role="alert">{t('lxSources.runtimeFailure')}: {record.failure}</p>}
+                {record.review && <LxReviewReport review={record.review} />}
                 <label className="my-3 block">{t('lxSources.domains')}<input aria-label={`${record.name} ${t('lxSources.domains')}`} className="ml-3 border border-current/20 bg-transparent p-2" value={domains[record.digest] ?? record.domains.join(', ')} onChange={e => { setDomains({ ...domains, [record.digest]: e.target.value }); setApproved({ ...approved, [record.digest]: false }); }} /></label>
                 <label className="block"><input type="checkbox" checked={approved[record.digest] ?? false} onChange={e => setApproved({ ...approved, [record.digest]: e.target.checked })} /> {t('lxSources.authorize')}</label>
                 <div className="mt-3 flex gap-6">
-                    <button disabled={busy || (!record.enabled && !approved[record.digest])} onClick={() => void run(() => record.enabled ? bridge.disable() : bridge.enable(record.digest, (domains[record.digest] ?? record.domains.join(',')).split(',').map(s => s.trim()).filter(Boolean)))}>{record.enabled ? t('lxSources.disable') : t('lxSources.enable')}</button>
+                    <button disabled={busy || (!record.enabled && (!approved[record.digest] || !record.review || record.review.digest !== record.digest))} onClick={() => void run(() => record.enabled ? bridge.disable() : bridge.enable(record.digest, (domains[record.digest] ?? record.domains.join(',')).split(',').map(s => s.trim()).filter(Boolean), { digest: record.digest, reviewVersion: record.review.version, riskVersion: record.review.riskVersion, acknowledged: true }))}>{record.enabled ? t('lxSources.disable') : t('lxSources.enable')}</button>
                     <button disabled={busy} onClick={() => { if (window.confirm(t('lxSources.removeConfirm'))) void run(() => bridge.remove(record.digest)); }}>{t('lxSources.remove')}</button>
                 </div>
             </article>)}

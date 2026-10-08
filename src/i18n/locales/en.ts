@@ -2,9 +2,16 @@
 
 export default {
   "lxSources": {
+    "runtimeFailure": "Runtime stopped after a failure",
+    "review": "Static review (lexical, not AST)",
+    "risk": "This is an approved script extension, NOT an untrusted-code sandbox. WebRTC may bypass the HTTP broker and CSP; domain grants do not prevent that bypass.",
+    "lexicalLimits": "Static hints cannot prove safety; manually review obfuscated code, dynamic execution and remote code.",
+    "findings": "Review hints",
+    "detectedDomains": "Detected URL domains (not a complete network inventory)",
+    "detectedApis": "Detected platform/API tokens",
     "title": "LX custom sources", "close": "Close", "import": "Import local .js",
     "hint": "Desktop only: wy → Netease musicUrl; not search. Scripts start disabled after restart. No cookies, login or crypto utilities. Enabled errors do not silently fall back. Only import scripts you trust and have permission to use.",
-    "domains": "Authorized domains (comma-separated)", "authorize": "I authorize this SHA-256 script to access exactly these public HTTP(S) domains, including audio URLs.",
+    "domains": "Authorized domains (comma-separated)", "authorize": "I have reviewed this report and approve execution of this exact SHA-256 script, accept the browser/WebRTC risk and grant these public HTTP(S) domains.",
     "enable": "Authorize & enable", "disable": "Disable", "enabled": "Enabled", "disabled": "Disabled", "remove": "Remove", "removeConfirm": "Remove this imported script and its domain grant?"
   },
   "appPlaylists": {

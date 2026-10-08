@@ -1,0 +1,46 @@
+const electron = require('electron');
+const assert = require('node:assert/strict');
+const fs = require('node:fs/promises');
+const path = require('node:path');
+const { SourceManager } = require('../electron/lx/manager.cjs');
+const { scriptDigest } = require('../electron/lx/contract.cjs');
+// Owned manager lifecycle through real sandboxed Electron and disk persistence.
+const init = "lx.on('request',()=>new Promise(()=>{}));lx.send('inited',{sources:{wy:{actions:['musicUrl'],qualitys:['128k']}}});";
+electron.app.on('window-all-closed',()=>{});
+const watchdog=setTimeout(()=>electron.app.exit(124),30000);
+let manager,directory;
+const approve = () => { const r=manager.list()[0]; return {digest:r.digest,reviewVersion:r.review.version,riskVersion:r.review.riskVersion,acknowledged:true}; };
+electron.app.whenReady().then(async()=>{
+ directory=await fs.mkdtemp(path.join(process.env.TMPDIR,'lx-browser-lifecycle-'));
+ manager=new SourceManager(electron,directory);
+ const notifications=[];manager.onStateChanged=records=>notifications.push(records);
+ manager.records=[{name:'owned',script:init,digest:scriptDigest(init),domains:[]}];
+ await manager.enable(manager.records[0].digest,[],approve());
+ const runtime=manager.runtime, wc=runtime.window.webContents;
+ const prefs=wc.getLastWebPreferences();
+ assert.equal(prefs.sandbox,true);assert.equal(prefs.contextIsolation,true);assert.equal(prefs.nodeIntegration,false);assert.equal(runtime.session.isPersistent(),false);
+ assert.equal(await wc.executeJavaScript("typeof process + '/' + typeof require"),'undefined/undefined');
+ const pending=assert.rejects(manager.resolve({providerId:'netease',mediaId:'123'},'standard'),/destroyed/);
+ await new Promise(resolve=>setTimeout(resolve,10));runtime.window.destroy();await pending;
+ assert.equal(manager.active,null);assert.equal(manager.list()[0].enabled,false);assert.equal(runtime.pending.size,0);assert.equal(runtime.network.size,0);
+ assert.equal(notifications.at(-1)?.[0].enabled,false);assert.match(notifications.at(-1)?.[0].failure || '',/destroyed/);
+ await assert.rejects(manager.resolve({providerId:'netease',mediaId:'123'},'standard'),/destroyed/);
+ await manager.enable(manager.records[0].digest,[],approve());
+ // Signal injection covers handler cleanup, NOT proof of a native renderer crash.
+ manager.runtime.window.webContents.emit('render-process-gone',{}, {reason:'owned injected signal'});
+ assert.equal(manager.active,null);assert.equal(manager.runtime.closed,true);
+ assert.match(notifications.at(-1)[0].failure,/renderer gone/);
+ await manager.enable(manager.records[0].digest,[],approve());
+ const previous=manager.runtime;await manager.enable(manager.records[0].digest,[],approve());
+ previous.onClosed(new Error('stale closed'));assert.equal(manager.list()[0].enabled,true);assert.equal(manager.list()[0].failure,undefined);
+ manager.disable();assert.equal(notifications.at(-1)[0].failure,undefined);assert.equal(notifications.at(-1)[0].enabled,false);
+ const script="setTimeout(()=>{throw Error('owned late fatal')},300);"+init;
+ manager.records=[{name:'late',script,digest:scriptDigest(script),domains:[]}];
+ await manager.enable(manager.records[0].digest,[],approve());
+ await new Promise(resolve=>setTimeout(resolve,350));assert.equal(manager.list()[0].enabled,false);
+ assert.match(notifications.at(-1)[0].failure,/native error\/unhandledrejection/);
+ await manager.enable(manager.records[0].digest,[],approve());
+ manager.runtime.fail(new Error('x'.repeat(1000)));assert.equal(notifications.at(-1)[0].failure.length,256);
+ console.log(JSON.stringify({electron:process.versions.electron,sandbox:true,nonPersistent:true,destroyedCleanup:true,crashSignalInjected:true,lateFatalInactive:true,retry:true}));
+ manager.disable();await fs.rm(directory,{recursive:true,force:true});clearTimeout(watchdog);electron.app.exit(0);
+}).catch(async error=>{console.error(error.stack);manager?.disable();if(directory)await fs.rm(directory,{recursive:true,force:true});clearTimeout(watchdog);electron.app.exit(1)});

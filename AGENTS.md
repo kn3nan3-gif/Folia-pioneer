@@ -16,18 +16,19 @@
 - Biu 的 PolyForm Noncommercial 代码不直接混入 AGPL 分发物；优先独立重写，可以换更优技术路线。尽量保留检索、分P音频、账号、收藏夹、合集、稍后再看、历史及既定下载能力；延期不等于舍弃，永久删减须用户确认。视频下载仍单独决定。
 - 保留 Folia 版权/AGPL 与适用第三方声明，LX 本地许可证为 Apache-2.0；复用前核对许可、归属和通知义务。
 
-### 当前路线：正在转向，尚未实际切换
-- 用户提出考虑回到原 LX 的隐藏 Chromium 窗口 + 专用 preload/LX API 路径，并补脚本审查机制；QuickJS 保留为实验分支。助手建议采用兼容性主线，但**实际代码仍是 QuickJS，尚未创建 QuickJS 分支、切分支或回滚**。
-- 下一会话先确认并落实该路线及“审查后明确授权执行”的信任合同，不继续默认钻研 WASI FFI。最新 QuickJS 候选任务已停止。
+### 当前路线：浏览器兼容主线已获确认，第一切片实施中
+- 用户已明确确认隐藏 Chromium 窗口 + 专用 preload/LX API 路径及“审查后明确授权执行”的信任合同，QuickJS 保留在实验分支。不继续钻研 WASI FFI。
+- 浏览器运行时、摘要绑定审批及自动停用 UI 同步第一切片已通过独立规格 PASS、质量 APPROVED；gallery mount 修复另获独立规格 PASS、质量 APPROVED。用户授权保存开发检查点，不是发布或完整验收。Node24.21.0/Electron43.7.5、Xvfb sandbox=true：独立实跑 manager/approval 5项、Omni 2项及五套 Electron 回归通过；含自有1秒 WAV 播放结束。gallery 最终独立对照：2611文件 SHA 一致，当前 fixture 三个 spec 13项 PASS；旧 fixture 12项 PASS、延迟注册1项 FAIL，验证修复有效。历史注册超时和标题 opacity 失败未归因，不能称扩展回归稳定性全绿；ERR_NETWORK_CHANGED 归因缺少可复核 trace。详细合同、证据和边界见 `docs/plans/browser-script-runtime.md` §9。词法审查不是 AST，WebRTC 旁路及浏览器不继承 QuickJS CPU/堆/timer 预算已披露；原生崩溃、Windows、第三方音源复测与长时播放未验收。
 - 浏览器兼容方案应包含导入不执行、脚本 SHA-256 绑定审批、AST 静态审查、平台/API/域名/危险行为报告、混淆与远端执行默认人工审查、更新内容变化重新审批、运行监测及立即停用。
 - 静态规则/AI 审查不能证明任意脚本安全，不能替代网络隔离。若没有可靠 WebRTC 封锁，必须披露浏览器联网旁路风险：该方案是经过审查授权的脚本扩展，不是任意不可信代码沙箱。LX 原窗口未在本项目实测旁路，不得把 Folia 的复现冒作 LX 漏洞确认。
 - 尽可能保留独立非持久 session、专用 preload、页面 Node 关闭、权限/导航/弹窗限制、网络 broker、私网/重定向检查、预算和媒体 token。`sandbox=true` 的兼容性应实际验证，不自动照抄 LX 的 `sandbox:false`。
 
 ### Git 现场与成果保存
 - 项目 GitHub 仓库：`https://github.com/kn3nan3-gif/Folia-pioneer.git`。用户已明确授权同步当前成果；同步前 `git ls-remote` 成功且无 refs。此次同步是带已知阻塞的开发检查点，不是发布批准；不携带第三方音源、scratch产物或凭据。`origin` 指向该仓库，保留 `folia-local` 参考远端。推送结果及精确提交以实际远端回读为准。
-- 用户授权同步后，当前成果保存为 `main` 开发检查点 `99b8f7fc`（基于 `e4b1c5c13b8f480d5b5c8b9a887a52c1468f21a4`）。首次推送因鉴权失败；用户重新登录后，`git push -u origin main` 已成功建立远端 main 和跟踪关系。同步包含当前代码、测试、计划及本交接文档，不是发布或验收批准。后续同步必须回读远端SHA与本地HEAD核对。没有创建QuickJS实验分支。
-- 已授权的正式直接依赖仍是 `@tootallnate/quickjs-emscripten: 0.23.0`。WASI 及其他候选仅在 scratch，不在正式依赖。
-- 迁移前需完整快照/备份，然后再确定本地检查点和分支布局；本节不表示已经建立分支。
+- 原开发检查点为 `99b8f7fc`；鉴权恢复后推送成功。此次恢复已回读远端 `main` 与本地 HEAD，均为 `aec7eac310cd6b204a77ea821c4c0d75b6a39bdc`，恢复时工作区干净。用户已授权后续通过验证的本地检查点提交及 GitHub 同步，不等于发布或完整验收批准；每次推送后须回读远端精确 SHA。
+- 已建立本地 `experiment/quickjs-checkpoint` 分支，指向上述 HEAD，保留原 QuickJS 代码、测试与历史阻塞。浏览器兼容开发继续在 `main`；实验分支尚未推送，不得冒称远端已保存。
+- 切换前备份位于同级 `Folia-pioneer-backups/20261008-160814/`：`workspace.tar.gz` 保存全部 2604 个已跟踪及非忽略未跟踪文件，`history.bundle` 保存全部 refs 可达 Git 历史；归档成员集合与 bundle 已验证，`manifest.json` 记录摘要。忽略文件不在归档中，依赖与 scratch 缓存不作为成果交付。
+- 恢复时正式直接依赖仍是 `@tootallnate/quickjs-emscripten: 0.23.0`。WASI 及其他候选仅在 scratch，不在正式依赖。
 
 ### 已实现成果与验收边界
 1. **独立基线**：包/产品名称、app ID/userData 隔离，上游更新路径与发布配置禁用；7个上游 workflow 改 `.yml.disabled`，无发布/自动推送。基础测试通过，完整安装/卸载/升级隔离仍未验收。
@@ -54,9 +55,9 @@
 - 静态兼容缺口还包括resp.body、crypto/buffer/zlib、init音质交集、headers/options、updateAlert/showConfigView等；切回LX路线应按实际契约补齐，不能默认24个均可用。
 
 ### 尚未完成与恢复顺序
-- 浏览器+审查新路线未实现，QuickJS实验分支未保存；脚本审查UI/AST机制未实现。
+- 浏览器第一切片及 gallery 修复均已通过独立规格与质量审查，可保存开发检查点；历史标题 opacity 与注册超时归因尚未闭合。AST 审查仍是目标，当前为明确披露局限的词法审查，不得称 AST 已完成。
 - 新平台酷我/咪咕/B站未接入；B站仅匿名API调查（搜索/detail/playurl/音频Range），分P、多平台账户内容整理、统一下载、同步均未实现。
-- 恢复先读本文件和 git status，备份全部工作区；确认路线/信任合同并保存QuickJS成果。再做浏览器兼容与审查第一切片，实测两个候选/契约fixtures，独立spec→quality。
+- 恢复核查、备份和路线确认已完成。下一步完成浏览器兼容与审查第一切片，以自有契约 fixtures 实跑 Electron/Node/UI，独立 spec→quality；审查通过后按授权提交/同步并回读远端 SHA，再对两个用户候选分别复测初始化、接口及播放。不得以历史测试替代当前验收。
 - 后续闭合缺失平台及B站搜索/分P/播放→账号收藏夹合集稍后再看历史→统一音频下载（续传/过期刷新/重启恢复）→列表同步（冲突策略/不传凭据；LX移动协议独立验收）。不可因Biu许可删功能。
 - 环境重新检查：曾有WSLg和WindowsElectron实测成功，最近Windowscmd/PowerShell/直接exe Invalid argument、Linux显示缺失/SIGTRAP/headlessSIGSEGV，当前不能声称可运行。区分launcher失败与代码失败；不可禁sandbox凑PASS。
 

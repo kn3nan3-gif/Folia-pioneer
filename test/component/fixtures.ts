@@ -13,6 +13,23 @@ import { APP_VERSION, GUIDE_VERSION_STORAGE_KEY } from '../helpers/appState';
  * 共享 context 会让这条 init script 累积，用例之间开始互相污染。
  */
 export const test = base.extend<{ seededStorage: void }>({
+    // Playwright's built-in mount navigates again on every call and immediately checks window.mount.
+    // Own that navigation so readiness is checked in the document we actually mount, not a prior reload.
+    mount: async ({ page, baseURL }, use) => {
+        const callMount = (params: { story: string; props?: unknown }) => page.evaluate(
+            async value => { await window.mount(value as Parameters<Window['mount']>[0]); }, params, { exposeFunctions: true },
+        );
+        await use(async (storyId, props) => {
+            if (!baseURL) throw new Error('mount() requires baseURL to point at the component gallery.');
+            await page.goto(baseURL);
+            await page.waitForFunction(() => typeof window.mount === 'function');
+            await callMount({ story: storyId, props });
+            return Object.assign(page.locator('#root'), {
+                update: (newProps?: typeof props) => callMount({ story: storyId, props: newProps }),
+                unmount: () => page.evaluate(async () => { await window.unmount?.(); }),
+            });
+        });
+    },
     seededStorage: [async ({ page }, use) => {
         await page.addInitScript(([version, guideKey]) => {
             localStorage.clear();

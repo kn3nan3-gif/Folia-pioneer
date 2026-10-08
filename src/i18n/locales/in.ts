@@ -1,6 +1,9 @@
 
 
 export default {
+  "lxSources": {
+    "runtimeFailure": "Runtime berhenti karena kegagalan"
+  },
   "libraryTui": {
     "back": "Kembali",
     "sourceOnline": "online · {{provider}}",

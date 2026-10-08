@@ -290,9 +290,14 @@ contextBridge.exposeInMainWorld('electron', {
     },
     debugGetRenderedFonts: (selector) => ipcRenderer.invoke('debug-get-rendered-fonts', selector),
     lxSources: {
+        onStateChanged: (callback) => {
+            const listener = (_event, records) => callback(records);
+            ipcRenderer.on('folia-lx:state-changed', listener);
+            return () => ipcRenderer.removeListener('folia-lx:state-changed', listener);
+        },
         list: () => ipcRenderer.invoke('folia-lx:list'),
         importLocal: () => ipcRenderer.invoke('folia-lx:import'),
-        enable: (digest, domains) => ipcRenderer.invoke('folia-lx:enable', digest, domains),
+        enable: (digest, domains, approval) => ipcRenderer.invoke('folia-lx:enable', digest, domains, approval),
         disable: () => ipcRenderer.invoke('folia-lx:disable'),
         remove: (digest) => ipcRenderer.invoke('folia-lx:remove', digest),
         resolve: (song, quality) => ipcRenderer.invoke('folia-lx:resolve', song, quality),

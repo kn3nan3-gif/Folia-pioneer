@@ -2,9 +2,16 @@
 
 export default {
   "lxSources": {
+    "runtimeFailure": "运行异常，音源已停用",
+    "review": "静态审查（词法，非 AST）",
+    "risk": "这是明确批准的脚本扩展，不是不可信代码沙箱。WebRTC 可能绕过 HTTP broker 和 CSP，域名授权无法阻止该旁路。",
+    "lexicalLimits": "静态提示不能证明安全；混淆、动态执行和远端代码须人工审查。",
+    "findings": "审查提示",
+    "detectedDomains": "检测到的 URL 域名（非完整联网清单）",
+    "detectedApis": "检测到的平台/API词元",
     "title": "LX 自定义音源", "close": "关闭", "import": "导入本地 .js",
     "hint": "仅桌面 wy → 网易云 musicUrl，不提供搜索。重启后须重新启用。不提供 Cookie、登录及加密工具。启用后的错误不会静默回退。仅导入可信且有权使用的脚本。",
-    "domains": "授权域名（英文逗号分隔）", "authorize": "我授权此 SHA-256 脚本仅访问这些公网 HTTP(S) 域名（包含音频地址）。",
+    "domains": "授权域名（英文逗号分隔）", "authorize": "我已审阅报告，明确批准执行此 SHA-256 脚本，接受浏览器/WebRTC风险，并授权这些公网 HTTP(S) 域名。",
     "enable": "授权并启用", "disable": "停用", "enabled": "已启用", "disabled": "已停用", "remove": "移除", "removeConfirm": "移除此脚本及其域名授权？"
   },
   "appPlaylists": {

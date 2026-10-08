@@ -21,6 +21,12 @@ app.whenReady().then(async () => {
         await good.start(); assert.match(await good.resolve({mediaId:'123'},'standard'),/^folia-lx-media:\/\/audio\/[a-f0-9]{64}$/);
         assert.equal(good.window.webContents.getLastWebPreferences().sandbox,true);
         await assert.rejects(good.resolve({mediaId:'123'},'high'),/unsupported/);
+        const before = requests;
+        assert.equal(await good.window.webContents.executeJavaScript(`fetch('${base}/direct').then(()=>false,()=>true)`), true);
+        assert.equal(await good.window.webContents.executeJavaScript(`window.open('${base}/popup') === null`), true);
+        await good.window.webContents.executeJavaScript(`location.href='${base}/navigation'`);
+        await new Promise(resolve => setTimeout(resolve, 50));
+        assert.equal(requests, before); assert.equal(good.window.webContents.getURL(), good.realmUrl);
         good.destroy();
         const invalid = make(`lx.on('request',()=> 'file:///etc/passwd'); ${init}`); await invalid.start(); await assert.rejects(invalid.resolve({mediaId:'123'},'standard'),/HTTP/); invalid.destroy();
         const notInit = make("lx.on('request',()=> 'https://x.example');"); await assert.rejects(notInit.start(),/initialization timeout/);

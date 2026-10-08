@@ -5,8 +5,10 @@ const path = require('node:path');
 const root = process.env.FOLIA_LX_PROJECT || path.resolve(__dirname, '..');
 const { SourceManager } = require(path.join(root, 'electron/lx/manager.cjs'));
 const { scriptDigest } = require(path.join(root, 'electron/lx/contract.cjs'));
+const { reviewScript } = require(path.join(root, 'electron/lx/review.cjs'));
+const approval = record => { const report = reviewScript(record.script); return {digest:record.digest,reviewVersion:report.version,riskVersion:report.riskVersion,acknowledged:true}; };
 const { run } = require('./lx-redirect-regression.cjs');
-// Real Windows host and production utility; controlled disk gate only fixes mutation overlap timing.
+// Real Electron browser host; controlled disk gate fixes mutation overlap timing.
 electron.app.on('window-all-closed', () => {});
 const watchdog = setTimeout(() => electron.app.exit(1), 30000);
 let manager, window, directory;
@@ -27,7 +29,7 @@ electron.app.whenReady().then(async () => {
     let once = true;
     fs.rename = async (...args) => { if (once) { once = false; entered(); await gate; } return rename(...args); };
     try {
-        const enabling = manager.enable(record.digest, ['fixture.example']);
+        const enabling = manager.enable(record.digest, ['fixture.example'], approval(record));
         await atRename;
         await assert.rejects(manager.enable(record.digest, []), /already pending/);
         const removing = manager.remove(other.digest), importing = manager.importLocal(), saving = manager.save();
@@ -45,10 +47,10 @@ electron.app.whenReady().then(async () => {
     manager.records = [record]; await manager.save();
     const previous = manager.records;
     fs.rename = async () => { const error = new Error('owned write failure'); error.code = 'EACCES'; throw error; };
-    try { await assert.rejects(manager.enable(record.digest, ['fixture.example']), /owned write failure/); }
+    try { await assert.rejects(manager.enable(record.digest, ['fixture.example'], approval(record)), /owned write failure/); }
     finally { fs.rename = rename; }
     assert.deepEqual(manager.records, previous); assert.equal(manager.active, null); assert.equal(manager.busy, false);
-    await manager.enable(record.digest, ['fixture.example']); manager.disable();
-    console.log(JSON.stringify({ electron: process.versions.electron, redirect, concurrentEnableImportRemoveSave: true, restartDisabled: true, immediateRevoke: true, failedWriteRecovery: true, productionUtility: true }));
+    await manager.enable(record.digest, ['fixture.example'], approval(record)); manager.disable();
+    console.log(JSON.stringify({ electron: process.versions.electron, redirect, concurrentEnableImportRemoveSave: true, restartDisabled: true, immediateRevoke: true, failedWriteRecovery: true, productionBrowser: true }));
     await fs.rm(directory, { recursive: true, force: true }); window.destroy(); clearTimeout(watchdog); electron.app.exit(0);
 }).catch(error => { console.error(error.stack); manager?.disable(); window?.destroy(); clearTimeout(watchdog); electron.app.exit(1); });

@@ -3,32 +3,68 @@ const crypto = require('node:crypto');
 const { validateInit, validateAudioUrl, musicRequest } = require('./contract.cjs');
 const { request, authorizeUrl } = require('./network.cjs');
 const { MediaBroker } = require('./media.cjs');
-// Bounded QuickJS guest; utilityProcess host is trusted, not an OS network sandbox.
+// Approved browser extension realm; WebRTC is reachable, not an untrusted-code sandbox.
 class ScriptRuntime {
     constructor(electron, record, { authorize = authorizeUrl, timeout = 15000 } = {}) {
         this.record = record; this.authorize = authorize; this.timeout = timeout;
         this.media = new MediaBroker(record, authorize);
         this.pending = new Map(); this.network = new Map(); this.operations = 0; this.closed = false;
-        this.worker = electron.utilityProcess.fork(path.join(__dirname, 'quickjs-worker.cjs'), [], { serviceName: 'Folia LX QuickJS', stdio: 'pipe' });
-        this.listener = payload => {
+        this.electron = electron;
+        this.channel = 'folia-lx-realm-' + crypto.randomUUID();
+        this.session = electron.session.fromPartition('folia-lx-' + crypto.randomUUID());
+        this.session.setPermissionRequestHandler((_wc, _permission, callback) => callback(false));
+        this.session.setPermissionCheckHandler(() => false);
+        this.session.webRequest.onBeforeRequest((details, callback) => callback({ cancel: details.url !== this.realmUrl || details.resourceType !== 'mainFrame' }));
+        this.window = new electron.BrowserWindow({ show: false, webPreferences: {
+            session: this.session, preload: path.join(__dirname, 'preload.cjs'),
+            sandbox: true, contextIsolation: true, nodeIntegration: false,
+            webSecurity: true, additionalArguments: ['--folia-lx-channel=' + this.channel],
+        } });
+        this.window.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
+        this.window.webContents.on('will-navigate', event => event.preventDefault());
+        this.window.webContents.on('will-redirect', event => event.preventDefault());
+        this.window.webContents.on('will-attach-webview', event => event.preventDefault());
+        this.window.webContents.on('destroyed', () => this.fail(new Error('LX: realm destroyed')));
+        this.window.webContents.on('render-process-gone', () => this.fail(new Error('LX: renderer gone')));
+        this.listener = (event, payload) => {
+            if (event.sender !== this.window.webContents || event.senderFrame !== this.window.webContents.mainFrame) return;
             if (this.closed) return;
             try {
                 if (typeof payload !== 'string' || payload.length > 131072 || ++this.operations > 2000) throw new Error('LX: message budget exceeded');
                 const message = JSON.parse(payload);
-                if (message.kind === 'boot') this.send({ kind: 'load', script: record.script, info: { name: record.name, id: record.digest, version: '', author: '', description: '' } });
-                else if (message.kind === 'fatal') this.fail(new Error('LX worker: ' + message.error));
-                else if (message.kind === 'ack') this.busySince = null;
+                if (message.kind === 'boot') { this.booted = true; this.loadScript(); }
+                else if (message.kind === 'fatal') this.fail(new Error('LX realm: ' + message.error));
                 else this.receive(message);
             } catch (error) { this.fail(error); }
         };
-        this.worker.on('message', this.listener);
-        this.worker.on('exit', code => this.fail(new Error('LX: worker exited ' + code)));
-        this.watchdog = setInterval(() => { if (this.busySince && Date.now() - this.busySince > 1500) this.fail(new Error('LX: worker watchdog')); }, 100);
+        electron.ipcMain.on(this.channel, this.listener);
         this.ready = new Promise((resolve, reject) => { this.initResolve = resolve; this.initReject = reject; });
         this.initTimer = setTimeout(() => this.fail(new Error('LX: initialization timeout')), timeout);
+        const html = `<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'none'; connect-src 'none'"><body></body>`;
+        this.realmUrl = 'data:text/html,' + encodeURIComponent(html);
+        this.window.loadURL(this.realmUrl).then(() => {
+            this.pageLoaded = true; this.loadScript();
+        }).catch(error => this.fail(error));
     }
     async start() { return this.ready; }
-    send(message) { if (!this.closed) { this.busySince ??= Date.now(); this.worker.postMessage(JSON.stringify(message)); } }
+    send(message) { if (!this.closed) this.window.webContents.send(this.channel, JSON.stringify(message)); }
+    // Install native MAIN-world monitors before any approved script is evaluated.
+    async loadScript() {
+        if (this.closed || !this.booted || !this.pageLoaded || this.loading) return;
+        this.loading = true;
+        try {
+            await this.window.webContents.executeJavaScript(`(() => {
+                const fatal = window.__foliaLxFatal;
+                const quiet = () => undefined, console = Object.create(null);
+                for (const name of ['log', 'info', 'warn', 'error', 'debug']) console[name] = quiet;
+                Object.defineProperty(window, 'console', { value: Object.freeze(console), writable: false, configurable: false });
+                window.addEventListener('error', () => fatal());
+                window.addEventListener('unhandledrejection', () => fatal());
+            })()`, false);
+            await this.window.webContents.executeJavaScript(this.record.script, false);
+            if (!this.closed) this.receive({ kind: 'loaded' });
+        } catch (error) { this.fail(error); }
+    }
     receive(message) {
         if (message.kind === 'init') {
             if (this.qualities) throw new Error('LX: duplicate initialization');
@@ -59,7 +95,14 @@ class ScriptRuntime {
         } else throw new Error('LX: unsupported event');
     }
     // Init declaration alone is provisional until top-level evaluation and its queued jobs succeed.
-    finishInitialization() { if (!this.closed && this.loaded && this.qualities) { clearTimeout(this.initTimer); this.initResolve(this.qualities); } }
+    finishInitialization() {
+        if (!this.closed && this.loaded && this.qualities && !this.settleTimer) {
+            this.settleTimer = setTimeout(() => {
+                if (this.closed) return;
+                clearTimeout(this.initTimer); this.initResolve(this.qualities);
+            }, 150);
+        }
+    }
     replyNetwork(id, result) {
         if (!this.closed && this.network.has(id)) this.send({ kind: 'networkResult', id, ...result });
         this.network.delete(id);
@@ -78,10 +121,10 @@ class ScriptRuntime {
     fail(error) { this.initReject(error); this.destroy(error); }
     destroy(error = new Error('LX: stopped')) {
         if (this.closed) return; this.closed = true; this.failure = error; this.onClosed?.(error); this.media.destroy(); clearTimeout(this.initTimer);
-        this.initReject(error); clearInterval(this.watchdog); this.worker.removeListener('message', this.listener);
+        this.initReject(error); clearTimeout(this.settleTimer); this.electron.ipcMain.removeListener(this.channel, this.listener);
         for (const item of this.pending.values()) { clearTimeout(item.timer); item.reject(error); }
         this.pending.clear(); for (const item of this.network.values()) item.abort(); this.network.clear();
-        this.worker.kill();
+        if (!this.window.isDestroyed()) this.window.destroy();
     }
 }
 module.exports = { ScriptRuntime };
