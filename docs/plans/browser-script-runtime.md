@@ -109,6 +109,12 @@ resp.body 与 wy 支持音质交集切片已获独立规格 PASS、独立质量 
 - 实跑：原仓 `node --test test/lx-custom-source.test.cjs test/lx-request-options.test.cjs` 28 PASS exit0。ext4 副本逐个 `timeout 45 xvfb-run -a --server-args='-screen 0 1280x1024x24' <scratch-electron>/electron test/<name>.cjs`：body、browser-rejection（9例）、browser-lifecycle 全 exit0；sandbox=true 未关闭。`git diff --check` exit0。scratch 证据根 `~/.hermes/cache/scratch/lx-body-strengthening/` 保存日志与 `commands.json`（命令/版本/exit）；DBus 环境警告非测试失败。
 - 未发现新增产品缺陷；只补上述合同覆盖，不代表原生 renderer 崩溃（lifecycle仍为信号注入）、Windows、UI、完整 LX、第三方端点或长时播放验收。独立规格审查 PASS、独立质量审查 APPROVED，均限本次测试补强；规格复跑 Node28项及 Electron body/rejection/lifecycle 全通过，质量另独立复跑 body exit0。两次审查均核对14文件运行前后 SHA 一致，diff-check exit0，未关闭 sandbox。事件门控、连接关闭证据先于统一清理、错误必须为 bridge callback failed 而非 timeout 已核查。按既定授权保存开发检查点；AGENTS 的保护审批阻塞仍未绕过，当前状态以本计划与实际 Git 回读为准。
 
+### 9.10 主线最小废代码 / 旧测试清理（待独立复核）
+
+已删除无当前入口的 QuickJS worker、6个 QuickJS 旧测试及旧无 RTC 合同的 WebRTC 测试；删除前8文件与远端保存分支 `aec7eac310cd6b204a77ea821c4c0d75b6a39bdc` 内容逐字节一致，可恢复。额外备份 `../Folia-pioneer-backups/minimal-cleanup-20261010-022251/`。仅移除 package 直接依赖和2条解包项，lock仅根声明删除，pac-proxy-agent传递QuickJS节点保留，未安装/升级依赖。有效回归及历史证据保留；旧路线文档定点标历史。详见 [清理证据](../evidence/minimal-runtime-cleanup-20261010.md)。
+
+Node24.21.0七文件41项 PASS；Electron43.7.5/Xvfb七套 body/rejection/lifecycle/security/runtime/quality/options 均exit0，sandbox=true未关闭；26文件运行前后原仓/ext4 SHA一致。第一次Node副本漏app preload导致1项ENOENT，补齐后完整重跑通过，初始日志保留。Omni/UI/gallery依赖已清理无法重跑，未全量安装凑PASS。pack仅静态入口/配置核对，非完整打包；Windows/原生崩溃/长时媒体未验收。AGENTS由父维护；无commit/push，待独立spec→quality。
+
 ### 9.2 待审查与明确边界
 
 没有直接可打包AST parser；不增加依赖。报告是保守文本词法提示，注释/字符串可误报，别名/动态属性/编码/远端代码可漏报，绝非AST/数据流/安全证明。WebRTC仍可达，域名授权仅约束broker而非浏览器全部网络；UI明确披露。MAIN world事件监听不是恶意可信脚本无法篡改的防线，150ms settle窗口仅覆盖初始化常见迟发事件，晚异常会停用，不保证任意未来错误在ready前发生。浏览器资源不继承QuickJS堆/CPU/jobs/timer预算，保留host请求/消息/网络预算与超时，不宣称不可信代码沙箱。

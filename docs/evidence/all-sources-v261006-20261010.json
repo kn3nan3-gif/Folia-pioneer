@@ -1,0 +1,1801 @@
+{
+  "baseline": "45c472ae4e353597bf7f91edd9c26668bb8be4a8",
+  "counts": {
+    "files": 24,
+    "import_passed": 24,
+    "static_blocked": 16,
+    "enabled_init_passed": 7,
+    "init_failed": 1,
+    "token_issued": 0,
+    "audio_attempted": 0,
+    "played": 0
+  },
+  "sample": {
+    "providerId": "netease",
+    "mediaId": "5275429",
+    "quality": "standard/128k",
+    "scope": "public free sample only; no account/key/payment/member/DRM steps"
+  },
+  "method": {
+    "review": "Derived production lexical-1 plus nonexecuting manual static reading; not AST/dataflow or safety proof. Protected scripts reviewed for decoder/control structure but not fully deobfuscated; therefore blocked.",
+    "execution": "Separate real SourceManager persistence per file, importLocal without execution, digest/reviewVersion/riskVersion acknowledged approval only for eight reviewed candidates; enable then list readback; original policy uses all DNS addresses public IPv4, pinned connection and per-hop grants. Scratch telemetry wraps original authorize/receive/reply without changing decisions.",
+    "limit": "Per-file outer timeout25s; production init/musicURL timeout15s; no retries/no third-party modifications.",
+    "audio": "Only authorized folia-lx-media token permits native Audio attempt; no token issued, so Audio not attempted. No playback success claimed.",
+    "trust": "Reviewed authorized browser extensions, not arbitrary untrusted-code sandbox; WebRTC reachable and no CPU/heap budget inherited; sandbox/CSP never relaxed.",
+    "exit": "All24 harness exits0: collection completed, NOT source availability.",
+    "secrets": "No original scripts, full logs, keys or full audio URLs in repository evidence. Raw private manager records remain scratch mode0600."
+  },
+  "versions": {
+    "node": "24.21.0",
+    "electron": "43.7.5",
+    "chrome": "150.0.7871.250"
+  },
+  "module_sync": [
+    {
+      "file": "electron/lx/contract.cjs",
+      "sha256": "e3b7cdb09cb950085b31fa3aedfd977570eeae8bd1cce25a3fbbe1e6af05cda8"
+    },
+    {
+      "file": "electron/lx/manager.cjs",
+      "sha256": "0681a1d922c913f18d30ccbc29e56aead011099b5b0673e2dbb4eecd8de99562"
+    },
+    {
+      "file": "electron/lx/media-stream.cjs",
+      "sha256": "e7b4dee6bee9fbc2b6e4f1f4778aa66c4a4a68612ae04c91d36e5a918c66452c"
+    },
+    {
+      "file": "electron/lx/media.cjs",
+      "sha256": "22e857ff295de72fc59cb1998187bd08bee4514ad383ed8ae8a4c1f3a2348d99"
+    },
+    {
+      "file": "electron/lx/network.cjs",
+      "sha256": "603920f22bd4c487233ff8c42ccd128ec2eb3f9511457d6b9bd566e67ef87dd2"
+    },
+    {
+      "file": "electron/lx/preload.cjs",
+      "sha256": "84d48bc54b9ef3027098fc346551b3115592cc3af6ec289c2a8baf81fb6ea87d"
+    },
+    {
+      "file": "electron/lx/quickjs-worker.cjs",
+      "sha256": "94347d9100d7443e9375efee90d21072e402a9b3accc4d31a8fa260724426371"
+    },
+    {
+      "file": "electron/lx/review.cjs",
+      "sha256": "6cb9042ca185a1d58d1a479fcf95889c1a508c6506c26f6eb7547e880a356f34"
+    },
+    {
+      "file": "electron/lx/runtime.cjs",
+      "sha256": "bdb01599904b1b75852fc6ed489ab62ed4d3090fd6f7ac59a851c7a88e1baadc"
+    }
+  ],
+  "rows": [
+    {
+      "file": "HYWmusic_公益版_v1.0.3.js",
+      "sha256": "0fdb240b65bdd63bac717c9c4fa9dd4099a24c24b593a3447993d048208b28a0",
+      "decision": "blocked",
+      "manual_review": "blocked：API_BASE为裸IP，自动X-Card-Key及query key卡密认证、自动更新；不使用内置卡密、不改变域名门禁。\\x正则是ASCII header检查而非混淆。",
+      "grants": [],
+      "import": "passed-no-execution",
+      "init": "blocked-static-review",
+      "endpoint": "not-run-blocked",
+      "token": false,
+      "audio": {
+        "attempted": false
+      },
+      "events": [],
+      "versions": {
+        "node": "24.21.0",
+        "electron": "43.7.5",
+        "chrome": "150.0.7871.250"
+      },
+      "review": {
+        "digest": "0fdb240b65bdd63bac717c9c4fa9dd4099a24c24b593a3447993d048208b28a0",
+        "version": "lexical-1",
+        "riskVersion": "browser-webrtc-1",
+        "method": "lexical",
+        "findings": [
+          "obfuscation-hint",
+          "unsupported-api"
+        ],
+        "domains": [
+          "103.79.184.97",
+          "github.com"
+        ],
+        "platforms": [
+          "kg",
+          "kw",
+          "mg",
+          "tx",
+          "wy"
+        ],
+        "apis": [
+          "inited",
+          "musicUrl",
+          "request",
+          "updateAlert"
+        ],
+        "limits": "Text patterns only: comments/strings can cause false positives; aliases, computed properties, escapes, templates and remote code may evade detection. No AST, dataflow or safety proof."
+      },
+      "reason": "blocked：API_BASE为裸IP，自动X-Card-Key及query key卡密认证、自动更新；不使用内置卡密、不改变域名门禁。\\x正则是ASCII header检查而非混淆。",
+      "disabled": true,
+      "restartDisabled": true,
+      "durationMs": 19,
+      "exit_code": 0,
+      "command": "SOURCE_INDEX=0 timeout 25 xvfb-run -a --server-args=-screen 0 1280x1024x24 /home/administrator/.hermes/cache/scratch/lx-body-strengthening/electron/electron /home/administrator/.hermes/cache/scratch/all-sources-20261010/run.cjs",
+      "sha256_after": "0fdb240b65bdd63bac717c9c4fa9dd4099a24c24b593a3447993d048208b28a0",
+      "sha256_unchanged": true,
+      "endpoint_detail": "Not executed because static review did not approve; not an initialization compatibility failure."
+    },
+    {
+      "file": "HYWmusic_公益版v1.1.0.js",
+      "sha256": "72261e94fdead74f831078866c7437636673bc908f3d100e43fdbea19ac6da5d",
+      "decision": "blocked",
+      "manual_review": "blocked：API_BASE为裸IP，自动卡密认证及更新，与1.0.3同路径；不执行认证。\\x是ASCII字符检查不是混淆。",
+      "grants": [],
+      "import": "passed-no-execution",
+      "init": "blocked-static-review",
+      "endpoint": "not-run-blocked",
+      "token": false,
+      "audio": {
+        "attempted": false
+      },
+      "events": [],
+      "versions": {
+        "node": "24.21.0",
+        "electron": "43.7.5",
+        "chrome": "150.0.7871.250"
+      },
+      "review": {
+        "digest": "72261e94fdead74f831078866c7437636673bc908f3d100e43fdbea19ac6da5d",
+        "version": "lexical-1",
+        "riskVersion": "browser-webrtc-1",
+        "method": "lexical",
+        "findings": [
+          "obfuscation-hint",
+          "unsupported-api"
+        ],
+        "domains": [
+          "103.79.184.97",
+          "github.com"
+        ],
+        "platforms": [
+          "kw",
+          "mg",
+          "tx",
+          "wy"
+        ],
+        "apis": [
+          "inited",
+          "musicUrl",
+          "request",
+          "updateAlert"
+        ],
+        "limits": "Text patterns only: comments/strings can cause false positives; aliases, computed properties, escapes, templates and remote code may evade detection. No AST, dataflow or safety proof."
+      },
+      "reason": "blocked：API_BASE为裸IP，自动卡密认证及更新，与1.0.3同路径；不执行认证。\\x是ASCII字符检查不是混淆。",
+      "disabled": true,
+      "restartDisabled": true,
+      "durationMs": 11,
+      "exit_code": 0,
+      "command": "SOURCE_INDEX=1 timeout 25 xvfb-run -a --server-args=-screen 0 1280x1024x24 /home/administrator/.hermes/cache/scratch/lx-body-strengthening/electron/electron /home/administrator/.hermes/cache/scratch/all-sources-20261010/run.cjs",
+      "sha256_after": "72261e94fdead74f831078866c7437636673bc908f3d100e43fdbea19ac6da5d",
+      "sha256_unchanged": true,
+      "endpoint_detail": "Not executed because static review did not approve; not an initialization compatibility failure."
+    },
+    {
+      "file": "HelloWorld音源(中秋快乐).js",
+      "sha256": "32ff5f7b44c1d7d038cb548cb6fac0349befb538bdae26fb658684115e823427",
+      "decision": "blocked",
+      "manual_review": "blocked：实读CONFIG wy自动回退末路含裸IP、内置卡密及X-Card-Key；不修改第三方CONFIG裁掉认证；wy对象body及null原型hasOwnProperty还存在静态兼容疑点。",
+      "grants": [],
+      "import": "passed-no-execution",
+      "init": "blocked-static-review",
+      "endpoint": "not-run-blocked",
+      "token": false,
+      "audio": {
+        "attempted": false
+      },
+      "events": [],
+      "versions": {
+        "node": "24.21.0",
+        "electron": "43.7.5",
+        "chrome": "150.0.7871.250"
+      },
+      "review": {
+        "digest": "32ff5f7b44c1d7d038cb548cb6fac0349befb538bdae26fb658684115e823427",
+        "version": "lexical-1",
+        "riskVersion": "browser-webrtc-1",
+        "method": "lexical",
+        "findings": [
+          "unsupported-api"
+        ],
+        "domains": [
+          "103.79.184.97",
+          "a.aa.cab",
+          "c.wwwweb.top",
+          "mcp.nianxinxz.com",
+          "musicserver.haitangw.cc",
+          "nmobi.kuwo.cn",
+          "oiapi.net",
+          "tang.api.s01s.cn",
+          "yy.zddyr.top"
+        ],
+        "platforms": [
+          "kg",
+          "kw",
+          "mg",
+          "tx",
+          "wy"
+        ],
+        "apis": [
+          "inited",
+          "musicUrl",
+          "request"
+        ],
+        "limits": "Text patterns only: comments/strings can cause false positives; aliases, computed properties, escapes, templates and remote code may evade detection. No AST, dataflow or safety proof."
+      },
+      "reason": "blocked：实读CONFIG wy自动回退末路含裸IP、内置卡密及X-Card-Key；不修改第三方CONFIG裁掉认证；wy对象body及null原型hasOwnProperty还存在静态兼容疑点。",
+      "disabled": true,
+      "restartDisabled": true,
+      "durationMs": 14,
+      "exit_code": 0,
+      "command": "SOURCE_INDEX=2 timeout 25 xvfb-run -a --server-args=-screen 0 1280x1024x24 /home/administrator/.hermes/cache/scratch/lx-body-strengthening/electron/electron /home/administrator/.hermes/cache/scratch/all-sources-20261010/run.cjs",
+      "sha256_after": "32ff5f7b44c1d7d038cb548cb6fac0349befb538bdae26fb658684115e823427",
+      "sha256_unchanged": true,
+      "endpoint_detail": "Not executed because static review did not approve; not an initialization compatibility failure."
+    },
+    {
+      "file": "gdstudio音乐源 v1.0.1（仅支持网易）.js",
+      "sha256": "05631b29ff18a4b8688b4464abf0f38952474cd4d8d6c4149c365b0190c7fd28",
+      "decision": "approve-free-wy-only",
+      "manual_review": "可读完整脚本；仅LX request/注册/内存缓存，当前wy先console.group再搜索，未发现动态执行或认证。",
+      "grants": [
+        "music-api.gdstudio.xyz"
+      ],
+      "import": "passed-no-execution",
+      "init": "passed",
+      "endpoint": "failed",
+      "token": false,
+      "audio": {
+        "attempted": false
+      },
+      "events": [],
+      "versions": {
+        "node": "24.21.0",
+        "electron": "43.7.5",
+        "chrome": "150.0.7871.250"
+      },
+      "review": {
+        "digest": "05631b29ff18a4b8688b4464abf0f38952474cd4d8d6c4149c365b0190c7fd28",
+        "version": "lexical-1",
+        "riskVersion": "browser-webrtc-1",
+        "method": "lexical",
+        "findings": [],
+        "domains": [
+          "github.com",
+          "music-api.gdstudio.xyz"
+        ],
+        "platforms": [
+          "kg",
+          "kw",
+          "mg",
+          "tx",
+          "wy"
+        ],
+        "apis": [
+          "inited",
+          "musicUrl",
+          "request"
+        ],
+        "limits": "Text patterns only: comments/strings can cause false positives; aliases, computed properties, escapes, templates and remote code may evade detection. No AST, dataflow or safety proof."
+      },
+      "approval": {
+        "digest": "05631b29ff18a4b8688b4464abf0f38952474cd4d8d6c4149c365b0190c7fd28",
+        "reviewVersion": "lexical-1",
+        "riskVersion": "browser-webrtc-1",
+        "acknowledged": true
+      },
+      "qualities": [
+        "128k",
+        "320k",
+        "flac",
+        "flac24bit"
+      ],
+      "realm": {
+        "sandbox": true,
+        "nodeIntegration": false,
+        "contextIsolation": true
+      },
+      "reason": "LX script: console.group is not a function",
+      "disabled": true,
+      "restartDisabled": true,
+      "durationMs": 279,
+      "exit_code": 0,
+      "command": "SOURCE_INDEX=3 timeout 25 xvfb-run -a --server-args=-screen 0 1280x1024x24 /home/administrator/.hermes/cache/scratch/lx-body-strengthening/electron/electron /home/administrator/.hermes/cache/scratch/all-sources-20261010/run.cjs",
+      "sha256_after": "05631b29ff18a4b8688b4464abf0f38952474cd4d8d6c4149c365b0190c7fd28",
+      "sha256_unchanged": true,
+      "endpoint_detail": "Request handler failed at console.group before network."
+    },
+    {
+      "file": "lx-玉宁熙1.2.5.js",
+      "sha256": "5dd4752c16c17f7bab45dccf87dcd3f3c2a6e251e62bad68bde9554bfd275f79",
+      "decision": "blocked",
+      "manual_review": "blocked需人工复核：实读旋转字符串表、RC4式带key解码器及多层别名/计算属性、IP_LIMIT_MAP限流和初始化尾部；真实域名与网络/认证行为未完整还原，不按空domains猜安全。",
+      "grants": [],
+      "import": "passed-no-execution",
+      "init": "blocked-static-review",
+      "endpoint": "not-run-blocked",
+      "token": false,
+      "audio": {
+        "attempted": false
+      },
+      "events": [],
+      "versions": {
+        "node": "24.21.0",
+        "electron": "43.7.5",
+        "chrome": "150.0.7871.250"
+      },
+      "review": {
+        "digest": "5dd4752c16c17f7bab45dccf87dcd3f3c2a6e251e62bad68bde9554bfd275f79",
+        "version": "lexical-1",
+        "riskVersion": "browser-webrtc-1",
+        "method": "lexical",
+        "findings": [
+          "obfuscation-hint"
+        ],
+        "domains": [],
+        "platforms": [
+          "kg",
+          "kw",
+          "mg",
+          "tx",
+          "wy"
+        ],
+        "apis": [
+          "request"
+        ],
+        "limits": "Text patterns only: comments/strings can cause false positives; aliases, computed properties, escapes, templates and remote code may evade detection. No AST, dataflow or safety proof."
+      },
+      "reason": "blocked需人工复核：实读旋转字符串表、RC4式带key解码器及多层别名/计算属性、IP_LIMIT_MAP限流和初始化尾部；真实域名与网络/认证行为未完整还原，不按空domains猜安全。",
+      "disabled": true,
+      "restartDisabled": true,
+      "durationMs": 16,
+      "exit_code": 0,
+      "command": "SOURCE_INDEX=4 timeout 25 xvfb-run -a --server-args=-screen 0 1280x1024x24 /home/administrator/.hermes/cache/scratch/lx-body-strengthening/electron/electron /home/administrator/.hermes/cache/scratch/all-sources-20261010/run.cjs",
+      "sha256_after": "5dd4752c16c17f7bab45dccf87dcd3f3c2a6e251e62bad68bde9554bfd275f79",
+      "sha256_unchanged": true,
+      "endpoint_detail": "Not executed because static review did not approve; not an initialization compatibility failure."
+    },
+    {
+      "file": "stellarwave-v3.2.0.js",
+      "sha256": "a1c565851dea2e4209a2695a4e5af27f6425121aea3510510d3cc70c317b7c34",
+      "decision": "blocked",
+      "manual_review": "blocked：实读_u逐字符+5译码算法、wy Cookie/eapi、并发回退、QQ getQQExploit伪造cookie/越权策略及内置卡密；不得执行权限绕过。",
+      "grants": [],
+      "import": "passed-no-execution",
+      "init": "blocked-static-review",
+      "endpoint": "not-run-blocked",
+      "token": false,
+      "audio": {
+        "attempted": false
+      },
+      "events": [],
+      "versions": {
+        "node": "24.21.0",
+        "electron": "43.7.5",
+        "chrome": "150.0.7871.250"
+      },
+      "review": {
+        "digest": "a1c565851dea2e4209a2695a4e5af27f6425121aea3510510d3cc70c317b7c34",
+        "version": "lexical-1",
+        "riskVersion": "browser-webrtc-1",
+        "method": "lexical",
+        "findings": [
+          "browser-network",
+          "unsupported-api"
+        ],
+        "domains": [
+          "ffapi.cn",
+          "github.com",
+          "music.163.com",
+          "music.migu.cn",
+          "www.kugou.com",
+          "www.kuwo.cn",
+          "y.qq.com"
+        ],
+        "platforms": [
+          "kg",
+          "kw",
+          "mg",
+          "tx",
+          "wy"
+        ],
+        "apis": [
+          "inited",
+          "musicUrl",
+          "request"
+        ],
+        "limits": "Text patterns only: comments/strings can cause false positives; aliases, computed properties, escapes, templates and remote code may evade detection. No AST, dataflow or safety proof."
+      },
+      "reason": "blocked：实读_u逐字符+5译码算法、wy Cookie/eapi、并发回退、QQ getQQExploit伪造cookie/越权策略及内置卡密；不得执行权限绕过。",
+      "disabled": true,
+      "restartDisabled": true,
+      "durationMs": 19,
+      "exit_code": 0,
+      "command": "SOURCE_INDEX=5 timeout 25 xvfb-run -a --server-args=-screen 0 1280x1024x24 /home/administrator/.hermes/cache/scratch/lx-body-strengthening/electron/electron /home/administrator/.hermes/cache/scratch/all-sources-20261010/run.cjs",
+      "sha256_after": "a1c565851dea2e4209a2695a4e5af27f6425121aea3510510d3cc70c317b7c34",
+      "sha256_unchanged": true,
+      "endpoint_detail": "Not executed because static review did not approve; not an initialization compatibility failure."
+    },
+    {
+      "file": "stellarwave-v4.0.0（酷我稍后支持）.js",
+      "sha256": "c27f8d8ff94b9cdc02721430c46632f51a7c2a15ef0618e8c3bbfc6c08ef0092",
+      "decision": "blocked",
+      "manual_review": "blocked：实读_u译码、getQQExploit三策略和伪造Cookie、内置卡密、wy加密eapi/并发链；不执行越权或卡密路径。",
+      "grants": [],
+      "import": "passed-no-execution",
+      "init": "blocked-static-review",
+      "endpoint": "not-run-blocked",
+      "token": false,
+      "audio": {
+        "attempted": false
+      },
+      "events": [],
+      "versions": {
+        "node": "24.21.0",
+        "electron": "43.7.5",
+        "chrome": "150.0.7871.250"
+      },
+      "review": {
+        "digest": "c27f8d8ff94b9cdc02721430c46632f51a7c2a15ef0618e8c3bbfc6c08ef0092",
+        "version": "lexical-1",
+        "riskVersion": "browser-webrtc-1",
+        "method": "lexical",
+        "findings": [
+          "browser-network",
+          "unsupported-api"
+        ],
+        "domains": [
+          "ffapi.cn",
+          "github.com",
+          "music.163.com",
+          "music.migu.cn",
+          "www.kugou.com",
+          "www.kuwo.cn",
+          "y.qq.com"
+        ],
+        "platforms": [
+          "kg",
+          "kw",
+          "mg",
+          "tx",
+          "wy"
+        ],
+        "apis": [
+          "inited",
+          "musicUrl",
+          "request"
+        ],
+        "limits": "Text patterns only: comments/strings can cause false positives; aliases, computed properties, escapes, templates and remote code may evade detection. No AST, dataflow or safety proof."
+      },
+      "reason": "blocked：实读_u译码、getQQExploit三策略和伪造Cookie、内置卡密、wy加密eapi/并发链；不执行越权或卡密路径。",
+      "disabled": true,
+      "restartDisabled": true,
+      "durationMs": 15,
+      "exit_code": 0,
+      "command": "SOURCE_INDEX=6 timeout 25 xvfb-run -a --server-args=-screen 0 1280x1024x24 /home/administrator/.hermes/cache/scratch/lx-body-strengthening/electron/electron /home/administrator/.hermes/cache/scratch/all-sources-20261010/run.cjs",
+      "sha256_after": "c27f8d8ff94b9cdc02721430c46632f51a7c2a15ef0618e8c3bbfc6c08ef0092",
+      "sha256_unchanged": true,
+      "endpoint_detail": "Not executed because static review did not approve; not an initialization compatibility failure."
+    },
+    {
+      "file": "全豆要-聚合音源-V4.1（酷狗挂了）.js",
+      "sha256": "e501fa90f8136a714e0b8e7b44a50d9ee344083a9a5164da7f87a07b6f763650",
+      "decision": "blocked",
+      "manual_review": "blocked：实读汽水VIP分支data.ekey传proxy进行解密（286-311），wy含裸IP模板；不执行含DRM解密路径脚本，名称本身不是原因。",
+      "grants": [],
+      "import": "passed-no-execution",
+      "init": "blocked-static-review",
+      "endpoint": "not-run-blocked",
+      "token": false,
+      "audio": {
+        "attempted": false
+      },
+      "events": [],
+      "versions": {
+        "node": "24.21.0",
+        "electron": "43.7.5",
+        "chrome": "150.0.7871.250"
+      },
+      "review": {
+        "digest": "e501fa90f8136a714e0b8e7b44a50d9ee344083a9a5164da7f87a07b6f763650",
+        "version": "lexical-1",
+        "riskVersion": "browser-webrtc-1",
+        "method": "lexical",
+        "findings": [
+          "obfuscation-hint"
+        ],
+        "domains": [
+          "175.27.166.236",
+          "api.vsaa.cn",
+          "api.xcvts.cn",
+          "music-api.gdstudio.xyz",
+          "music-dl.sayqz.com",
+          "music.haitangw.cc",
+          "music.nxinxz.com",
+          "musicapi.haitangw.net",
+          "oiapi.net",
+          "proxy.qishui.vsaa.cn"
+        ],
+        "platforms": [
+          "kg",
+          "kw",
+          "mg",
+          "tx",
+          "wy"
+        ],
+        "apis": [
+          "inited",
+          "musicUrl",
+          "request"
+        ],
+        "limits": "Text patterns only: comments/strings can cause false positives; aliases, computed properties, escapes, templates and remote code may evade detection. No AST, dataflow or safety proof."
+      },
+      "reason": "blocked：实读汽水VIP分支data.ekey传proxy进行解密（286-311），wy含裸IP模板；不执行含DRM解密路径脚本，名称本身不是原因。",
+      "disabled": true,
+      "restartDisabled": true,
+      "durationMs": 14,
+      "exit_code": 0,
+      "command": "SOURCE_INDEX=7 timeout 25 xvfb-run -a --server-args=-screen 0 1280x1024x24 /home/administrator/.hermes/cache/scratch/lx-body-strengthening/electron/electron /home/administrator/.hermes/cache/scratch/all-sources-20261010/run.cjs",
+      "sha256_after": "e501fa90f8136a714e0b8e7b44a50d9ee344083a9a5164da7f87a07b6f763650",
+      "sha256_unchanged": true,
+      "endpoint_detail": "Not executed because static review did not approve; not an initialization compatibility failure."
+    },
+    {
+      "file": "回避聚合V0.0.1.js",
+      "sha256": "9c35f66bf39c6b66e6dc64d3df27535f329a5e146fe80921406f5db910f63e33",
+      "decision": "blocked",
+      "manual_review": "blocked：实读_u字符+5编码、Cookie解析和QQ越权三策略、内置卡密/签名、动态后端；不执行越权脚本。",
+      "grants": [],
+      "import": "passed-no-execution",
+      "init": "blocked-static-review",
+      "endpoint": "not-run-blocked",
+      "token": false,
+      "audio": {
+        "attempted": false
+      },
+      "events": [],
+      "versions": {
+        "node": "24.21.0",
+        "electron": "43.7.5",
+        "chrome": "150.0.7871.250"
+      },
+      "review": {
+        "digest": "9c35f66bf39c6b66e6dc64d3df27535f329a5e146fe80921406f5db910f63e33",
+        "version": "lexical-1",
+        "riskVersion": "browser-webrtc-1",
+        "method": "lexical",
+        "findings": [
+          "browser-network",
+          "unsupported-api"
+        ],
+        "domains": [
+          "api.chksz.com",
+          "ffapi.cn",
+          "github.com",
+          "music.163.com",
+          "music.migu.cn",
+          "www.kugou.com",
+          "www.kuwo.cn",
+          "y.qq.com"
+        ],
+        "platforms": [
+          "kg",
+          "kw",
+          "mg",
+          "tx",
+          "wy"
+        ],
+        "apis": [
+          "inited",
+          "musicUrl",
+          "request"
+        ],
+        "limits": "Text patterns only: comments/strings can cause false positives; aliases, computed properties, escapes, templates and remote code may evade detection. No AST, dataflow or safety proof."
+      },
+      "reason": "blocked：实读_u字符+5编码、Cookie解析和QQ越权三策略、内置卡密/签名、动态后端；不执行越权脚本。",
+      "disabled": true,
+      "restartDisabled": true,
+      "durationMs": 23,
+      "exit_code": 0,
+      "command": "SOURCE_INDEX=8 timeout 25 xvfb-run -a --server-args=-screen 0 1280x1024x24 /home/administrator/.hermes/cache/scratch/lx-body-strengthening/electron/electron /home/administrator/.hermes/cache/scratch/all-sources-20261010/run.cjs",
+      "sha256_after": "9c35f66bf39c6b66e6dc64d3df27535f329a5e146fe80921406f5db910f63e33",
+      "sha256_unchanged": true,
+      "endpoint_detail": "Not executed because static review did not approve; not an initialization compatibility failure."
+    },
+    {
+      "file": "墨澜音乐源v2.3.4.js",
+      "sha256": "328e06c473dfc0ba6de338a7b04f00e3b67a69f59205ca6903d553a80b57c706",
+      "decision": "blocked",
+      "manual_review": "blocked需人工复核：实读jsjiami.cn.v7标记、字符串表旋转、带key解码和计算属性控制流；可读URL仅homepage不是实际API，执行/网络风险无法闭合。",
+      "grants": [],
+      "import": "passed-no-execution",
+      "init": "blocked-static-review",
+      "endpoint": "not-run-blocked",
+      "token": false,
+      "audio": {
+        "attempted": false
+      },
+      "events": [],
+      "versions": {
+        "node": "24.21.0",
+        "electron": "43.7.5",
+        "chrome": "150.0.7871.250"
+      },
+      "review": {
+        "digest": "328e06c473dfc0ba6de338a7b04f00e3b67a69f59205ca6903d553a80b57c706",
+        "version": "lexical-1",
+        "riskVersion": "browser-webrtc-1",
+        "method": "lexical",
+        "findings": [
+          "browser-network",
+          "obfuscation-hint"
+        ],
+        "domains": [
+          "github.com"
+        ],
+        "platforms": [
+          "kg",
+          "kw",
+          "mg",
+          "tx",
+          "wy"
+        ],
+        "apis": [
+          "request"
+        ],
+        "limits": "Text patterns only: comments/strings can cause false positives; aliases, computed properties, escapes, templates and remote code may evade detection. No AST, dataflow or safety proof."
+      },
+      "reason": "blocked需人工复核：实读jsjiami.cn.v7标记、字符串表旋转、带key解码和计算属性控制流；可读URL仅homepage不是实际API，执行/网络风险无法闭合。",
+      "disabled": true,
+      "restartDisabled": true,
+      "durationMs": 17,
+      "exit_code": 0,
+      "command": "SOURCE_INDEX=9 timeout 25 xvfb-run -a --server-args=-screen 0 1280x1024x24 /home/administrator/.hermes/cache/scratch/lx-body-strengthening/electron/electron /home/administrator/.hermes/cache/scratch/all-sources-20261010/run.cjs",
+      "sha256_after": "328e06c473dfc0ba6de338a7b04f00e3b67a69f59205ca6903d553a80b57c706",
+      "sha256_unchanged": true,
+      "endpoint_detail": "Not executed because static review did not approve; not an initialization compatibility failure."
+    },
+    {
+      "file": "屿溪-终章.js",
+      "sha256": "b45e05b8c043f0e715f9856ea400707bdf131b9c05b5014e1de9d0821a9972a7",
+      "decision": "blocked",
+      "manual_review": "blocked需人工复核：实读旋转表、多层解码别名、URL_CONFIG字符串拼接和getMgUrl；未完整还原wy端点及危险分支，公益说明不构成安全证明。",
+      "grants": [],
+      "import": "passed-no-execution",
+      "init": "blocked-static-review",
+      "endpoint": "not-run-blocked",
+      "token": false,
+      "audio": {
+        "attempted": false
+      },
+      "events": [],
+      "versions": {
+        "node": "24.21.0",
+        "electron": "43.7.5",
+        "chrome": "150.0.7871.250"
+      },
+      "review": {
+        "digest": "b45e05b8c043f0e715f9856ea400707bdf131b9c05b5014e1de9d0821a9972a7",
+        "version": "lexical-1",
+        "riskVersion": "browser-webrtc-1",
+        "method": "lexical",
+        "findings": [],
+        "domains": [],
+        "platforms": [
+          "kg",
+          "kw",
+          "mg",
+          "tx",
+          "wy"
+        ],
+        "apis": [
+          "request"
+        ],
+        "limits": "Text patterns only: comments/strings can cause false positives; aliases, computed properties, escapes, templates and remote code may evade detection. No AST, dataflow or safety proof."
+      },
+      "reason": "blocked需人工复核：实读旋转表、多层解码别名、URL_CONFIG字符串拼接和getMgUrl；未完整还原wy端点及危险分支，公益说明不构成安全证明。",
+      "disabled": true,
+      "restartDisabled": true,
+      "durationMs": 24,
+      "exit_code": 0,
+      "command": "SOURCE_INDEX=10 timeout 25 xvfb-run -a --server-args=-screen 0 1280x1024x24 /home/administrator/.hermes/cache/scratch/lx-body-strengthening/electron/electron /home/administrator/.hermes/cache/scratch/all-sources-20261010/run.cjs",
+      "sha256_after": "b45e05b8c043f0e715f9856ea400707bdf131b9c05b5014e1de9d0821a9972a7",
+      "sha256_unchanged": true,
+      "endpoint_detail": "Not executed because static review did not approve; not an initialization compatibility failure."
+    },
+    {
+      "file": "幻音音源 v3.js",
+      "sha256": "4a81129240ecae3ebf6b42f28c73e2d37bbcb6fccac9a73a401d90cdd36bee5f",
+      "decision": "approve-free-wy-only",
+      "manual_review": "可读完整脚本；wy只返回固定域名模板，mg搜索未测；songmid/id兼容。",
+      "grants": [
+        "music-dl.sayqz.com"
+      ],
+      "import": "passed-no-execution",
+      "init": "passed",
+      "endpoint": "failed",
+      "token": false,
+      "audio": {
+        "attempted": false
+      },
+      "events": [
+        {
+          "stage": "authorization",
+          "host": "music-dl.sayqz.com",
+          "status": "denied",
+          "error": "getaddrinfo ENOTFOUND music-dl.sayqz.com"
+        }
+      ],
+      "versions": {
+        "node": "24.21.0",
+        "electron": "43.7.5",
+        "chrome": "150.0.7871.250"
+      },
+      "review": {
+        "digest": "4a81129240ecae3ebf6b42f28c73e2d37bbcb6fccac9a73a401d90cdd36bee5f",
+        "version": "lexical-1",
+        "riskVersion": "browser-webrtc-1",
+        "method": "lexical",
+        "findings": [],
+        "domains": [
+          "api.xcvts.cn",
+          "music-dl.sayqz.com"
+        ],
+        "platforms": [
+          "kw",
+          "mg",
+          "tx",
+          "wy"
+        ],
+        "apis": [
+          "inited",
+          "musicUrl",
+          "request"
+        ],
+        "limits": "Text patterns only: comments/strings can cause false positives; aliases, computed properties, escapes, templates and remote code may evade detection. No AST, dataflow or safety proof."
+      },
+      "approval": {
+        "digest": "4a81129240ecae3ebf6b42f28c73e2d37bbcb6fccac9a73a401d90cdd36bee5f",
+        "reviewVersion": "lexical-1",
+        "riskVersion": "browser-webrtc-1",
+        "acknowledged": true
+      },
+      "qualities": [
+        "128k",
+        "320k",
+        "flac",
+        "flac24bit"
+      ],
+      "realm": {
+        "sandbox": true,
+        "nodeIntegration": false,
+        "contextIsolation": true
+      },
+      "reason": "getaddrinfo ENOTFOUND music-dl.sayqz.com",
+      "disabled": true,
+      "restartDisabled": true,
+      "durationMs": 513,
+      "exit_code": 0,
+      "command": "SOURCE_INDEX=11 timeout 25 xvfb-run -a --server-args=-screen 0 1280x1024x24 /home/administrator/.hermes/cache/scratch/lx-body-strengthening/electron/electron /home/administrator/.hermes/cache/scratch/all-sources-20261010/run.cjs",
+      "sha256_after": "4a81129240ecae3ebf6b42f28c73e2d37bbcb6fccac9a73a401d90cdd36bee5f",
+      "sha256_unchanged": true,
+      "endpoint_detail": "Fixed URL template candidate fails DNS ENOTFOUND; no HTTP/token/audio.",
+      "candidate_url_received": true,
+      "candidate_host": "music-dl.sayqz.com"
+    },
+    {
+      "file": "念心音源 v1.0.2.js",
+      "sha256": "86f6c05f8fef7169fd010a1da362824b5c4b7f5695f89d384fe53564f3fa88d2",
+      "decision": "blocked",
+      "manual_review": "blocked需人工复核：实读自定义base64字母表+RC4解码、旋转表和VERSION_CHECK_URL/平台注册计算属性；gitee只更新元数据，音乐域名未完成核实。",
+      "grants": [],
+      "import": "passed-no-execution",
+      "init": "blocked-static-review",
+      "endpoint": "not-run-blocked",
+      "token": false,
+      "audio": {
+        "attempted": false
+      },
+      "events": [],
+      "versions": {
+        "node": "24.21.0",
+        "electron": "43.7.5",
+        "chrome": "150.0.7871.250"
+      },
+      "review": {
+        "digest": "86f6c05f8fef7169fd010a1da362824b5c4b7f5695f89d384fe53564f3fa88d2",
+        "version": "lexical-1",
+        "riskVersion": "browser-webrtc-1",
+        "method": "lexical",
+        "findings": [
+          "obfuscation-hint"
+        ],
+        "domains": [
+          "gitee.com"
+        ],
+        "platforms": [
+          "kg",
+          "kw",
+          "mg",
+          "tx",
+          "wy"
+        ],
+        "apis": [
+          "musicUrl",
+          "request"
+        ],
+        "limits": "Text patterns only: comments/strings can cause false positives; aliases, computed properties, escapes, templates and remote code may evade detection. No AST, dataflow or safety proof."
+      },
+      "reason": "blocked需人工复核：实读自定义base64字母表+RC4解码、旋转表和VERSION_CHECK_URL/平台注册计算属性；gitee只更新元数据，音乐域名未完成核实。",
+      "disabled": true,
+      "restartDisabled": true,
+      "durationMs": 15,
+      "exit_code": 0,
+      "command": "SOURCE_INDEX=12 timeout 25 xvfb-run -a --server-args=-screen 0 1280x1024x24 /home/administrator/.hermes/cache/scratch/lx-body-strengthening/electron/electron /home/administrator/.hermes/cache/scratch/all-sources-20261010/run.cjs",
+      "sha256_after": "86f6c05f8fef7169fd010a1da362824b5c4b7f5695f89d384fe53564f3fa88d2",
+      "sha256_unchanged": true,
+      "endpoint_detail": "Not executed because static review did not approve; not an initialization compatibility failure."
+    },
+    {
+      "file": "收集の聚合接口.js",
+      "sha256": "cd4b68b133ef8de80a75ac6f9c5d9c80b383e1fe3c364f4366553d18ca9418a5",
+      "decision": "approve-free-wy-only",
+      "manual_review": "可读完整脚本；wy固定域名standard请求，ID只读hash/songmid，当前宿主只给id；tx内置key未调用/不授权。",
+      "grants": [
+        "api.cenguigui.cn"
+      ],
+      "import": "passed-no-execution",
+      "init": "passed",
+      "endpoint": "failed",
+      "token": false,
+      "audio": {
+        "attempted": false
+      },
+      "events": [
+        {
+          "stage": "request",
+          "host": "api.cenguigui.cn",
+          "method": "GET",
+          "optionKeys": [
+            "method",
+            "headers"
+          ],
+          "headerNames": [
+            "User-Agent"
+          ]
+        },
+        {
+          "stage": "authorization",
+          "host": "api.cenguigui.cn",
+          "status": "denied",
+          "error": "LX: private or unsupported network address"
+        },
+        {
+          "stage": "reply",
+          "status": null,
+          "error": "LX: private or unsupported network address"
+        }
+      ],
+      "versions": {
+        "node": "24.21.0",
+        "electron": "43.7.5",
+        "chrome": "150.0.7871.250"
+      },
+      "review": {
+        "digest": "cd4b68b133ef8de80a75ac6f9c5d9c80b383e1fe3c364f4366553d18ca9418a5",
+        "version": "lexical-1",
+        "riskVersion": "browser-webrtc-1",
+        "method": "lexical",
+        "findings": [],
+        "domains": [
+          "api.cenguigui.cn",
+          "cyapi.top",
+          "kw-api.cenguigui.cn"
+        ],
+        "platforms": [
+          "kw",
+          "tx",
+          "wy"
+        ],
+        "apis": [
+          "inited",
+          "musicUrl",
+          "request"
+        ],
+        "limits": "Text patterns only: comments/strings can cause false positives; aliases, computed properties, escapes, templates and remote code may evade detection. No AST, dataflow or safety proof."
+      },
+      "approval": {
+        "digest": "cd4b68b133ef8de80a75ac6f9c5d9c80b383e1fe3c364f4366553d18ca9418a5",
+        "reviewVersion": "lexical-1",
+        "riskVersion": "browser-webrtc-1",
+        "acknowledged": true
+      },
+      "qualities": [
+        "128k",
+        "320k",
+        "flac",
+        "flac24bit"
+      ],
+      "realm": {
+        "sandbox": true,
+        "nodeIntegration": false,
+        "contextIsolation": true
+      },
+      "reason": "LX script: LX: private or unsupported network address",
+      "disabled": true,
+      "restartDisabled": true,
+      "durationMs": 499,
+      "exit_code": 0,
+      "command": "SOURCE_INDEX=13 timeout 25 xvfb-run -a --server-args=-screen 0 1280x1024x24 /home/administrator/.hermes/cache/scratch/lx-body-strengthening/electron/electron /home/administrator/.hermes/cache/scratch/all-sources-20261010/run.cjs",
+      "sha256_after": "cd4b68b133ef8de80a75ac6f9c5d9c80b383e1fe3c364f4366553d18ca9418a5",
+      "sha256_unchanged": true,
+      "endpoint_detail": "DNS contains IPv6: current all-addresses IPv4-only policy denies before HTTP; script ID hash/songmid also absent in current host payload."
+    },
+    {
+      "file": "星海音乐源V3.2.15.js",
+      "sha256": "807d6157e4fd7cdd05b8727efd73778b54a3b05a0b5e4c6bb28dedc0668e94e9",
+      "decision": "blocked",
+      "manual_review": "blocked：实读URL_CONFIG/wy回退、KW ekey提取与解密代理、初始化fetchIp及更新；含密钥配置及认证/解密相关路径，不填密钥、不执行。原文件Node --check exit0；工具对密钥的***展示不是原文件语法错误。",
+      "grants": [],
+      "import": "passed-no-execution",
+      "init": "blocked-static-review",
+      "endpoint": "not-run-blocked",
+      "token": false,
+      "audio": {
+        "attempted": false
+      },
+      "events": [],
+      "versions": {
+        "node": "24.21.0",
+        "electron": "43.7.5",
+        "chrome": "150.0.7871.250"
+      },
+      "review": {
+        "digest": "807d6157e4fd7cdd05b8727efd73778b54a3b05a0b5e4c6bb28dedc0668e94e9",
+        "version": "lexical-1",
+        "riskVersion": "browser-webrtc-1",
+        "method": "lexical",
+        "findings": [
+          "unsupported-api"
+        ],
+        "domains": [
+          "${domain}${path}",
+          "${url_config.domains.chksznew}${url_config.paths.chksznetease}",
+          "${url_config.domains.chksznew}${url_config.paths.chkszqq}",
+          "anymatch.kuwo.cn",
+          "gc.kxwa.top",
+          "img1.kwcdn.kuwo.cn",
+          "m.kuwo.cn",
+          "mobi.kuwo.cn",
+          "nmobi.kuwo.cn",
+          "zddyr.top"
+        ],
+        "platforms": [
+          "kg",
+          "kw",
+          "mg",
+          "tx",
+          "wy"
+        ],
+        "apis": [
+          "inited",
+          "musicUrl",
+          "request",
+          "updateAlert"
+        ],
+        "limits": "Text patterns only: comments/strings can cause false positives; aliases, computed properties, escapes, templates and remote code may evade detection. No AST, dataflow or safety proof."
+      },
+      "reason": "blocked：实读URL_CONFIG/wy回退、KW ekey提取与解密代理、初始化fetchIp及更新；含密钥配置及认证/解密相关路径，不填密钥、不执行。原文件Node --check exit0；工具对密钥的***展示不是原文件语法错误。",
+      "disabled": true,
+      "restartDisabled": true,
+      "durationMs": 15,
+      "exit_code": 0,
+      "command": "SOURCE_INDEX=14 timeout 25 xvfb-run -a --server-args=-screen 0 1280x1024x24 /home/administrator/.hermes/cache/scratch/lx-body-strengthening/electron/electron /home/administrator/.hermes/cache/scratch/all-sources-20261010/run.cjs",
+      "sha256_after": "807d6157e4fd7cdd05b8727efd73778b54a3b05a0b5e4c6bb28dedc0668e94e9",
+      "sha256_unchanged": true,
+      "endpoint_detail": "Not executed because static review did not approve; not an initialization compatibility failure."
+    },
+    {
+      "file": "溯音音源_v1.js",
+      "sha256": "d10c9c28823b5c2ce4e3fef3b25b8ff16d2d165bd0883e2b866900ef7c0dc0ee",
+      "decision": "approve-free-wy-only",
+      "manual_review": "可读完整脚本；wy公开id GET、resp.body；QQ key只在tx分支、配置事件未实现，未填写调用。",
+      "grants": [
+        "oiapi.net"
+      ],
+      "import": "passed-no-execution",
+      "init": "failed",
+      "endpoint": "not-run-init-failed",
+      "token": false,
+      "audio": {
+        "attempted": false
+      },
+      "events": [],
+      "versions": {
+        "node": "24.21.0",
+        "electron": "43.7.5",
+        "chrome": "150.0.7871.250"
+      },
+      "review": {
+        "digest": "d10c9c28823b5c2ce4e3fef3b25b8ff16d2d165bd0883e2b866900ef7c0dc0ee",
+        "version": "lexical-1",
+        "riskVersion": "browser-webrtc-1",
+        "method": "lexical",
+        "findings": [
+          "obfuscation-hint",
+          "unsupported-api"
+        ],
+        "domains": [
+          "api.xcvts.cn",
+          "oiapi.net"
+        ],
+        "platforms": [
+          "kw",
+          "mg",
+          "tx",
+          "wy"
+        ],
+        "apis": [
+          "inited",
+          "musicUrl",
+          "request",
+          "showConfigView"
+        ],
+        "limits": "Text patterns only: comments/strings can cause false positives; aliases, computed properties, escapes, templates and remote code may evade detection. No AST, dataflow or safety proof."
+      },
+      "approval": {
+        "digest": "d10c9c28823b5c2ce4e3fef3b25b8ff16d2d165bd0883e2b866900ef7c0dc0ee",
+        "reviewVersion": "lexical-1",
+        "riskVersion": "browser-webrtc-1",
+        "acknowledged": true
+      },
+      "reason": "LX realm: LX: native error/unhandledrejection",
+      "disabled": true,
+      "restartDisabled": true,
+      "durationMs": 78,
+      "exit_code": 0,
+      "command": "SOURCE_INDEX=15 timeout 25 xvfb-run -a --server-args=-screen 0 1280x1024x24 /home/administrator/.hermes/cache/scratch/lx-body-strengthening/electron/electron /home/administrator/.hermes/cache/scratch/all-sources-20261010/run.cjs",
+      "sha256_after": "d10c9c28823b5c2ce4e3fef3b25b8ff16d2d165bd0883e2b866900ef7c0dc0ee",
+      "sha256_unchanged": true,
+      "endpoint_detail": "Native error/unhandled rejection during init; static unsupported showConfigView registration is a candidate cause, not independently proven root cause."
+    },
+    {
+      "file": "稳定版音源 v1.0.3.js",
+      "sha256": "5e5f39c1a51b6c005104f382b22cd0a3e0af2ba30c7003e4fd03bfcf9f6a088a",
+      "decision": "approve-free-wy-only",
+      "manual_review": "可读wy standard映射及HTTP解析/注册；tx内置key仅未调用分支，未授权tx。",
+      "grants": [
+        "api.injahow.cn"
+      ],
+      "import": "passed-no-execution",
+      "init": "passed",
+      "endpoint": "failed",
+      "token": false,
+      "audio": {
+        "attempted": false
+      },
+      "events": [
+        {
+          "stage": "request",
+          "host": "api.injahow.cn",
+          "method": "GET",
+          "optionKeys": [
+            "headers"
+          ],
+          "headerNames": [
+            "Accept",
+            "User-Agent"
+          ]
+        },
+        {
+          "stage": "authorization",
+          "host": "api.injahow.cn",
+          "status": "public-ip-pinned"
+        },
+        {
+          "stage": "reply",
+          "status": 404,
+          "error": null
+        }
+      ],
+      "versions": {
+        "node": "24.21.0",
+        "electron": "43.7.5",
+        "chrome": "150.0.7871.250"
+      },
+      "review": {
+        "digest": "5e5f39c1a51b6c005104f382b22cd0a3e0af2ba30c7003e4fd03bfcf9f6a088a",
+        "version": "lexical-1",
+        "riskVersion": "browser-webrtc-1",
+        "method": "lexical",
+        "findings": [],
+        "domains": [
+          "api.injahow.cn",
+          "cyapi.top",
+          "kw-api.cenguigui.cn",
+          "lxmusic.toside.cn"
+        ],
+        "platforms": [
+          "kw",
+          "tx",
+          "wy"
+        ],
+        "apis": [
+          "inited",
+          "musicUrl",
+          "request"
+        ],
+        "limits": "Text patterns only: comments/strings can cause false positives; aliases, computed properties, escapes, templates and remote code may evade detection. No AST, dataflow or safety proof."
+      },
+      "approval": {
+        "digest": "5e5f39c1a51b6c005104f382b22cd0a3e0af2ba30c7003e4fd03bfcf9f6a088a",
+        "reviewVersion": "lexical-1",
+        "riskVersion": "browser-webrtc-1",
+        "acknowledged": true
+      },
+      "qualities": [
+        "128k",
+        "320k",
+        "flac",
+        "flac24bit"
+      ],
+      "realm": {
+        "sandbox": true,
+        "nodeIntegration": false,
+        "contextIsolation": true
+      },
+      "reason": "LX script: 获取链接失败，可能是该歌曲无版权或接口维护",
+      "disabled": true,
+      "restartDisabled": true,
+      "durationMs": 327,
+      "exit_code": 0,
+      "command": "SOURCE_INDEX=16 timeout 25 xvfb-run -a --server-args=-screen 0 1280x1024x24 /home/administrator/.hermes/cache/scratch/lx-body-strengthening/electron/electron /home/administrator/.hermes/cache/scratch/all-sources-20261010/run.cjs",
+      "sha256_after": "5e5f39c1a51b6c005104f382b22cd0a3e0af2ba30c7003e4fd03bfcf9f6a088a",
+      "sha256_unchanged": true,
+      "endpoint_detail": "Fresh real HTTP404 on api.injahow.cn; script rejected; no audio candidate."
+    },
+    {
+      "file": "统一音乐源.js",
+      "sha256": "a18bdd58fd3f5e26d00c8c18d7b0825367f54a1c01bb8f8321ac7f5d374f1a7c",
+      "decision": "approve-free-wy-only",
+      "manual_review": "可读完整脚本；延迟100ms inited，wy按id请求GDAPI，resp.body解析；无认证、动态代码。",
+      "grants": [
+        "music-api.gdstudio.xyz"
+      ],
+      "import": "passed-no-execution",
+      "init": "passed",
+      "endpoint": "failed",
+      "token": false,
+      "audio": {
+        "attempted": false
+      },
+      "events": [
+        {
+          "stage": "request",
+          "host": "music-api.gdstudio.xyz",
+          "method": "GET",
+          "optionKeys": [
+            "timeout",
+            "headers"
+          ],
+          "headerNames": [
+            "User-Agent",
+            "Accept"
+          ]
+        },
+        {
+          "stage": "authorization",
+          "host": "music-api.gdstudio.xyz",
+          "status": "denied",
+          "error": "LX: private or unsupported network address"
+        },
+        {
+          "stage": "reply",
+          "status": null,
+          "error": "LX: private or unsupported network address"
+        }
+      ],
+      "versions": {
+        "node": "24.21.0",
+        "electron": "43.7.5",
+        "chrome": "150.0.7871.250"
+      },
+      "review": {
+        "digest": "a18bdd58fd3f5e26d00c8c18d7b0825367f54a1c01bb8f8321ac7f5d374f1a7c",
+        "version": "lexical-1",
+        "riskVersion": "browser-webrtc-1",
+        "method": "lexical",
+        "findings": [],
+        "domains": [
+          "music-api.gdstudio.xyz"
+        ],
+        "platforms": [
+          "kw",
+          "wy"
+        ],
+        "apis": [
+          "inited",
+          "musicUrl",
+          "request"
+        ],
+        "limits": "Text patterns only: comments/strings can cause false positives; aliases, computed properties, escapes, templates and remote code may evade detection. No AST, dataflow or safety proof."
+      },
+      "approval": {
+        "digest": "a18bdd58fd3f5e26d00c8c18d7b0825367f54a1c01bb8f8321ac7f5d374f1a7c",
+        "reviewVersion": "lexical-1",
+        "riskVersion": "browser-webrtc-1",
+        "acknowledged": true
+      },
+      "qualities": [
+        "128k",
+        "320k",
+        "flac"
+      ],
+      "realm": {
+        "sandbox": true,
+        "nodeIntegration": false,
+        "contextIsolation": true
+      },
+      "reason": "LX script: 所有音质尝试均失败",
+      "disabled": true,
+      "restartDisabled": true,
+      "durationMs": 334,
+      "exit_code": 0,
+      "command": "SOURCE_INDEX=17 timeout 25 xvfb-run -a --server-args=-screen 0 1280x1024x24 /home/administrator/.hermes/cache/scratch/lx-body-strengthening/electron/electron /home/administrator/.hermes/cache/scratch/all-sources-20261010/run.cjs",
+      "sha256_after": "a18bdd58fd3f5e26d00c8c18d7b0825367f54a1c01bb8f8321ac7f5d374f1a7c",
+      "sha256_unchanged": true,
+      "endpoint_detail": "DNS contains IPv6: unsupported-network policy denies before HTTP (not proven private address)."
+    },
+    {
+      "file": "聚合API接口 (CF) v3.js",
+      "sha256": "47648623f242fa8bccc8965d33666ac36147f63b68bd7776bb082e44e1c2d6f8",
+      "decision": "blocked",
+      "manual_review": "blocked：实读全部1005字节；init.conf远程决定声明，code303按服务端D.url/D.options发请求，未知动态域名不能预先审查授权；未发现eval，不误称远程代码执行。",
+      "grants": [],
+      "import": "passed-no-execution",
+      "init": "blocked-static-review",
+      "endpoint": "not-run-blocked",
+      "token": false,
+      "audio": {
+        "attempted": false
+      },
+      "events": [],
+      "versions": {
+        "node": "24.21.0",
+        "electron": "43.7.5",
+        "chrome": "150.0.7871.250"
+      },
+      "review": {
+        "digest": "47648623f242fa8bccc8965d33666ac36147f63b68bd7776bb082e44e1c2d6f8",
+        "version": "lexical-1",
+        "riskVersion": "browser-webrtc-1",
+        "method": "lexical",
+        "findings": [
+          "unsupported-api"
+        ],
+        "domains": [
+          "api.music.lerd.dpdns.org"
+        ],
+        "platforms": [],
+        "apis": [
+          "inited",
+          "request",
+          "updateAlert"
+        ],
+        "limits": "Text patterns only: comments/strings can cause false positives; aliases, computed properties, escapes, templates and remote code may evade detection. No AST, dataflow or safety proof."
+      },
+      "reason": "blocked：实读全部1005字节；init.conf远程决定声明，code303按服务端D.url/D.options发请求，未知动态域名不能预先审查授权；未发现eval，不误称远程代码执行。",
+      "disabled": true,
+      "restartDisabled": true,
+      "durationMs": 11,
+      "exit_code": 0,
+      "command": "SOURCE_INDEX=18 timeout 25 xvfb-run -a --server-args=-screen 0 1280x1024x24 /home/administrator/.hermes/cache/scratch/lx-body-strengthening/electron/electron /home/administrator/.hermes/cache/scratch/all-sources-20261010/run.cjs",
+      "sha256_after": "47648623f242fa8bccc8965d33666ac36147f63b68bd7776bb082e44e1c2d6f8",
+      "sha256_unchanged": true,
+      "endpoint_detail": "Not executed because static review did not approve; not an initialization compatibility failure."
+    },
+    {
+      "file": "裤佬SVIP音源(二改整合版) v3.0.0.js",
+      "sha256": "58e8cb1403a0eb394d6405dc560c3cd4329fa62aa19c5d753d048a9a6e626d97",
+      "decision": "approve-free-wy-only",
+      "manual_review": "可读完整脚本；wy空ChKSz key跳过，GD128优先；后续web对象body/后端，KW解密代理默认false且url空不测；SVIP名称不作违规证明。",
+      "grants": [
+        "music-api.gdstudio.xyz",
+        "c.wwwweb.top",
+        "yy.zddyr.top",
+        "zrcdy.dpdns.org"
+      ],
+      "import": "passed-no-execution",
+      "init": "passed",
+      "endpoint": "failed",
+      "token": false,
+      "audio": {
+        "attempted": false
+      },
+      "events": [
+        {
+          "stage": "request",
+          "host": "music-api.gdstudio.xyz",
+          "method": "GET",
+          "optionKeys": [
+            "timeout"
+          ],
+          "headerNames": []
+        },
+        {
+          "stage": "authorization",
+          "host": "music-api.gdstudio.xyz",
+          "status": "denied",
+          "error": "LX: private or unsupported network address"
+        },
+        {
+          "stage": "reply",
+          "status": null,
+          "error": "LX: private or unsupported network address"
+        },
+        {
+          "stage": "request",
+          "host": "c.wwwweb.top",
+          "method": "POST",
+          "optionKeys": [
+            "timeout",
+            "method",
+            "headers",
+            "body"
+          ],
+          "headerNames": [
+            "Content-Type"
+          ]
+        },
+        {
+          "stage": "reply",
+          "status": null,
+          "error": "LX: invalid body"
+        },
+        {
+          "stage": "request",
+          "host": "yy.zddyr.top",
+          "method": "GET",
+          "optionKeys": [
+            "timeout"
+          ],
+          "headerNames": []
+        },
+        {
+          "stage": "authorization",
+          "host": "yy.zddyr.top",
+          "status": "public-ip-pinned"
+        },
+        {
+          "stage": "reply",
+          "status": 200,
+          "error": null
+        },
+        {
+          "stage": "authorization",
+          "host": "m804.music.126.net",
+          "status": "denied",
+          "error": "LX: domain/port not authorized"
+        }
+      ],
+      "versions": {
+        "node": "24.21.0",
+        "electron": "43.7.5",
+        "chrome": "150.0.7871.250"
+      },
+      "review": {
+        "digest": "58e8cb1403a0eb394d6405dc560c3cd4329fa62aa19c5d753d048a9a6e626d97",
+        "version": "lexical-1",
+        "riskVersion": "browser-webrtc-1",
+        "method": "lexical",
+        "findings": [],
+        "domains": [
+          "api.chksz.com",
+          "api.music.lerd.dpdns.org",
+          "api.qs.la",
+          "api.qs.vip",
+          "api.vkeys.cn",
+          "c.wwwweb.top",
+          "jsnzkpg.github.io",
+          "music-api.gdstudio.xyz",
+          "nmobi.kuwo.cn",
+          "yy.zddyr.top",
+          "zrcdy.dpdns.org"
+        ],
+        "platforms": [
+          "kg",
+          "kw",
+          "mg",
+          "tx",
+          "wy"
+        ],
+        "apis": [
+          "inited",
+          "musicUrl",
+          "request"
+        ],
+        "limits": "Text patterns only: comments/strings can cause false positives; aliases, computed properties, escapes, templates and remote code may evade detection. No AST, dataflow or safety proof."
+      },
+      "approval": {
+        "digest": "58e8cb1403a0eb394d6405dc560c3cd4329fa62aa19c5d753d048a9a6e626d97",
+        "reviewVersion": "lexical-1",
+        "riskVersion": "browser-webrtc-1",
+        "acknowledged": true
+      },
+      "qualities": [
+        "128k",
+        "320k",
+        "flac",
+        "flac24bit"
+      ],
+      "realm": {
+        "sandbox": true,
+        "nodeIntegration": false,
+        "contextIsolation": true
+      },
+      "reason": "LX: domain/port not authorized",
+      "disabled": true,
+      "restartDisabled": true,
+      "durationMs": 4072,
+      "exit_code": 0,
+      "command": "SOURCE_INDEX=19 timeout 25 xvfb-run -a --server-args=-screen 0 1280x1024x24 /home/administrator/.hermes/cache/scratch/lx-body-strengthening/electron/electron /home/administrator/.hermes/cache/scratch/all-sources-20261010/run.cjs",
+      "sha256_after": "58e8cb1403a0eb394d6405dc560c3cd4329fa62aa19c5d753d048a9a6e626d97",
+      "sha256_unchanged": true,
+      "candidate_url_received": true,
+      "candidate_host": "m804.music.126.net",
+      "endpoint_detail": "HTTP200 returned audio candidate; exact media domain was not statically approved, authorization denied; no token/audio."
+    },
+    {
+      "file": "西瓜聚合.js",
+      "sha256": "d38afb4498fa72c6c34e98891bf3d454a01d2683d4a7e5144602f8298308948d",
+      "decision": "blocked",
+      "manual_review": "blocked：实读聚合回退和初始化；可选内置卡密认证、动态服务端请求配置及裸IP模板，未完整证明禁用分支不达，需人工复核。",
+      "grants": [],
+      "import": "passed-no-execution",
+      "init": "blocked-static-review",
+      "endpoint": "not-run-blocked",
+      "token": false,
+      "audio": {
+        "attempted": false
+      },
+      "events": [],
+      "versions": {
+        "node": "24.21.0",
+        "electron": "43.7.5",
+        "chrome": "150.0.7871.250"
+      },
+      "review": {
+        "digest": "d38afb4498fa72c6c34e98891bf3d454a01d2683d4a7e5144602f8298308948d",
+        "version": "lexical-1",
+        "riskVersion": "browser-webrtc-1",
+        "method": "lexical",
+        "findings": [
+          "unsupported-api"
+        ],
+        "domains": [
+          "175.27.166.236",
+          "api.cenguigui.cn",
+          "api.chksz.top",
+          "api.music.lerd.dpdns.org",
+          "api.vsaa.cn",
+          "api.xcvts.cn",
+          "cp.chksz.top",
+          "cyapi.top",
+          "kw-api.cenguigui.cn",
+          "lxmusicapi.onrender.com",
+          "m-api.ceseet.me",
+          "music-api.gdstudio.xyz",
+          "music-dl.sayqz.com",
+          "music.bxa241d4.shop",
+          "music.haitangw.cc",
+          "music.nxinxz.com",
+          "musicapi.haitangw.net",
+          "oiapi.net",
+          "yy.fangqihang.cn",
+          "zrcdy.dpdns.org"
+        ],
+        "platforms": [
+          "kg",
+          "kw",
+          "mg",
+          "tx",
+          "wy"
+        ],
+        "apis": [
+          "inited",
+          "musicUrl",
+          "request",
+          "updateAlert"
+        ],
+        "limits": "Text patterns only: comments/strings can cause false positives; aliases, computed properties, escapes, templates and remote code may evade detection. No AST, dataflow or safety proof."
+      },
+      "reason": "blocked：实读聚合回退和初始化；可选内置卡密认证、动态服务端请求配置及裸IP模板，未完整证明禁用分支不达，需人工复核。",
+      "disabled": true,
+      "restartDisabled": true,
+      "durationMs": 16,
+      "exit_code": 0,
+      "command": "SOURCE_INDEX=20 timeout 25 xvfb-run -a --server-args=-screen 0 1280x1024x24 /home/administrator/.hermes/cache/scratch/lx-body-strengthening/electron/electron /home/administrator/.hermes/cache/scratch/all-sources-20261010/run.cjs",
+      "sha256_after": "d38afb4498fa72c6c34e98891bf3d454a01d2683d4a7e5144602f8298308948d",
+      "sha256_unchanged": true,
+      "endpoint_detail": "Not executed because static review did not approve; not an initialization compatibility failure."
+    },
+    {
+      "file": "长青SVIP音源(二改修复版) v1.2.0.js",
+      "sha256": "48d5fed8b46344e9298d55427382ce573485a264a2ae287ed829e2f2548223e8",
+      "decision": "blocked",
+      "manual_review": "blocked需人工复核：实读双解码器base64/带key与旋转表、URL_CONFIG拼接及平台音质/更新逻辑；音乐端点未完全还原，不执行未知域名。",
+      "grants": [],
+      "import": "passed-no-execution",
+      "init": "blocked-static-review",
+      "endpoint": "not-run-blocked",
+      "token": false,
+      "audio": {
+        "attempted": false
+      },
+      "events": [],
+      "versions": {
+        "node": "24.21.0",
+        "electron": "43.7.5",
+        "chrome": "150.0.7871.250"
+      },
+      "review": {
+        "digest": "48d5fed8b46344e9298d55427382ce573485a264a2ae287ed829e2f2548223e8",
+        "version": "lexical-1",
+        "riskVersion": "browser-webrtc-1",
+        "method": "lexical",
+        "findings": [
+          "obfuscation-hint"
+        ],
+        "domains": [
+          "13413.kstore.vip"
+        ],
+        "platforms": [
+          "kg",
+          "kw",
+          "tx",
+          "wy"
+        ],
+        "apis": [
+          "request"
+        ],
+        "limits": "Text patterns only: comments/strings can cause false positives; aliases, computed properties, escapes, templates and remote code may evade detection. No AST, dataflow or safety proof."
+      },
+      "reason": "blocked需人工复核：实读双解码器base64/带key与旋转表、URL_CONFIG拼接及平台音质/更新逻辑；音乐端点未完全还原，不执行未知域名。",
+      "disabled": true,
+      "restartDisabled": true,
+      "durationMs": 15,
+      "exit_code": 0,
+      "command": "SOURCE_INDEX=21 timeout 25 xvfb-run -a --server-args=-screen 0 1280x1024x24 /home/administrator/.hermes/cache/scratch/lx-body-strengthening/electron/electron /home/administrator/.hermes/cache/scratch/all-sources-20261010/run.cjs",
+      "sha256_after": "48d5fed8b46344e9298d55427382ce573485a264a2ae287ed829e2f2548223e8",
+      "sha256_unchanged": true,
+      "endpoint_detail": "Not executed because static review did not approve; not an initialization compatibility failure."
+    },
+    {
+      "file": "长青SVIP音源v1.3.0.protected.js",
+      "sha256": "a212b016c8983bf0e2d45885959b5fa2b67bd2f0f41418324ee38bb6cca6330d",
+      "decision": "blocked",
+      "manual_review": "blocked需人工复核：实读累积XOR/加减数字数组解码、_ru固定yinyue.haitangw.net模板；wy仅songmid宿主缺失；_qw更新地址和初始化字符串未完全静态解码，不能仅因明文模板就批准执行。",
+      "grants": [],
+      "import": "passed-no-execution",
+      "init": "blocked-static-review",
+      "endpoint": "not-run-blocked",
+      "token": false,
+      "audio": {
+        "attempted": false
+      },
+      "events": [],
+      "versions": {
+        "node": "24.21.0",
+        "electron": "43.7.5",
+        "chrome": "150.0.7871.250"
+      },
+      "review": {
+        "digest": "a212b016c8983bf0e2d45885959b5fa2b67bd2f0f41418324ee38bb6cca6330d",
+        "version": "lexical-1",
+        "riskVersion": "browser-webrtc-1",
+        "method": "lexical",
+        "findings": [
+          "unsupported-api"
+        ],
+        "domains": [
+          "13413.kstore.vip",
+          "yinyue.haitangw.net"
+        ],
+        "platforms": [
+          "kg",
+          "kw",
+          "mg",
+          "tx",
+          "wy"
+        ],
+        "apis": [
+          "inited",
+          "musicUrl",
+          "request",
+          "updateAlert"
+        ],
+        "limits": "Text patterns only: comments/strings can cause false positives; aliases, computed properties, escapes, templates and remote code may evade detection. No AST, dataflow or safety proof."
+      },
+      "reason": "blocked需人工复核：实读累积XOR/加减数字数组解码、_ru固定yinyue.haitangw.net模板；wy仅songmid宿主缺失；_qw更新地址和初始化字符串未完全静态解码，不能仅因明文模板就批准执行。",
+      "disabled": true,
+      "restartDisabled": true,
+      "durationMs": 14,
+      "exit_code": 0,
+      "command": "SOURCE_INDEX=22 timeout 25 xvfb-run -a --server-args=-screen 0 1280x1024x24 /home/administrator/.hermes/cache/scratch/lx-body-strengthening/electron/electron /home/administrator/.hermes/cache/scratch/all-sources-20261010/run.cjs",
+      "sha256_after": "a212b016c8983bf0e2d45885959b5fa2b67bd2f0f41418324ee38bb6cca6330d",
+      "sha256_unchanged": true,
+      "endpoint_detail": "Not executed because static review did not approve; not an initialization compatibility failure."
+    },
+    {
+      "file": "非常刀 v5.js",
+      "sha256": "49486cab064e64d5ad63723e670c44ee55eadadcc790ccf493351fbde64284d7",
+      "decision": "approve-free-wy-only",
+      "manual_review": "可读完整脚本；wy128并发三公开API，再模板回退；IP175.27.166.236不获授权，QQ内置key及qs未调用；无动态代码。",
+      "grants": [
+        "api.chksz.top",
+        "music-api.gdstudio.xyz",
+        "oiapi.net",
+        "music.nxinxz.com"
+      ],
+      "import": "passed-no-execution",
+      "init": "passed",
+      "endpoint": "failed",
+      "token": false,
+      "audio": {
+        "attempted": false
+      },
+      "events": [
+        {
+          "stage": "request",
+          "host": "api.chksz.top",
+          "method": "GET",
+          "optionKeys": [
+            "method",
+            "timeout",
+            "headers"
+          ],
+          "headerNames": [
+            "Accept",
+            "Referer"
+          ]
+        },
+        {
+          "stage": "reply",
+          "status": null,
+          "error": "LX: unsupported header"
+        },
+        {
+          "stage": "request",
+          "host": "music-api.gdstudio.xyz",
+          "method": "GET",
+          "optionKeys": [
+            "method",
+            "timeout",
+            "headers"
+          ],
+          "headerNames": [
+            "Accept"
+          ]
+        },
+        {
+          "stage": "authorization",
+          "host": "music-api.gdstudio.xyz",
+          "status": "denied",
+          "error": "LX: private or unsupported network address"
+        },
+        {
+          "stage": "request",
+          "host": "oiapi.net",
+          "method": "GET",
+          "optionKeys": [
+            "method",
+            "timeout",
+            "headers"
+          ],
+          "headerNames": [
+            "Accept"
+          ]
+        },
+        {
+          "stage": "authorization",
+          "host": "oiapi.net",
+          "status": "public-ip-pinned"
+        },
+        {
+          "stage": "reply",
+          "status": null,
+          "error": "LX: private or unsupported network address"
+        },
+        {
+          "stage": "reply",
+          "status": 200,
+          "error": null
+        },
+        {
+          "stage": "authorization",
+          "host": "m701.music.126.net",
+          "status": "denied",
+          "error": "LX: domain/port not authorized"
+        }
+      ],
+      "versions": {
+        "node": "24.21.0",
+        "electron": "43.7.5",
+        "chrome": "150.0.7871.250"
+      },
+      "review": {
+        "digest": "49486cab064e64d5ad63723e670c44ee55eadadcc790ccf493351fbde64284d7",
+        "version": "lexical-1",
+        "riskVersion": "browser-webrtc-1",
+        "method": "lexical",
+        "findings": [],
+        "domains": [
+          "175.27.166.236",
+          "api-vehicle.volcengine.com",
+          "api.chksz.top",
+          "api.qishui.com",
+          "api.xcvts.cn",
+          "cp.chksz.top",
+          "music-api.gdstudio.xyz",
+          "music.haitangw.cc",
+          "music.nxinxz.com",
+          "musicapi.haitangw.net",
+          "oiapi.net",
+          "t.me"
+        ],
+        "platforms": [
+          "kg",
+          "kw",
+          "mg",
+          "tx",
+          "wy"
+        ],
+        "apis": [
+          "inited",
+          "musicUrl",
+          "request"
+        ],
+        "limits": "Text patterns only: comments/strings can cause false positives; aliases, computed properties, escapes, templates and remote code may evade detection. No AST, dataflow or safety proof."
+      },
+      "approval": {
+        "digest": "49486cab064e64d5ad63723e670c44ee55eadadcc790ccf493351fbde64284d7",
+        "reviewVersion": "lexical-1",
+        "riskVersion": "browser-webrtc-1",
+        "acknowledged": true
+      },
+      "qualities": [
+        "128k",
+        "320k",
+        "flac",
+        "flac24bit"
+      ],
+      "realm": {
+        "sandbox": true,
+        "nodeIntegration": false,
+        "contextIsolation": true
+      },
+      "reason": "LX: domain/port not authorized",
+      "disabled": true,
+      "restartDisabled": true,
+      "durationMs": 705,
+      "exit_code": 0,
+      "command": "SOURCE_INDEX=23 timeout 25 xvfb-run -a --server-args=-screen 0 1280x1024x24 /home/administrator/.hermes/cache/scratch/lx-body-strengthening/electron/electron /home/administrator/.hermes/cache/scratch/all-sources-20261010/run.cjs",
+      "sha256_after": "49486cab064e64d5ad63723e670c44ee55eadadcc790ccf493351fbde64284d7",
+      "sha256_unchanged": true,
+      "candidate_url_received": true,
+      "candidate_host": "m701.music.126.net",
+      "endpoint_detail": "HTTP200 returned audio candidate; exact media domain was not statically approved, authorization denied; no token/audio."
+    }
+  ]
+}

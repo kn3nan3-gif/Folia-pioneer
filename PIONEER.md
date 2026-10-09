@@ -1,5 +1,7 @@
 # Folia-pioneer：第一阶段独立基线
 
+> 当前主线为隐藏 BrowserWindow + sandbox preload；最新合同与证据见 [浏览器脚本兼容路线](docs/plans/browser-script-runtime.md)。下列 QuickJS/旧 WebRTC 阻断及各轮验收均为历史，不是当前路线保证。QuickJS worker 与旧测试已从 main 清理，可从已远端保存的 `experiment/quickjs-checkpoint`（`aec7eac310cd6b204a77ea821c4c0d75b6a39bdc`）恢复；清理证据见 [最小清理](docs/evidence/minimal-runtime-cleanup-20261010.md)。
+
 ## Promise/async 初始化拒绝：技术阻塞（本轮，REQUEST_CHANGES，待独立 spec/quality）
 
 - 已确认 QuickJS **0.23.0** 的 `runtime.d.ts:139–141` 明示 executePendingJobs 不返回常见 Promise/async 拒绝；`types.d.ts:91` 的 promiseRejectionHandler 是 TODO/never。实际 runtime、FFI、WASM JS 导出均无 rejection tracker。没有猜 API、升级包或改 Promise 原型作为生产修复。
@@ -17,7 +19,7 @@
 - 2378文件生产/ext4清单 `quality-fix-ext4-manifest.json` SHA256 `a76a3f42d2657007ccb3d797787939e92666d23e286f338fc490f043185a4a26`；8轮命令均记录版本/exit/前后无漂移。新asar86条目、8个LX模块逐字节一致，SHA256 `e5903cf7c0f4638d67db564452ac32af8fee32442f3a2b4d1b1d6ab1a338e98a`。旧6880清单不绑定本轮代码。
 - 完整日志/summary/改前backup在 `/home/administrator/.hermes/cache/scratch/folia-lx/quality-fix*`、`spec-recheck-quality-fix*`、`win-quality-*`。loopback授权与native picker为测试注入；新Windows并发用rename gate固定交叠、EACCES注入验证失败，不冒充真实系统故障。180秒慢网未重跑，stream SHA已改变，旧证据只作历史；未验完整桌面/平台登录/可听设备，未执行24用户音源，无安装升级commit/push，原三仓只读，Biu计划/UI不改。
 
-## QuickJS 正式接入（待独立 spec → quality；旧浏览器证据仅历史）
+## QuickJS 接入历史（仅实验分支；非当前正式路径）
 
 - `electron/lx/runtime.cjs` 已改用 Electron `utilityProcess` 与 `quickjs-worker.cjs`，不调用 BrowserWindow/executeJavaScript，无旧浏览器 fallback；旧 preload 入口明确拒绝。QuickJS 0.23.0 升为精确直接生产依赖，只改根 lock 声明，未安装或升级其他包。宿主有可信 Node 权限，隔离边界是无 module loader 的 QuickJS realm，不是 OS 网络 sandbox。
 - 仅字符串 JSON 传输；8MiB 客体内存、256KiB stack、每执行片100ms interrupt、100 Promise jobs、64个一次性timer、4个解析/8个网络/2000消息预算、初始化/解析timeout及1.5s外部watchdog。保留 LX init/on/send/request/cancel、Promise和setTimeout/clearTimeout；不支持 interval/full utils。崩溃清token/abort/pending，并同步manager inactive；spawn失败不锁死enable。
@@ -27,7 +29,7 @@
 - 补验完成（仍待独立spec→quality）：Windows Electron44.3.0真实生产app.asar utility通过非法options24（授权/DNS/connect/HTTP全0）、合法5及cancel晚回slot0；RTC96次读取无能力/UDP0/HTTP1，DOM/frame/meta明确不支持；普通app RTC未禁用。constructor/async Node与node:fs module拒绝。实际manager crash→inactive/报错→再enable、initfail恢复、disable pending/init、CPU/OOM/stack/Promise/timer、2000IPC消息/4并发第5拒绝通过。lost-ACK故障注入验证真实1.5s watchdog杀child并收到exit；不是实际挂死可信Node。超大消息由2500ms初始化timeout关闭。
 - script→lx.request→HTTP→token→sandbox Audio seeked/ended通过，Range/私网0/重授权拒绝/410/abort通过。Node36、103文件1000项（含LX cache/automix排除）、typecheck、sandbox Chromium管理组件1项均新跑exit0，管理IPC明确mock。生产/ext42375文件清单 `quickjs-recovery-ext4-manifest.json` SHA256 `6880c87738487ccc56295b5ce3a5116cba7889b9ef1d031c718aeb9bb36c38c9`；日志 `spec-recheck-qjs-verified-{regression,typecheck,component}`、`recovery-node-verified`、`win-{options,rtc,audio,lifecycle}-verified`记录版本/命令/exit/无漂移。asar86条目生产8个runtime文件逐字节匹配；媒体180s慢网仅沿用相同SHA历史。首轮lifecycle断言错误exit1保留，不是生产修复。只改测试/文档，生产未改，未执行用户24脚本，无安装升级commit/push/release。
 
-## 旧浏览器 LX WebRTC 未授权 UDP（历史阻塞，已由上方QuickJS替换）
+## 旧浏览器 LX WebRTC 未授权 UDP（历史无 RTC 合同；当前路线明确披露旁路风险）
 
 - 本轮未取得可靠 GREEN，不批准网络隔离合同。真实生产 `ScriptRuntime`、domains=[]、sandbox=true：原单入口 STUN 自有 UDP RED 为4包80bytes；新增 `test/lx-webrtc-acceptance.cjs` 覆盖标准/webkit、descriptor/prototype.constructor、about:blank 子frame、meta移除/放宽尝试，最终96包1920bytes、exit1；Worker入口实际异步 SecurityError。只绑定自有127.0.0.1随机UDP端口，未扫描。
 - 查证 Electron protocol/session 官方文档及 Chromium 150源码的 Connection-Allowlist 原生阻断；尝试专属session HTTPS handler 返回 `Connection-Allowlist: ();webrtc=block`，执行脚本前fail-closed检查未通过。独立真实HTTP对照及显式启用该已查证feature仍返回OPEN；不能把源码存在当现成Electron已有效。失败候选仅留scratch `webrtc-native-candidate-rejected.cjs`，生产runtime已按备份逐字节恢复，未留下导致所有音源不可用的假修复。未采用可恢复JS遮盖、全应用关RTC、禁sandbox或安装升级。

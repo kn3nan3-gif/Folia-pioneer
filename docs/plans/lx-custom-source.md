@@ -1,4 +1,6 @@
-# LX 自定义音源首切片（待独立 spec → quality）
+# LX 自定义音源首切片（历史实施记录）
+
+> 当前主线为隐藏 BrowserWindow + sandbox preload，执行须绑定脚本摘要及明确风险审批；最新合同与证据以 [浏览器脚本兼容路线](browser-script-runtime.md) 为准。下文 QuickJS utility、杀 utility、无 RTC 与初始化阻塞均为历史，不能套用于当前主线；浏览器资源不继承 QuickJS 预算，WebRTC 旁路仍须披露。已清理的 worker/旧测试可从远端 `experiment/quickjs-checkpoint`（`aec7eac310cd6b204a77ea821c4c0d75b6a39bdc`）恢复，见 [最小清理证据](../evidence/minimal-runtime-cleanup-20261010.md)。网络/媒体有效回归保留。
 
 ## Promise/async 初始化拒绝：技术阻塞（本轮，REQUEST_CHANGES，待独立 spec/quality）
 
@@ -16,7 +18,7 @@
 - 最终Node26.7.0 38/38、109文件1038/1038、typecheck和diff-check exit0；Windows44.3.0新quality/options/cancel/lifecycle/Audio四轮均exit0，未重试/flaky。2378文件清单SHA `a76a3f42d2657007ccb3d797787939e92666d23e286f338fc490f043185a4a26`，8轮前后无漂移；新asar86条目/8LX模块匹配，SHA `e5903cf7c0f4638d67db564452ac32af8fee32442f3a2b4d1b1d6ab1a338e98a`。旧6880清单不用于本轮。
 - 日志 `/home/administrator/.hermes/cache/scratch/folia-lx/`：`quality-fix-{original-red,redirect-red,redirect-green,manager-red,manager-green}.log`，`spec-recheck-quality-fix-{node,redirect,regression,typecheck}`、`win-quality-{fix,options,lifecycle,audio}` log/result及`quality-fix-summary.json`。改前`quality-fix-backup/`。180秒慢网不重跑；stream SHA因本次catch改变，旧慢网仅历史不冒称同SHA当前验证。loopback/picker注入边界不变，未执行24用户源/完整平台/桌面/可听设备，无安装升级commit/push，未改Biu计划/UI；自测不等于独立批准。
 
-## QuickJS 正式接入（待独立 spec → quality；旧浏览器证据仅历史）
+## QuickJS 接入历史（仅实验分支；非当前正式路径）
 
 - `electron/lx/runtime.cjs` 已改用 Electron `utilityProcess` 与 `quickjs-worker.cjs`，不调用 BrowserWindow/executeJavaScript，无旧浏览器 fallback；旧 preload 入口明确拒绝。QuickJS 0.23.0 升为精确直接生产依赖，只改根 lock 声明，未安装或升级其他包。宿主有可信 Node 权限，隔离边界是无 module loader 的 QuickJS realm，不是 OS 网络 sandbox。
 - 仅字符串 JSON 传输；8MiB 客体内存、256KiB stack、每执行片100ms interrupt、100 Promise jobs、64个一次性timer、4个解析/8个网络/2000消息预算、初始化/解析timeout及1.5s外部watchdog。保留 LX init/on/send/request/cancel、Promise和setTimeout/clearTimeout；不支持 interval/full utils。崩溃清token/abort/pending，并同步manager inactive；spawn失败不锁死enable。
@@ -27,13 +29,13 @@
 - 真实script→lx.request→HTTP JSON→media token→sandbox Audio seeked/ended/currentTime1通过；Range56bytes、redirect私网0、重授权拒绝、撤销410/pending abort通过。Node36、相关103文件1000项、typecheck、sandbox Chromium管理组件1项均新实跑exit0，管理IPC明确mock。生产/ext42375文件清单 `quickjs-recovery-ext4-manifest.json` SHA256 `6880c87738487ccc56295b5ce3a5116cba7889b9ef1d031c718aeb9bb36c38c9`；`spec-recheck-qjs-verified-{regression,typecheck,component}` 与 `recovery-node-verified`、`win-{options,rtc,audio,lifecycle}-verified` log/result记录命令/版本/exit/前后无漂移。asar86条目与生产8个runtime模块逐字节一致。180sMP3/FLAC64KiB慢网仅沿用相同media-stream/media SHA历史，不冒充新重跑。
 - 首轮lifecycle错误地要求init必须reject，实际先init后fatal而exit1，保留 `win-lifecycle-first.log`；修正测试等待关闭，未改生产。watchdog是lost-ACK注入不是成功挂死可信Node宿主。未执行24用户脚本，无安装升级/commit/push/release；独立spec→quality仍待审，不批准发布。
 
-## 已交付边界
+## QuickJS 时期已交付边界（历史；当前以浏览器路线为准）
 
 只接本地 .js 导入 → 主进程 SHA-256 存储 → Folia 管理面板显式域名确认 → 独立 QuickJS utility runtime → Omni 网易云 musicUrl。不下载执行第三方脚本；自写 fixture，不复制 LX / biu 实现。原 4 provider 搜索、来源标识、混合列表不变。不包含账号、B站、下载、同步及 kw/mg 检索。
 
 管理入口：固定音源按钮及 desktop command `lx-sources`；i18n en/zh-CN，命令另含 in。导入保存原脚本文本、摘要、文件 basename 和确认过的域名，不保存原本地路径。上限 20 脚本、256 KiB/脚本；重启从不自动运行。最多启用一个；更改脚本形成新摘要，不继承授权。移除需确认。启用失败抛错，已启用解析失败不调用原 provider；未启用/非网易云仍用原路径。
 
-## 精确兼容合同
+## QuickJS 时期精确兼容合同（历史；当前增量见浏览器路线）
 
 `lx.version=2.0.0`、`env=desktop`、`currentScriptInfo` 含 basename/id，version/author/description 暂空，不解析元数据头。单槽 `on(request, handler)`；`send(inited)` 一次且先注册 handler；init 必须声明 wy/musicUrl 及支持 qualitys，与本切片交集。其余 source 不路由。`updateAlert`、search、任意事件不支持，明确报错。utils.crypto/buffer/zlib 入口明确抛不支持；未知 utils 不存在，不能称全 LX 兼容。
 
@@ -41,7 +43,7 @@
 
 `lx.request(url,options,callback(err,response,body))` 返回 cancel 函数。options 默认省略/{}有效，仅允许自有字段 method/timeout/headers/body/form；其余字段（包括 proxy、cookies、rejectUnauthorized、formData 即使 false/null）按存在明确拒绝，组合不部分执行。所有字段校验均在授权/DNS/网络前，错误回到 callback。method必须字符串 GET/POST/PUT/DELETE/HEAD（大小写不敏感），timeout必须正有限number，执行clamp至100ms–15s；headers必须非null非数组对象且仅字符串 Accept/Content-Type/User-Agent；body必须字符串；form必须非null非数组对象且值仅字符串/有限number/boolean，body与form同时出现拒绝，序列化最多64KiB。formData、cookies、Authorization、代理、自定义证书、Buffer、全 utils 均不支持。JSON body 自动解析，否则字符串；response.statusCode/headers。<=1MiB 响应，最多3次重定向逐跳授权；4个解析/8个网络并发、2000消息总预算、128KiB消息、初始化和解析15s预算。停用杀utility、abort网络、拒绝 pending，不接晚回。
 
-## 旧浏览器 WebRTC 未授权UDP阻塞（历史REQUEST_CHANGES，已由QuickJS替换）
+## 旧浏览器 WebRTC 未授权UDP阻塞（历史无 RTC 合同；当前明确披露旁路）
 
 真实生产sandbox、domains=[]并不能隔离ICE/STUN。单标准入口实收自有UDP4包80bytes；新增 `test/lx-webrtc-acceptance.cjs` 标准/webkit、descriptor及prototype.constructor、about:blank子frame、meta放宽尝试最终96包1920bytes（exit1）；Worker异步SecurityError。仅自有随机loopback端口，不扫描。不能再把下文“直接页面网络阻断”解读为全部网络隔离已成立。
 
@@ -49,7 +51,7 @@
 
 2370实现/测试/配置文件清单 `webrtc-final-manifest.json` SHA256 `fe7e0de521ea0042c60f0c34df9375d6b3aa07cc317062d04266fca64701afa4`。`spec-recheck-webrtc-final-{red,node-bound,sandbox,security,runtime,typecheck,regression}.log` 完整命令/Node26.7.0/exit及前后生产/ext4SHA一致；Electron43.7.5/Chromium150.0.7871.250。除WebRTC exit1，其余exit0：Node34、103文件1000项、typecheck、sandbox安全8、非法options24授权/DNS/connect/hit0与合法5+cancel、broker→token→Audio ended。媒体及180秒测试SHA与旧options清单一致，未重跑长慢网，不将旧证据伪装本轮。日志 `/home/administrator/.hermes/cache/scratch/folia-lx/`，summary `webrtc-final-summary.json`；失败/timeout/DBus保留。管理IPCmock、rebind constructor注入及完整桌面/平台/可听设备未验收不变，等待父spec再quality。
 
-## 旧浏览器隔离说明（已被上方QuickJS替换；下方网络/媒体合同仍保留）
+## 早期浏览器隔离说明（历史；当前路线见 browser-script-runtime.md，网络/媒体合同仍保留）
 
 独立非 persist partition，sandbox=true、nodeIntegration=false、contextIsolation=true、webSecurity=true；专用 preload 仅 lx，不使用 app preload；阻断直接页面网络、导航、弹窗/webview，权限全拒绝。仅首次精确 bootstrap data URL 放行。IPC 验证 runtime/main 的 sender 与 mainFrame。主进程请求无 cookie/用户凭据；域名严格 exact 无 wildcard/IP，仅80/443；DNS全部记录公网 IPv4，拒绝内网/loopback/保留地址及全部 IPv6，连接固定查验 IP，逐跳重验防 DNS rebinding。
 
