@@ -100,6 +100,15 @@ resp.body 与 wy 支持音质交集切片已获独立规格 PASS、独立质量 
 
 此前浏览器功能检查点 main=4f68d27b5810d7c6c0cbbdec1894d55129bec6df、QuickJS 保存分支=aec7eac310cd6b204a77ea821c4c0d75b6a39bdc 均已推送并远端回读。AGENTS.md 的推送状态补写曾因保护审批超时未完成，其中“实验分支尚未推送”是过时信息；未绕过保护。当前本切片按用户已授权保存开发检查点，精确提交与同步结果以实际远端回读为准。
 
+### 9.9 body 契约 owned 测试补强（待独立复核）
+
+- 基线 HEAD `13f32c0e41b1f35ab54665437b15f281cd7b21cb`，开始时工作区干净。改前备份 `../Folia-pioneer-backups/lx-body-strengthening-20261010-013428/` 保存 body 测试、本计划及 SHA manifest。仅修改 `test/lx-body-acceptance.cjs` 和本节；不改产品、AGENTS、依赖，不提交/推送或执行用户源。
+- 保留既有四 body、音质交集和 duplicate init 断言。新增 JSON null/false/-12.5/中文 emoji string，及 UTF8 中文+emoji 原始文本；MAIN world 严格验证预期值与类型、`resp.body === body`。只注入精确自有 loopback origin 的 test authorize，生产网络策略不变。
+- 新增真实 HTTP 回调同步未捕获 throw：两次 resolve 已在途、两条 network 已登记，以 owned server 到达事件放行响应；两次 resolve 均因 `LX: bridge callback failed` 拒绝而非超时，realm 销毁、pending/network 清空、悬挂连接收到关闭且对应 AbortSignal 已中止。停止后 resolve 拒绝，新实例可启动并解析；回调内自行捕获异常另连续两次成功，不误判 fatal。宿主 unhandledRejection 监听覆盖此失败及重启路径，断言零事件；无新增 sleep/retry。既有实现首次实跑 PASS，不假造 RED、不改产品。
+- 原 Node24/ext4 Electron 缓存已清理；在 scratch `lx-body-strengthening/` 恢复独立 Node v24.21.0 与 Electron v43.7.5 官方二进制，不新增项目依赖。当前全部9个 LX 模块和5个相关测试共14文件同步至该目录 `work/`，运行前后 SHA 均与原仓一致（`sync-before.json` / `sync-after.json`）。
+- 实跑：原仓 `node --test test/lx-custom-source.test.cjs test/lx-request-options.test.cjs` 28 PASS exit0。ext4 副本逐个 `timeout 45 xvfb-run -a --server-args='-screen 0 1280x1024x24' <scratch-electron>/electron test/<name>.cjs`：body、browser-rejection（9例）、browser-lifecycle 全 exit0；sandbox=true 未关闭。`git diff --check` exit0。scratch 证据根 `~/.hermes/cache/scratch/lx-body-strengthening/` 保存日志与 `commands.json`（命令/版本/exit）；DBus 环境警告非测试失败。
+- 未发现新增产品缺陷；只补上述合同覆盖，不代表原生 renderer 崩溃（lifecycle仍为信号注入）、Windows、UI、完整 LX、第三方端点或长时播放验收。独立规格审查 PASS、独立质量审查 APPROVED，均限本次测试补强；规格复跑 Node28项及 Electron body/rejection/lifecycle 全通过，质量另独立复跑 body exit0。两次审查均核对14文件运行前后 SHA 一致，diff-check exit0，未关闭 sandbox。事件门控、连接关闭证据先于统一清理、错误必须为 bridge callback failed 而非 timeout 已核查。按既定授权保存开发检查点；AGENTS 的保护审批阻塞仍未绕过，当前状态以本计划与实际 Git 回读为准。
+
 ### 9.2 待审查与明确边界
 
 没有直接可打包AST parser；不增加依赖。报告是保守文本词法提示，注释/字符串可误报，别名/动态属性/编码/远端代码可漏报，绝非AST/数据流/安全证明。WebRTC仍可达，域名授权仅约束broker而非浏览器全部网络；UI明确披露。MAIN world事件监听不是恶意可信脚本无法篡改的防线，150ms settle窗口仅覆盖初始化常见迟发事件，晚异常会停用，不保证任意未来错误在ready前发生。浏览器资源不继承QuickJS堆/CPU/jobs/timer预算，保留host请求/消息/网络预算与超时，不宣称不可信代码沙箱。
