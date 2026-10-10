@@ -2,9 +2,24 @@ const dns = require('node:dns').promises;
 const http = require('node:http');
 const https = require('node:https');
 const net = require('node:net');
+// IPv6 is assessed only for DNS-set safety, never used as a connection candidate.
+// Fail closed outside ordinary global unicast, including mapped/translated IPv4,
+// local, multicast, transition, special-purpose and documentation prefixes.
+function isPublicV6(address) {
+    if (net.isIP(address) !== 6 || address.includes('%') || address.includes('.')) return false;
+    const halves = address.split('::');
+    const left = halves[0] ? halves[0].split(':') : [];
+    const right = halves[1] ? halves[1].split(':') : [];
+    const words = halves.length === 2 ? [...left, ...Array(8 - left.length - right.length).fill('0'), ...right] : left;
+    const [a, b] = words.map(word => parseInt(word, 16));
+    return a >= 0x2000 && a <= 0x3fff &&
+        !(a === 0x2001 && (b <= 0x01ff || b === 0x0db8)) &&
+        a !== 0x2002 && !(a === 0x3fff && b <= 0x0fff);
+}
 // Broker pins a checked public IPv4 address: DNS rebinding cannot change the connection.
 function isPublic(address) {
-    if (net.isIP(address) !== 4) return false; // IPv6 deliberately unsupported in the first slice.
+    if (net.isIP(address) === 6) return isPublicV6(address);
+    if (net.isIP(address) !== 4) return false;
     const [a, b] = address.split('.').map(Number);
     return !(a === 0 || a === 10 || a === 127 || a >= 224 || (a === 169 && b === 254) ||
         (a === 172 && b >= 16 && b <= 31) || (a === 192 && [0, 168].includes(b)) ||
@@ -15,8 +30,10 @@ async function authorizeUrl(value, domains, lookup = hostname => dns.lookup(host
     if (value.length > 2048 || !['http:', 'https:'].includes(url.protocol) || url.username || url.password ||
         !domains.includes(url.hostname) || (url.port && !['80', '443'].includes(url.port))) throw new Error('LX: domain/port not authorized');
     const addresses = await lookup(url.hostname);
-    if (!addresses.length || addresses.some(item => !isPublic(item.address))) throw new Error('LX: private or unsupported network address');
-    return { url, address: addresses[0].address };
+    if (!addresses.length || addresses.some(item => !isPublic(item.address) || item.family !== net.isIP(item.address))) throw new Error('LX: private or unsupported network address');
+    const candidate = addresses.find(item => item.family === 4);
+    if (!candidate) throw new Error('LX: IPv6-only network unsupported (public IPv4 required)');
+    return { url, address: candidate.address };
 }
 // Each redirect re-enters authorization. Abort destroys both pending and active requests.
 function request(value, options = {}, domains, signal, authorize = authorizeUrl, media = false) {

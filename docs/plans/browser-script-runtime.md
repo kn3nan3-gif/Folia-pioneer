@@ -130,6 +130,20 @@ Node24.21.0七文件41项 PASS；Electron43.7.5/Xvfb七套 body/rejection/lifecy
 
 独立规格 PASS、质量 APPROVED，均仅限 console、on 返回语义、脚本信息门控与网易字段切片。规格独立运行 environment 10例、body、rejection 9例及 script-info，通过；旧 HEAD 对照能检出 console/on/info/songmid 缺口。质量独立运行 Node script-info/custom-source/manager、Electron environment/rejection，全 exit0；另7组握手/sender/预算/清理/控制字符检查通过。两次审查均核对28文件运行前后 SHA 一致，sandbox=true，diff-check通过。非阻塞建议：将握手负例及最坏转义预算检查补成仓内持久测试，尚未纳入本次提交。完整 LX API、Windows/UI、第三方源、长时播放及原生崩溃仍未验收。
 
+### 9.13 双栈 DNS 公网 IPv4 选择（待独立 spec→quality）
+
+- 基线 `c0bf251ec7d46c9997b6bde55a72c015c2d4a9e5`，工作区开始干净；改前备份 `../Folia-pioneer-backups/lx-dual-stack-20261010-184216/`，三个既有文件及 SHA manifest 验证。仅 network 产品逻辑、media-stream 注释、新增 `test/lx-network.test.cjs` 和本节；不改 console/on/info、AGENTS、依赖，不提交/推送、不执行第三方源或扩域。
+- 将全 DNS 集安全评估与连接候选选择分离：任何非法/非公网/不支持地址或 family 与实际 IP 不符，整组拒绝；全部通过后选首个 IPv4。公网 IPv6-only 明确报 unsupported；空集合拒绝。IPv4 分类沿用既有保守规则，不新增私网例外。
+- IPv6 仅用于判定 DNS 集可接受，不建立 IPv6 连接。先用 node:net.isIP 校验再展开16位段，仅允许普通 `2000::/3` global-unicast；保守拒绝 `2001::/23` 特殊用途、`2001:db8::/32` 文档、`2002::/16` 6to4、`3fff::/20` 文档。其余范围（包括 unspecified/loopback、ULA、link/site-local、multicast、IPv4 mapped/compatible、NAT64）一律拒绝；带 zone 或 dotted IPv4 形式拒绝。不是完整 IPv6 支持或完整 IANA 可达性分类，特殊用途中即使可公网路由也不放行。无直接成熟 IP 分类依赖，未借用传递依赖或私加包。
+- request 与 requestStream 继续 agent:false，lookup 只返已验证地址/family4，兼容 all:true 与普通 callback；不再解析连接地址。每个 redirect 重走精确域名及全 DNS 集检查。取消发生在 DNS 待定时，完成解析后也不得连接。
+- TDD tracer：`<node24>/node --test test/lx-network.test.cjs` 对旧实现 RED exit1，唯一失败是公网 IPv6+IPv4 被拒；最小实现 GREEN exit0。随后追加边界/transport 回归首次通过，不伪造这些已有防护的 RED。新增45项覆盖地址顺序、IPv6-only/空集、private IPv4/IPv6、mapped两种表示、ULA/linklocal/transition混合、family不符、两transport固定连接/rebind、私网及未授权redirect、取消；transport fake 不外联，真实 owned HTTP/Audio 由保留回归覆盖，test authorize 仅精确 owned origin，生产私网不放行。
+- Node v24.21.0，最终 `node --test` network/custom-source/request-options/media/media-stream/manager/approval/persistence-regression 八文件86项 PASS exit0。Electron43.7.5：逐个 `timeout 90 xvfb-run -a --server-args='-screen 0 1280x1024x24' <scratch-electron>/electron test/<name>.cjs` security/options/runtime/browser-rejection 四套 exit0，sandbox=true 不降；自有1秒 WAV 播放结束仍通过。日志含旧 productionQuickJS/isolation 标签，不据此声称 QuickJS 或完整网络隔离。
+- 证据根 `~/.hermes/cache/scratch/lx-body-strengthening/`：`dns-red.log`、`dns-final-{0..4}.log`、`dns-results.json`、`dns-sync-{before,after}.json`；ext4 work 的全部9 LX模块、19 LX测试与app preload共29文件运行前后 SHA 与原仓一致。`git diff --check` exit0。DBus/ALSA警告非失败，无本次环境阻塞。未跑 Windows/UI/长时播放/第三方 DNS 或端点；CDN审批与完整IPv6仍另切片，父独立spec后quality，不称验收。
+
+### 9.14 双栈修复独立审查
+
+独立规格 PASS、质量 APPROVED，仅限全部 DNS 地址安全评估后选择已验证公网 IPv4 固定连接。规格实跑 Node86项及 Electron security8项通过；质量实跑 network/options/media/stream Node74项及 Electron security8项通过，sandbox=true。两次均核对29文件运行前后 SHA 一致，diff-check通过。额外内存前缀边界探针通过，不等于完整 IANA 分类证明；非阻塞建议将上下前缀边界纳入仓内持久测试。没有第三方源复测、完整 IPv6 transport、Windows 或长时媒体验收；CDN审批仍下一切片。
+
 ### 9.2 待审查与明确边界
 
 没有直接可打包AST parser；不增加依赖。报告是保守文本词法提示，注释/字符串可误报，别名/动态属性/编码/远端代码可漏报，绝非AST/数据流/安全证明。WebRTC仍可达，域名授权仅约束broker而非浏览器全部网络；UI明确披露。MAIN world事件监听不是恶意可信脚本无法篡改的防线，150ms settle窗口仅覆盖初始化常见迟发事件，晚异常会停用，不保证任意未来错误在ready前发生。浏览器资源不继承QuickJS堆/CPU/jobs/timer预算，保留host请求/消息/网络预算与超时，不宣称不可信代码沙箱。

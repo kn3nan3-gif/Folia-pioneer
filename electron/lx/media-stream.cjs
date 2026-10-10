@@ -22,7 +22,7 @@ function requestStream(value, options, domains, signal, authorize = authorizeUrl
         budget = setTimeout(() => cleanup(new Error('LX: media transfer budget')), BUDGET_MS);
         arm(); signal?.addEventListener('abort', abort, { once: true });
         if (signal?.aborted) return abort();
-        // Every hop uses the exact-domain/all-public-IPv4 authorizer and pins the checked IP.
+        // Every hop assesses the full DNS set, then pins only a validated public IPv4.
         async function hop(target, redirects = 0) {
             try {
                 const { url, address } = await authorize(target, domains);
