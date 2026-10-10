@@ -1,0 +1,20 @@
+const assert = require('node:assert/strict');
+const { scriptInfo, scriptDigest, musicRequest } = require('../electron/lx/contract.cjs');
+// Header metadata stays derived from unchanged imported bytes, never a filename.
+const script = '/**\r\n * @name ' + 'n'.repeat(30) + '\r\n * @author A\r\n * @name Last\r\n * @homepage ' + 'h'.repeat(1100) + '\r\n */\nvoid 0;';
+const before = scriptDigest(script), info = scriptInfo(script);
+assert.equal(info.name,'Last'); assert.equal(info.author,'A');
+assert.equal(info.homepage,'h'.repeat(1024)+'...');
+assert.equal(info.version,''); assert.equal(info.rawScript,script); assert.equal(scriptDigest(info.rawScript),before);
+assert.equal(scriptInfo('void 0; /* @name not a header */').name,'');
+const request = musicRequest({mediaId:'5275429',name:'Owned',singer:'Fixture'},'standard',['128k','320k']);
+assert.equal(request.source,'wy'); assert.equal(request.action,'musicUrl');
+assert.equal(request.info.musicInfo.songmid,'5275429');
+assert.equal(request.info.musicInfo.meta.songId,'5275429');
+assert.equal(request.info.musicInfo.hash,undefined);
+assert.deepEqual(request.info.musicInfo.meta.qualitys,[]);
+assert.deepEqual(request.info.musicInfo.meta._qualitys,{});
+assert.deepEqual(request.info.musicInfo.types,[]);
+assert.deepEqual(request.info.musicInfo._types,{});
+assert.throws(()=>musicRequest({mediaId:'abc'},'standard',['128k']),/invalid Netease/);
+console.log('script metadata and truthful wy fields PASS');

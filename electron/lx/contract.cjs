@@ -24,9 +24,23 @@ function musicRequest(song, quality, declared) {
     const id = String(song.mediaId);
     if (!/^\d{1,20}$/.test(id)) throw new Error('LX: invalid Netease song ID');
     return { source: 'wy', action: 'musicUrl', info: { type, musicInfo: {
-        id, name: String(song.name || '').slice(0, 512), singer: String(song.singer || '').slice(0, 512),
+        id, songmid: id, name: String(song.name || '').slice(0, 512), singer: String(song.singer || '').slice(0, 512),
         source: 'wy', interval: String(song.interval || '').slice(0, 32),
-        meta: { songId: id, qualitys: declared.map(type => ({ type })), _qualitys: Object.fromEntries(declared.map(type => [type, {}])) },
+        // Source capability declarations are not evidence of this song's available qualities.
+        types: [], _types: {},
+        meta: { songId: id, qualitys: [], _qualitys: {} },
     } } };
 }
-module.exports = { QUALITY, scriptDigest, validateInit, validateAudioUrl, musicRequest };
+function scriptInfo(script) {
+    // Parse only the leading LX metadata comment; retain original source for digest identity.
+    const limits = { name: 24, description: 36, version: 36, author: 56, homepage: 1024 };
+    const info = Object.fromEntries(Object.keys(limits).map(key => [key, '']));
+    const header = /^\/\*[\s\S]+?\*\//.exec(script)?.[0] || '';
+    for (const line of header.split(/\r?\n/)) {
+        const match = /^\s?\*\s?@(\w+)\s(.+)$/.exec(line);
+        if (match && Object.hasOwn(limits, match[1])) info[match[1]] = match[2].trim();
+    }
+    for (const [key, limit] of Object.entries(limits)) if (info[key].length > limit) info[key] = info[key].slice(0, limit) + '...';
+    return { ...info, rawScript: script };
+}
+module.exports = { QUALITY, scriptDigest, scriptInfo, validateInit, validateAudioUrl, musicRequest };

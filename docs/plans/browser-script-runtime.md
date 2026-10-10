@@ -115,6 +115,21 @@ resp.body 与 wy 支持音质交集切片已获独立规格 PASS、独立质量 
 
 Node24.21.0七文件41项 PASS；Electron43.7.5/Xvfb七套 body/rejection/lifecycle/security/runtime/quality/options 均exit0，sandbox=true未关闭；26文件运行前后原仓/ext4 SHA一致。第一次Node副本漏app preload导致1项ENOENT，补齐后完整重跑通过，初始日志保留。Omni/UI/gallery依赖已清理无法重跑，未全量安装凑PASS。pack仅静态入口/配置核对，非完整打包；Windows/原生崩溃/长时媒体未验收。AGENTS由父维护；无commit/push，待独立spec→quality。
 
+### 9.11 LX 环境兼容第一小步（待独立 spec→quality）
+
+- 基线 `56ebf14938cbdce8b1a55ce50eb363e20b65c532`，恢复时工作区干净；改前备份 `../Folia-pioneer-backups/lx-environment-20261010-182055/`。仅 runtime/preload/contract、两个 owned 测试及本节；AGENTS 由父处理保护审批，不提交/推送、不加依赖、不执行第三方源或扩域。
+- 只读契约依据：LX `renderer/preload.js:263–271` 的 on 成功 Promise.resolve()/不支持 Promise.reject()，本切片保留 Pioneer 单 handler 与非法 handler 拒绝，不复制 LX 允许覆盖 handler 的行为。async on 返回 Promise，成功 undefined；caught 拒绝不误停用，discarded unsupported/duplicate 拒绝通过 MAIN 原生监测 fail closed。send 仍只接受 inited，未放松加载/有效 init/150ms settle、error/unhandledrejection 合同。
+- console 增补 group/groupCollapsed/groupEnd、trace/table/assert/count/countReset/time/timeLog/timeEnd/dir/dirxml/clear/profile/profileEnd/timeStamp；连同原五方法冻结 null 原型、只返回 undefined，不读取/coerce 参数，不传宿主日志或日志 IPC。owned poison 对象验证无 getter/toString 调用。
+- LX `renderer/preload.js:317–324` 包含 currentScriptInfo 元数据和 rawScript；`userApi/utils.ts:53–88` 提取开头注释、五字段及长度截断。contract 派生 metadata（name24/description36/version36/author56/homepage1024，超限加...），没有 header/字段为空，不以文件名或时间猜测脚本名。原 script 不改写；rawScript 仅经专用 host→realm info 消息到冻结桥对象，不放命令行或日志。原代码没有 info 发出/消费路径，新增 boot→info→environmentReady，再执行原 script；不是空消息假成功。info 独立上限1600000 JSON字符（覆盖导入262144字节最坏JSON转义加元数据），其他双向消息仍131072，脚本→host上限未扩大。实跑140k rawScript及逐字原文回读。
+- LX `tools.ts:58–99` 的旧格式 songmid=meta.songId（wy不加kg/tx字段），现在两者均为经过原数字校验的网易 mediaId；保留原 id 别名，不伪造 hash。来源能力 qualitys 不等于歌曲质量证据：去掉按 source 声明伪造的 song meta qualitys/_qualitys，旧 types/_types 与新 meta qualitys/_qualitys 为空。仍只有 wy/musicUrl，未承诺其他平台或歌曲质量信息。
+- TDD console owned RED exit1→GREEN exit0；on caught unsupported/duplicate owned RED exit1→GREEN exit0；script info owned RED exit1→GREEN exit0；Node songmid RED undefined exit1→GREEN exit0。on 首fixture有闭合括号错误导致实现后仍RED，修正 fixture 后真正成功 undefined/.then 验证通过，未通过捕获/忽略真实未处理拒绝凑PASS。
+- 实查复用已有 `~/.hermes/cache/scratch/lx-body-strengthening/node-v24.21.0-linux-x64/bin/node` v24.21.0、`electron/electron`43.7.5，未下载/安装。源码同步 ext4 work，28文件 SHA 前后与原仓相同，清单 `environment-sync-{before,after}.json`。命令 `node test/<file>`：script-info/custom-source/manager/approval/persistence-regression/request-options/media/media-stream 八文件 exit0；`timeout 90 xvfb-run -a <scratch-electron>/electron test/<file>`：environment（10例）、body、browser-rejection、browser-lifecycle、runtime-security、request-options-acceptance、quality、runtime 八套 exit0，真实 sandbox=true；owned WAV 1秒播放结束保持。日志/逐命令exit在同scratch根 `environment-*.log` / `environment-results.json`；git diff --check exit0。DBus警告不影响退出。
+- 未实现：updateAlert 需要有界内容、授权和管理UI设计，另切片；配置事件/showConfigView 在已核对本地LX preload同样无支持，不凭名称补空成功；crypto/buffer/zlib/request 扩展、双栈DNS/CDN审批、多平台与静态审查后续推进。当前未改 manager/review/network/media、不降sandbox、不构建。不是完整LX环境完成；未跑UI/Windows/真实源/长时媒体，native崩溃仍仅信号注入边界，父另派独立规格后质量。
+
+### 9.12 环境兼容第一小步独立审查
+
+独立规格 PASS、质量 APPROVED，均仅限 console、on 返回语义、脚本信息门控与网易字段切片。规格独立运行 environment 10例、body、rejection 9例及 script-info，通过；旧 HEAD 对照能检出 console/on/info/songmid 缺口。质量独立运行 Node script-info/custom-source/manager、Electron environment/rejection，全 exit0；另7组握手/sender/预算/清理/控制字符检查通过。两次审查均核对28文件运行前后 SHA 一致，sandbox=true，diff-check通过。非阻塞建议：将握手负例及最坏转义预算检查补成仓内持久测试，尚未纳入本次提交。完整 LX API、Windows/UI、第三方源、长时播放及原生崩溃仍未验收。
+
 ### 9.2 待审查与明确边界
 
 没有直接可打包AST parser；不增加依赖。报告是保守文本词法提示，注释/字符串可误报，别名/动态属性/编码/远端代码可漏报，绝非AST/数据流/安全证明。WebRTC仍可达，域名授权仅约束broker而非浏览器全部网络；UI明确披露。MAIN world事件监听不是恶意可信脚本无法篡改的防线，150ms settle窗口仅覆盖初始化常见迟发事件，晚异常会停用，不保证任意未来错误在ready前发生。浏览器资源不继承QuickJS堆/CPU/jobs/timer预算，保留host请求/消息/网络预算与超时，不宣称不可信代码沙箱。

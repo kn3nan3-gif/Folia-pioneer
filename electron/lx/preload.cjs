@@ -10,11 +10,11 @@ const post = message => {
 let handler, initialized = false, nextId = 0;
 const callbacks = new Map();
 const unsupported = () => { throw new Error('LX: crypto/compress/buffer utilities unsupported in Pioneer slice 1'); };
-contextBridge.exposeInMainWorld('lx', {
+const exposeLx = currentScriptInfo => contextBridge.exposeInMainWorld('lx', {
     EVENT_NAMES: { request: 'request', inited: 'inited', updateAlert: 'updateAlert' },
-    version: '2.0.0', env: 'desktop', currentScriptInfo: {},
+    version: '2.0.0', env: 'desktop', currentScriptInfo,
     utils: { crypto: { aesEncrypt: unsupported, rsaEncrypt: unsupported, md5: unsupported, randomBytes: unsupported }, buffer: { from: unsupported, bufToString: unsupported }, zlib: { inflate: unsupported, deflate: unsupported } },
-    on(event, fn) { if (event !== 'request' || handler || typeof fn !== 'function') throw new Error('LX: handler'); handler = fn; },
+    async on(event, fn) { if (event !== 'request' || handler || typeof fn !== 'function') throw new Error('LX: handler'); handler = fn; },
     async send(event, data) { if (event !== 'inited' || initialized || !handler) throw new Error('LX: initialization'); initialized = true; post({ kind: 'init', data }); },
     request(url, options, callback) {
         if (typeof callback !== 'function' || callbacks.size >= 8) throw new Error('LX: callback budget');
@@ -25,10 +25,15 @@ contextBridge.exposeInMainWorld('lx', {
 });
 contextBridge.exposeInMainWorld('__foliaLxFatal', () => post({ kind: 'fatal', error: 'LX: native error/unhandledrejection' }));
 // Results stay bounded JSON; invocation errors are request failures, not swallowed init failures.
+let environmentReady = false;
 ipcRenderer.on(channel, (_event, text) => {
     try {
         const message = JSON.parse(text);
-        if (message.kind === 'invoke') {
+        if (text.length > (message.kind === 'info' ? 1600000 : 131072)) throw new Error('LX: host message budget');
+        if (message.kind === 'info') {
+            if (environmentReady) throw new Error('LX: duplicate environment');
+            exposeLx(message.info); environmentReady = true; post({ kind: 'environmentReady' });
+        } else if (message.kind === 'invoke') {
             if (!initialized || !handler) throw new Error('LX: not initialized');
             Promise.resolve().then(() => handler(message.data)).then(
                 value => post({ kind: 'result', id: message.id, value }),

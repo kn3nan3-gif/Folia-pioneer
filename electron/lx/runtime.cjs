@@ -1,6 +1,6 @@
 const path = require('node:path');
 const crypto = require('node:crypto');
-const { validateInit, validateAudioUrl, musicRequest } = require('./contract.cjs');
+const { validateInit, validateAudioUrl, musicRequest, scriptInfo } = require('./contract.cjs');
 const { request, authorizeUrl } = require('./network.cjs');
 const { MediaBroker } = require('./media.cjs');
 // Approved browser extension realm; WebRTC is reachable, not an untrusted-code sandbox.
@@ -32,7 +32,15 @@ class ScriptRuntime {
             try {
                 if (typeof payload !== 'string' || payload.length > 131072 || ++this.operations > 2000) throw new Error('LX: message budget exceeded');
                 const message = JSON.parse(payload);
-                if (message.kind === 'boot') { this.booted = true; this.loadScript(); }
+                if (message.kind === 'boot') {
+                    if (this.booted) throw new Error('LX: duplicate boot');
+                    this.booted = true;
+                    // rawScript is delivered only to this realm, not logs or command-line arguments.
+                    this.send({ kind: 'info', info: scriptInfo(this.record.script) });
+                } else if (message.kind === 'environmentReady') {
+                    if (!this.booted || this.environmentReady) throw new Error('LX: environment state');
+                    this.environmentReady = true; this.loadScript();
+                }
                 else if (message.kind === 'fatal') this.fail(new Error('LX realm: ' + message.error));
                 else this.receive(message);
             } catch (error) { this.fail(error); }
@@ -47,16 +55,21 @@ class ScriptRuntime {
         }).catch(error => this.fail(error));
     }
     async start() { return this.ready; }
-    send(message) { if (!this.closed) this.window.webContents.send(this.channel, JSON.stringify(message)); }
+    send(message) {
+        if (this.closed) return;
+        const text = JSON.stringify(message);
+        if (text.length > (message.kind === 'info' ? 1600000 : 131072)) throw new Error('LX: host message budget');
+        this.window.webContents.send(this.channel, text);
+    }
     // Install native MAIN-world monitors before any approved script is evaluated.
     async loadScript() {
-        if (this.closed || !this.booted || !this.pageLoaded || this.loading) return;
+        if (this.closed || !this.environmentReady || !this.pageLoaded || this.loading) return;
         this.loading = true;
         try {
             await this.window.webContents.executeJavaScript(`(() => {
                 const fatal = window.__foliaLxFatal;
                 const quiet = () => undefined, console = Object.create(null);
-                for (const name of ['log', 'info', 'warn', 'error', 'debug']) console[name] = quiet;
+                for (const name of ['log', 'info', 'warn', 'error', 'debug', 'group', 'groupCollapsed', 'groupEnd', 'trace', 'table', 'assert', 'count', 'countReset', 'time', 'timeLog', 'timeEnd', 'dir', 'dirxml', 'clear', 'profile', 'profileEnd', 'timeStamp']) console[name] = quiet;
                 Object.defineProperty(window, 'console', { value: Object.freeze(console), writable: false, configurable: false });
                 window.addEventListener('error', () => fatal());
                 window.addEventListener('unhandledrejection', () => fatal());
