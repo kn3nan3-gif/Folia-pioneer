@@ -16,19 +16,21 @@
 - Biu 的 PolyForm Noncommercial 代码不直接混入 AGPL 分发物；优先独立重写，可以换更优技术路线。尽量保留检索、分P音频、账号、收藏夹、合集、稍后再看、历史及既定下载能力；延期不等于舍弃，永久删减须用户确认。视频下载仍单独决定。
 - 保留 Folia 版权/AGPL 与适用第三方声明，LX 本地许可证为 Apache-2.0；复用前核对许可、归属和通知义务。
 
-### 当前路线：浏览器兼容主线已获确认，第一切片实施中
-- 用户已明确确认隐藏 Chromium 窗口 + 专用 preload/LX API 路径及“审查后明确授权执行”的信任合同，QuickJS 保留在实验分支。不继续钻研 WASI FFI。
-- 浏览器运行时、摘要绑定审批及自动停用 UI 同步第一切片已通过独立规格 PASS、质量 APPROVED；gallery mount 修复另获独立规格 PASS、质量 APPROVED。用户授权保存开发检查点，不是发布或完整验收。Node24.21.0/Electron43.7.5、Xvfb sandbox=true：独立实跑 manager/approval 5项、Omni 2项及五套 Electron 回归通过；含自有1秒 WAV 播放结束。gallery 最终独立对照：2611文件 SHA 一致，当前 fixture 三个 spec 13项 PASS；旧 fixture 12项 PASS、延迟注册1项 FAIL，验证修复有效。历史注册超时和标题 opacity 失败未归因，不能称扩展回归稳定性全绿；ERR_NETWORK_CHANGED 归因缺少可复核 trace。详细合同、证据和边界见 `docs/plans/browser-script-runtime.md` §9。词法审查不是 AST，WebRTC 旁路及浏览器不继承 QuickJS CPU/堆/timer 预算已披露；原生崩溃、Windows、第三方音源复测与长时播放未验收。
-- 浏览器兼容方案应包含导入不执行、脚本 SHA-256 绑定审批、AST 静态审查、平台/API/域名/危险行为报告、混淆与远端执行默认人工审查、更新内容变化重新审批、运行监测及立即停用。
-- 静态规则/AI 审查不能证明任意脚本安全，不能替代网络隔离。若没有可靠 WebRTC 封锁，必须披露浏览器联网旁路风险：该方案是经过审查授权的脚本扩展，不是任意不可信代码沙箱。LX 原窗口未在本项目实测旁路，不得把 Folia 的复现冒作 LX 漏洞确认。
-- 尽可能保留独立非持久 session、专用 preload、页面 Node 关闭、权限/导航/弹窗限制、网络 broker、私网/重定向检查、预算和媒体 token。`sandbox=true` 的兼容性应实际验证，不自动照抄 LX 的 `sandbox:false`。
+### 当前路线：浏览器兼容主线，按用户给定顺序分步补齐 LX 兼容
+- 用户已确认隐藏 Chromium 窗口 + 专用 preload/MAIN world 执行及“审查后明确授权执行”的信任合同；QuickJS 保留在实验分支，不再作为正式路径。用户指定推进顺序与进度：① 明确兼容问题（console/事件语义/脚本信息/网易字段）已完成 `c0bf251e`；② 双栈 DNS 误伤（全地址安全评估后选已验证公网 IPv4 固定连接，不做完整 IPv6）已完成 `e966949f`；③ 媒体 CDN 明确审批 + 候选源复测 已完成 `eb346c38`（证据 `b906927a`）；④ 按需补请求合同与工具 API（crypto/buffer/zlib、formData、对象 body、headers 白名单、updateAlert）未开始；⑤ 多平台接入与混淆源静态复核未开始。
+- 已通过独立审查的切片（每项先规格 PASS 后质量 APPROVED）：浏览器运行时+摘要审批+自动停用 UI 同步 `4f68d27b`；resp.body 与音质交集 `13f32c0e`；标量/UTF-8/回调异常清理测试补强 `45c472ae`；最小旧路线清理+全音源报告 `56ebf149`。命令/版本/exit 与未验证边界见 `docs/plans/browser-script-runtime.md` §9 与 `docs/plans/media-cdn-approval.md`。
+- **真实播放里程碑**：在媒体审批流程下，`裤佬SVIP音源(二改整合版) v3.0.0` 与 `非常刀 v5` 均完成导入不执行 + 初始化四质量 + 真实 HTTP 200 + 精确域名明确批准 + token 签发 + sandbox 原生 Audio 真实播放（currentTime=20、duration≈62.7s、readyState=4、seeked）。批准为 harness 代替用户对精确域名执行，非产品自动批准；证据 `docs/evidence/media-approval-retest-20261010.md`。
+- **全音源基线（24 源）**：导入 24 通过、静态 blocked 16 未执行、审批启用 8（初始化 7 通过 1 失败）、当时 token 与播放均为 0。报告 `docs/evidence/all-sources-v261006-20261010.md`，独立核对 PASS；双栈归因缺当时 DNS 地址清单、星海语法检查缺单独留档，两处证据缺口已注明。
+- 明确边界（不得越过）：静态审查是词法提示，不是 AST/安全证明；WebRTC 旁路仍可达、浏览器不继承 QuickJS CPU/堆/timer 预算、render-process-gone 仅信号注入；Windows、UI 稳定性（cold component run 偶发 timeout 未归因）、长时媒体、其余 22 源、完整 LX API 与多平台均未验收。
+- 媒体审批切片非阻塞遗留（已记录未修）：`media-approval.cjs` 的 `mediaFailure` 闩锁在恢复播放后不清除；`zh-CN.ts` 的 `mediaFailure` 措辞偏重（实际只停该 token，会话与授权仍在）；`media.cjs` 在任意 fetch 异常（含 5xx/超时）都会作废该 token，属 fail-closed 但宜加注释说明。
+- 安全约束保持：导入不执行、脚本 SHA-256 绑定审批、平台/API/域名/危险行为报告、混淆与远端执行默认人工审查、更新变化重新审批、运行监测与立即停用；独立非持久 session、专用 preload、页面 Node 关闭、权限/导航/弹窗限制、网络 broker、私网/重定向检查、预算与媒体 token 一律保留；`sandbox=true` 实跑验证，不照抄 LX 的 `sandbox=false`。
 
 ### Git 现场与成果保存
-- 项目 GitHub 仓库：`https://github.com/kn3nan3-gif/Folia-pioneer.git`。用户已明确授权同步当前成果；同步前 `git ls-remote` 成功且无 refs。此次同步是带已知阻塞的开发检查点，不是发布批准；不携带第三方音源、scratch产物或凭据。`origin` 指向该仓库，保留 `folia-local` 参考远端。推送结果及精确提交以实际远端回读为准。
-- 原开发检查点为 `99b8f7fc`；鉴权恢复后推送成功。此次恢复已回读远端 `main` 与本地 HEAD，均为 `aec7eac310cd6b204a77ea821c4c0d75b6a39bdc`，恢复时工作区干净。用户已授权后续通过验证的本地检查点提交及 GitHub 同步，不等于发布或完整验收批准；每次推送后须回读远端精确 SHA。
-- 已建立本地 `experiment/quickjs-checkpoint` 分支，指向上述 HEAD，保留原 QuickJS 代码、测试与历史阻塞。浏览器兼容开发继续在 `main`；实验分支尚未推送，不得冒称远端已保存。
-- 切换前备份位于同级 `Folia-pioneer-backups/20261008-160814/`：`workspace.tar.gz` 保存全部 2604 个已跟踪及非忽略未跟踪文件，`history.bundle` 保存全部 refs 可达 Git 历史；归档成员集合与 bundle 已验证，`manifest.json` 记录摘要。忽略文件不在归档中，依赖与 scratch 缓存不作为成果交付。
-- 恢复时正式直接依赖仍是 `@tootallnate/quickjs-emscripten: 0.23.0`。WASI 及其他候选仅在 scratch，不在正式依赖。
+- 项目 GitHub 仓库：`https://github.com/kn3nan3-gif/Folia-pioneer.git`。`origin` 指向该仓库，保留 `folia-local` 参考远端；同步不携带第三方音源、scratch 产物或凭据；推送后必须回读远端精确 SHA 与本地 HEAD 核对，以实际回读为准。
+- 当前 `main` 开发检查点随每次切片推进（最新见文末“最近提交”与专项计划 §9）；已推送并通过远端回读核对。用户已授权通过验证的本地检查点提交及 GitHub 同步，不等于发布或完整验收批准。
+- `experiment/quickjs-checkpoint` 分支已推送，SHA `aec7eac310cd6b204a77ea821c4c0d75b6a39bdc`，保留旧 QuickJS 代码与测试；已删除的旧路线文件均可从该提交恢复。历史记载“实验分支尚未推送”为过时信息。
+- 备份位于同级 `Folia-pioneer-backups/`：`20261008-160814/`（切换前全量快照+bundle）、`all-sources-20261010-020508/`（24 源清单+全量快照）、以及各切片的 `minimal-cleanup-*`、`lx-body-*`、`lx-dual-stack-*`、`media-approval-*`、`media-i18n-*` 备份。归档成员集合与 bundle 均已验证。
+- 正式直接依赖已移除 `@tootallnate/quickjs-emscripten`（旧路径清理切片 `56ebf149`）；lock 中该包仅作为 `pac-proxy-agent` 传递依赖保留。WASI 及其他候选仅在 scratch，不在正式依赖。
 
 ### 已实现成果与验收边界
 1. **独立基线**：包/产品名称、app ID/userData 隔离，上游更新路径与发布配置禁用；7个上游 workflow 改 `.yml.disabled`，无发布/自动推送。基础测试通过，完整安装/卸载/升级隔离仍未验收。
@@ -36,8 +38,8 @@
 3. **应用级混合列表**：Dexie 独立表迁移、CRUD/排序、同来源去重与跨来源身份保留、JSON引用导入导出、重启恢复、现有统一播放队列。来源白名单拒绝凭据和临时URL；Navidrome A/B归属、QQ合法normalizer回退保留。旧load覆CRUD、解析挂起、关闭/切服务器/同ID内容更新旧播放晚回均修复；独立 spec PASS、quality APPROVED。阶段回归502项及Chromium11项首试通过仅绑定当时版本。
 4. **LX 首切片公共能力**：本地 `.js` 导入、摘要/精确域名授权、单启用/删除、重启不自动执行、Folia管理UI/命令；只接 wy→网易 musicUrl四质量，保留 sourceRef；禁用原路径不变，启用错误不静默回退。不是全LX API，不包含自定义搜索。
 5. **网络/媒体**：options白名单、授权/DNS前拒绝非法项；全部公网IPv4验证、固定IP连接、逐跳授权；随机token媒体协议、有界背压流、Range/HEAD、TTL/撤权/取消，LX音频不污染共享provider缓存/automix。畸形redirect宿主异常和manager `.next` 并发写竞争已修复并独立批准。自有180秒MP3/FLAC限速播放/seek曾通过；后续stream源码变动后该证据只算历史，最新版不能冒称长时播放已验收。
-6. **QuickJS 正式路径**：Electron utilityProcess + `electron/lx/quickjs-worker.cjs`，无浏览器fallback、不依赖外部Node；guest JSON桥，无RTC/DOM/Node/module loader，CPU/堆/栈/jobs/timer/IPC预算，崩溃inactive/retry。Windows实际生产utility/小asar与owned Audio测试通过过。该首切片曾spec/quality批准，但**新console/初始化补丁仍有未处理Promise拒绝误成功缺陷，不能延用旧批准称最新版完成**。
-7. **console补丁**：guest内部冻结、无原型的五个no-op，无host透传/参数coercion/日志IPC。valid inited + loaded门控能处理同步顶层异常，但queued/async/discarded/timer Promise拒绝仍可错误start成功、manager enabled，当前阻塞未修复。
+6. **QuickJS 实验路径（已归档，不再是主线）**：曾实现 Electron utilityProcess + `electron/lx/quickjs-worker.cjs`，guest JSON桥、无RTC/DOM/Node/module loader、CPU/堆/栈/jobs/timer/IPC预算、崩溃inactive/retry；Windows 生产 utility/小 asar 与 owned Audio 曾通过。该路径存在未修复缺陷（见下条），用户已确认改为浏览器兼容主线；相关 worker 与 6 个专用测试已在清理切片 `56ebf149` 从 `main` 移除，完整代码与测试保留在 `experiment/quickjs-checkpoint`（`aec7eac3`）可恢复。
+7. **QuickJS console/初始化缺陷（保留作为实验分支历史证据）**：guest 内部冻结、无原型的五个 no-op，无 host 透传/参数 coercion/日志 IPC。valid inited + loaded 门控能处理同步顶层异常，但 queued/async/discarded/timer Promise 拒绝仍可错误 start 成功、manager enabled。不得据此认为主线实现继承该缺陷，也不得把旧路线称为“正式路径”。
 
 ### 核心历史与当前 QuickJS 阻塞（保留供实验分支）
 - 早期 Electron browser 脚本环境即使 sandbox开启、domains=[]，owned WebRTC STUN实收本地UDP；权限/CSP/HTTP拦截不足。多次原生浏览器限制尝试失败并撤回，转向QuickJS。
@@ -48,18 +50,19 @@
 - 最新基线诊断：四种未处理拒绝仍RED；Node41项及109文件1038项回归通过不覆盖该失败。Node child IPC shim是真引擎诊断，不是Electron utility验收。
 
 ### 用户音源与真实测试结果
-- 目录 `E:\浏览器下载\V261006`（`/mnt/e/浏览器下载/V261006`）24个 `.js`。全部静态评估；只有2个候选真正执行过，其他22个未执行。原文件未改、未混入分发物。
-- `稳定版音源 v1.0.3.js`：初始化四质量通过；只测 standard/128k，`api.injahow.cn` HTTP404，无音频URL，无Audio成功。
-- `幻音音源 v3.js`：最初console缺失顶层失败；补丁后初始化通过，但 `music-dl.sayqz.com` DNS ENOTFOUND，无音频URL，无Audio成功。
-- 使用公开目录确认的免费样本网易5275429；不绕账号/会员/DRM，不替换第三方接口，不放宽域名/私网安全。初始化兼容、接口可用、可播放三者必须分开汇报。
-- 静态兼容缺口还包括resp.body、crypto/buffer/zlib、init音质交集、headers/options、updateAlert/showConfigView等；切回LX路线应按实际契约补齐，不能默认24个均可用。
+- 目录 `E:\浏览器下载\V261006`（`/mnt/e/浏览器下载/V261006`）24个 `.js`，逐文件 SHA 已记录（`Folia-pioneer-backups/all-sources-20261010-020508/sources-manifest.json`）。原文件未改、未混入分发物。
+- **全量基线（`docs/evidence/all-sources-v261006-20261010.md`，独立核对 PASS）**：导入不执行 24/24 通过；静态审查 blocked 16 个未执行（卡密认证、越权/解密路径、未知动态域名、未完整解混淆等，不能算作初始化失败）；经摘要审批启用 8 个，其中初始化 7 通过、1 失败（`溯音音源_v1` native error/unhandledrejection）。当时媒体 token 与真实播放均为 0。
+- **真实播放里程碑（媒体审批流程下，`docs/evidence/media-approval-retest-20261010.md`）**：`裤佬SVIP音源(二改整合版) v3.0.0`（`m701.music.126.net`）与 `非常刀 v5`（先拒绝路径、再批准）均完成导入不执行 + 初始化四质量 + 真实 HTTP 200 + 精确域名明确批准 + token 签发 + sandbox 原生 Audio 真实播放（currentTime=20、duration≈62.7s、readyState=4、seeked）。批准由 harness 代替用户对精确域名执行，非产品自动批准/生产自动授权。
+- 仍未取得可用结果的例子：`稳定版音源 v1.0.3.js` 真实 HTTP 404；`幻音音源 v3.js` DNS ENOTFOUND；`gdstudio` 因 `console.group` 缺失（该缺口已在 `c0bf251e` 修复，尚未重测）；`非常刀` 的 `api.chksz.top` 因脚本带 `Referer` 头被拒（headers 白名单限制，未放宽）。
+- 使用公开目录确认的免费样本网易5275429，仅 standard/128k；不绕账号/会员/DRM，不替换第三方接口，不放宽域名/私网安全。初始化兼容、接口可用、可播放三者必须分开汇报；harness exit 0 只表示采集完成。
 
 ### 尚未完成与恢复顺序
-- 浏览器第一切片及 gallery 修复均已通过独立规格与质量审查，可保存开发检查点；历史标题 opacity 与注册超时归因尚未闭合。AST 审查仍是目标，当前为明确披露局限的词法审查，不得称 AST 已完成。
+- 按用户给定顺序：④ 请求合同与工具 API（crypto/buffer/zlib、formData、对象 body、headers 白名单、updateAlert/showConfigView 等按实际契约逐项补）未开始；⑤ 多平台接入（酷我/咪咕/B站）与仍需静态复核的混淆源未开始。补完前不得称完整 LX 脚本环境已实现。
+- AST 审查仍是目标，当前为明确披露局限的词法审查；不得称 AST 已完成。UI 稳定性（cold component run 偶发 timeout）与历史标题 opacity 失败未归因。
+- 混淆源需完成静态解码与人工复核后才能另行授权；卡密/越权/DRM 风险保持 blocked，不通过实现绕过能力来“修兼容”。
 - 新平台酷我/咪咕/B站未接入；B站仅匿名API调查（搜索/detail/playurl/音频Range），分P、多平台账户内容整理、统一下载、同步均未实现。
-- 恢复核查、备份和路线确认已完成。下一步完成浏览器兼容与审查第一切片，以自有契约 fixtures 实跑 Electron/Node/UI，独立 spec→quality；审查通过后按授权提交/同步并回读远端 SHA，再对两个用户候选分别复测初始化、接口及播放。不得以历史测试替代当前验收。
 - 后续闭合缺失平台及B站搜索/分P/播放→账号收藏夹合集稍后再看历史→统一音频下载（续传/过期刷新/重启恢复）→列表同步（冲突策略/不传凭据；LX移动协议独立验收）。不可因Biu许可删功能。
-- 环境重新检查：曾有WSLg和WindowsElectron实测成功，最近Windowscmd/PowerShell/直接exe Invalid argument、Linux显示缺失/SIGTRAP/headlessSIGSEGV，当前不能声称可运行。区分launcher失败与代码失败；不可禁sandbox凑PASS。
+- 环境：Linux 侧用 ext4 副本 + 官方 Node/Electron + Xvfb（sandbox 不降）；`npm run test:component` 必须走 npm 脚本或把 `node_modules/.bin` 加入 PATH（直接跑 playwright 会因 `cross-env` 缺失 exit 127）。Windows 桌面运行仍未重新验收，不得声称可运行；区分 launcher 失败与代码失败，不可禁 sandbox 凑 PASS。
 
 ### 证据入口、运行习惯与建议skills
 - 项目内：`PIONEER.md`、`docs/plans/pioneer-integration.md`、`aggregate-search.md`、`app-playlists.md`、`lx-custom-source.md`（后三项位于同一plans目录）；历史等待审查标题不等当前结论，核对最新章节。
@@ -68,6 +71,18 @@
 - scratch可能被清理，不能把缓存文件视为永久交付；找不到先说明/恢复证据，不编哈希。建议在实际分支保存时将关键结论与适当小fixtures纳入仓内文档，勿提交完整原始日志/第三方音源/敏感URL。
 - 会话源：`http://localhost:8787/session/bc95e3b4997a` 为原整合对话；本次对话继续开发。最后候选中断转录 `/home/administrator/.hermes/cache/delegation/live/deleg_153245a4/task-0.log`。
 - 建议skills：全局 `subagent-driven-development`、`tdd`、`handoff`；项目 `testing-strategy`、`readme-reference`、`online-song-omni-routing`、`file-modularization`、`settings-feature-integration`。按任务加载，不读PPT无关skills。
+
+### 最近提交（`main`，均已推送并远端回读核对）
+
+- `4f68d27b` 浏览器运行时 + 摘要绑定审批 + 自动停用 UI 同步（首切片）
+- `13f32c0e` resp.body 与支持音质交集对齐
+- `45c472ae` 正文标量/UTF-8 与回调失败清理测试补强
+- `56ebf149` 移除废弃 QuickJS 路径并记录 24 音源审计
+- `c0bf251e` console / on 事件语义 / 脚本信息 / 网易字段对齐
+- `e966949f` 双栈 DNS 安全选择公网 IPv4 固定连接
+- `eb346c38` 媒体 CDN 每会话精确审批（含撤销修复与三语言）
+- `b906927a` 记录两音源真实播放证据
+- `a59c7a1c` 记录路线进度与播放里程碑（本文件随此提交更新）
 
 ---
 
