@@ -1,6 +1,18 @@
 # 浏览器脚本兼容路线
 
-当前新增媒体CDN独立审批第一切片合同/证据见 `media-cdn-approval.md`。session-only媒体授权、opaque pending挑战、真实app preload/React UI审批闭环及owned Audio已实跑；待独立spec→quality，不代表第三方播放/全LX验收。AGENTS由父维护，未提交推送。
+## 0. 当前状态速览（交接用；AGENTS.md 因保护审批阻塞可能滞后）
+
+用户指定推进顺序与进度：① 明确兼容问题（console/事件语义/脚本信息/网易字段）**已完成**（`c0bf251e`）；② 双栈 DNS 误伤（全地址安全评估后选已验证公网 IPv4 固定连接，不做完整 IPv6）**已完成**（`e966949f`）；③ 媒体 CDN 明确审批 + 候选源复测 **已完成**（`eb346c38`，复测证据 `b906927a`）；④ 按需补请求合同与工具 API（crypto/buffer/zlib、formData、对象 body、headers 白名单、updateAlert）**未开始**；⑤ 多平台接入与混淆源静态复核 **未开始**。
+
+真实播放里程碑：在媒体审批流程下，`裤佬SVIP音源(二改整合版) v3.0.0` 与 `非常刀 v5` 均完成初始化 + 真实 HTTP 200 + 精确域名明确批准 + token 签发 + sandbox 原生 Audio 真实播放（duration≈62.7s）。证据 `docs/evidence/media-approval-retest-20261010.md`；批准由 harness 代替用户对精确域名执行，非产品自动授权。
+
+全音源基线（24 源）：导入 24 通过、静态 blocked 16 未执行、审批启用 8（初始化 7 通过 1 失败）、当时 token/播放 0；报告 `docs/evidence/all-sources-v261006-20261010.md`，独立核对 PASS。
+
+未验收边界：词法审查非 AST/安全证明；WebRTC 旁路、不继承 QuickJS 资源预算、render-process-gone 仅信号注入；Windows、UI 稳定性（cold component run 偶发 timeout）、长时媒体、其余 22 源、完整 LX API 均未覆盖。
+
+媒体审批切片非阻塞遗留：`media-approval.cjs` 的 `mediaFailure` 闩锁未在恢复后清除；`zh-CN.ts` 的 `mediaFailure` 措辞偏重（实际只停该 token）；`media.cjs` 任意 fetch 异常都会作废 token（fail-closed，宜加注释）。
+
+当前新增媒体CDN独立审批第一切片合同/证据见 `media-cdn-approval.md`。
 
 ## 1. 决策与信任合同
 
