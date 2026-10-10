@@ -1,0 +1,1584 @@
+{
+  "commit": "87a6e1e7f2fdf0fed84b1fda17647fcce196de57",
+  "tree": "git archive 87a6e1e7 | tar -x -C <retest>/work ; node_modules symlinked from folia-media-work (Electron 43.7.5)",
+  "versions": {
+    "node": "24.21.0",
+    "electron": "43.7.5",
+    "chrome": "150.0.7871.250"
+  },
+  "env": "WSL Xvfb, sandbox=true (asserted per enable), nodeIntegration=false, contextIsolation=true",
+  "sample": {
+    "provider": "netease",
+    "mediaId": "5275429",
+    "quality": "standard/128k"
+  },
+  "counts": {
+    "files": 24,
+    "import_passed": 24,
+    "static_blocked": 16,
+    "enabled_init_passed": 7,
+    "init_failed": 1,
+    "http_or_dns_reached": 7,
+    "media_approved": 6,
+    "token_issued": 5,
+    "audio_attempted": 5,
+    "played": 5
+  },
+  "boundary": [
+    "Blocked scripts were imported without execution and never enabled; report distinguishes blocked-static-review from init failure.",
+    "Approved scripts got only their statically listed exact domains (no expansion).",
+    "Candidate CDN domains went through the real MediaApproval; the harness acted for the user on the exact returned hostname (not a product auto-approval).",
+    "No account/member/DRM bypass, no download, no full audio URL / token / built-in key persisted."
+  ],
+  "per_file": [
+    {
+      "index": 0,
+      "file": "HYWmusic_公益版_v1.0.3.js",
+      "sha256": "0fdb240b65bdd63bac717c9c4fa9dd4099a24c24b593a3447993d048208b28a0",
+      "import": "passed-no-execution",
+      "static_review": {
+        "decision": "blocked",
+        "note": "blocked：API_BASE为裸IP，自动X-Card-Key及query key卡密认证、自动更新；不使用内置卡密、不改变域名门禁。",
+        "derived": {
+          "version": "lexical-1",
+          "riskVersion": "browser-webrtc-1",
+          "method": "lexical",
+          "findings": [
+            "obfuscation-hint",
+            "unsupported-api"
+          ],
+          "domains": [
+            "103.79.184.97",
+            "github.com"
+          ],
+          "platforms": [
+            "kg",
+            "kw",
+            "mg",
+            "tx",
+            "wy"
+          ],
+          "apis": [
+            "inited",
+            "musicUrl",
+            "request",
+            "updateAlert"
+          ]
+        }
+      },
+      "init": "blocked-static-review",
+      "qualities": null,
+      "realm": null,
+      "grants": [],
+      "network": [],
+      "candidate_host": null,
+      "media_decision": null,
+      "media_decision_note": null,
+      "deny_path": null,
+      "token_issued": false,
+      "audio": {
+        "attempted": false
+      },
+      "reason": "blocked：API_BASE为裸IP，自动X-Card-Key及query key卡密认证、自动更新；不使用内置卡密、不改变域名门禁。",
+      "disabled": true,
+      "restart_disabled": true,
+      "duration_ms": 14,
+      "exit_code": 0,
+      "command": "SOURCE_INDEX=0 timeout 30 xvfb-run -a --server-args=-screen 0 1280x1024x24 /home/administrator/.hermes/cache/scratch/all-sources-retest-20261011/work/node_modules/electron/dist/electron /home/administrator/.hermes/cache/scratch/all-sources-retest-20261011/run.cjs"
+    },
+    {
+      "index": 1,
+      "file": "HYWmusic_公益版v1.1.0.js",
+      "sha256": "72261e94fdead74f831078866c7437636673bc908f3d100e43fdbea19ac6da5d",
+      "import": "passed-no-execution",
+      "static_review": {
+        "decision": "blocked",
+        "note": "blocked：API_BASE为裸IP，自动卡密认证及更新，与1.0.3同路径。",
+        "derived": {
+          "version": "lexical-1",
+          "riskVersion": "browser-webrtc-1",
+          "method": "lexical",
+          "findings": [
+            "obfuscation-hint",
+            "unsupported-api"
+          ],
+          "domains": [
+            "103.79.184.97",
+            "github.com"
+          ],
+          "platforms": [
+            "kw",
+            "mg",
+            "tx",
+            "wy"
+          ],
+          "apis": [
+            "inited",
+            "musicUrl",
+            "request",
+            "updateAlert"
+          ]
+        }
+      },
+      "init": "blocked-static-review",
+      "qualities": null,
+      "realm": null,
+      "grants": [],
+      "network": [],
+      "candidate_host": null,
+      "media_decision": null,
+      "media_decision_note": null,
+      "deny_path": null,
+      "token_issued": false,
+      "audio": {
+        "attempted": false
+      },
+      "reason": "blocked：API_BASE为裸IP，自动卡密认证及更新，与1.0.3同路径。",
+      "disabled": true,
+      "restart_disabled": true,
+      "duration_ms": 11,
+      "exit_code": 0,
+      "command": "SOURCE_INDEX=1 timeout 30 xvfb-run -a --server-args=-screen 0 1280x1024x24 /home/administrator/.hermes/cache/scratch/all-sources-retest-20261011/work/node_modules/electron/dist/electron /home/administrator/.hermes/cache/scratch/all-sources-retest-20261011/run.cjs"
+    },
+    {
+      "index": 2,
+      "file": "HelloWorld音源(中秋快乐).js",
+      "sha256": "32ff5f7b44c1d7d038cb548cb6fac0349befb538bdae26fb658684115e823427",
+      "import": "passed-no-execution",
+      "static_review": {
+        "decision": "blocked",
+        "note": "blocked：实读CONFIG wy自动回退末路含裸IP、内置卡密及X-Card-Key；wy对象body/null原型hasOwnProperty静态兼容疑点。",
+        "derived": {
+          "version": "lexical-1",
+          "riskVersion": "browser-webrtc-1",
+          "method": "lexical",
+          "findings": [
+            "unsupported-api"
+          ],
+          "domains": [
+            "103.79.184.97",
+            "a.aa.cab",
+            "c.wwwweb.top",
+            "mcp.nianxinxz.com",
+            "musicserver.haitangw.cc",
+            "nmobi.kuwo.cn",
+            "oiapi.net",
+            "tang.api.s01s.cn",
+            "yy.zddyr.top"
+          ],
+          "platforms": [
+            "kg",
+            "kw",
+            "mg",
+            "tx",
+            "wy"
+          ],
+          "apis": [
+            "inited",
+            "musicUrl",
+            "request"
+          ]
+        }
+      },
+      "init": "blocked-static-review",
+      "qualities": null,
+      "realm": null,
+      "grants": [],
+      "network": [],
+      "candidate_host": null,
+      "media_decision": null,
+      "media_decision_note": null,
+      "deny_path": null,
+      "token_issued": false,
+      "audio": {
+        "attempted": false
+      },
+      "reason": "blocked：实读CONFIG wy自动回退末路含裸IP、内置卡密及X-Card-Key；wy对象body/null原型hasOwnProperty静态兼容疑点。",
+      "disabled": true,
+      "restart_disabled": true,
+      "duration_ms": 17,
+      "exit_code": 0,
+      "command": "SOURCE_INDEX=2 timeout 30 xvfb-run -a --server-args=-screen 0 1280x1024x24 /home/administrator/.hermes/cache/scratch/all-sources-retest-20261011/work/node_modules/electron/dist/electron /home/administrator/.hermes/cache/scratch/all-sources-retest-20261011/run.cjs"
+    },
+    {
+      "index": 3,
+      "file": "gdstudio音乐源 v1.0.1（仅支持网易）.js",
+      "sha256": "05631b29ff18a4b8688b4464abf0f38952474cd4d8d6c4149c365b0190c7fd28",
+      "import": "passed-no-execution",
+      "static_review": {
+        "decision": "approve-free-wy-only",
+        "note": "可读完整脚本；仅LX request/注册/内存缓存，wy搜索/取链，未发现动态执行或认证。",
+        "derived": {
+          "version": "lexical-1",
+          "riskVersion": "browser-webrtc-1",
+          "method": "lexical",
+          "findings": [],
+          "domains": [
+            "github.com",
+            "music-api.gdstudio.xyz"
+          ],
+          "platforms": [
+            "kg",
+            "kw",
+            "mg",
+            "tx",
+            "wy"
+          ],
+          "apis": [
+            "inited",
+            "musicUrl",
+            "request"
+          ]
+        }
+      },
+      "init": "passed",
+      "qualities": [
+        "128k",
+        "320k",
+        "flac",
+        "flac24bit"
+      ],
+      "realm": {
+        "sandbox": true,
+        "nodeIntegration": false,
+        "contextIsolation": true
+      },
+      "grants": [
+        "music-api.gdstudio.xyz"
+      ],
+      "network": [
+        {
+          "host": "music-api.gdstudio.xyz",
+          "result": "public-ip-pinned"
+        },
+        {
+          "reply": 1,
+          "httpStatus": 200
+        },
+        {
+          "host": "music-api.gdstudio.xyz",
+          "result": "public-ip-pinned"
+        },
+        {
+          "reply": 2,
+          "httpStatus": 200
+        },
+        {
+          "host": "m701.music.126.net",
+          "result": "public-ip-pinned"
+        },
+        {
+          "host": "m701.music.126.net",
+          "result": "public-ip-pinned"
+        }
+      ],
+      "candidate_host": "m701.music.126.net",
+      "media_decision": "approved",
+      "media_decision_note": "harness decided for the user on the exact returned hostname; not a product auto-approval",
+      "deny_path": null,
+      "token_issued": true,
+      "audio": {
+        "attempted": true,
+        "played": true,
+        "currentTime": 20,
+        "duration": 211.64,
+        "readyState": 4,
+        "seeked": true
+      },
+      "reason": null,
+      "disabled": true,
+      "restart_disabled": true,
+      "duration_ms": 3882,
+      "exit_code": 0,
+      "command": "SOURCE_INDEX=3 timeout 30 xvfb-run -a --server-args=-screen 0 1280x1024x24 /home/administrator/.hermes/cache/scratch/all-sources-retest-20261011/work/node_modules/electron/dist/electron /home/administrator/.hermes/cache/scratch/all-sources-retest-20261011/run.cjs"
+    },
+    {
+      "index": 4,
+      "file": "lx-玉宁熙1.2.5.js",
+      "sha256": "5dd4752c16c17f7bab45dccf87dcd3f3c2a6e251e62bad68bde9554bfd275f79",
+      "import": "passed-no-execution",
+      "static_review": {
+        "decision": "blocked",
+        "note": "blocked需人工复核：旋转字符串表、RC4式带key解码器及多层别名/计算属性、IP_LIMIT_MAP限流和初始化尾部；真实域名与网络/认证行为未完整还原。",
+        "derived": {
+          "version": "lexical-1",
+          "riskVersion": "browser-webrtc-1",
+          "method": "lexical",
+          "findings": [
+            "obfuscation-hint"
+          ],
+          "domains": [],
+          "platforms": [
+            "kg",
+            "kw",
+            "mg",
+            "tx",
+            "wy"
+          ],
+          "apis": [
+            "request"
+          ]
+        }
+      },
+      "init": "blocked-static-review",
+      "qualities": null,
+      "realm": null,
+      "grants": [],
+      "network": [],
+      "candidate_host": null,
+      "media_decision": null,
+      "media_decision_note": null,
+      "deny_path": null,
+      "token_issued": false,
+      "audio": {
+        "attempted": false
+      },
+      "reason": "blocked需人工复核：旋转字符串表、RC4式带key解码器及多层别名/计算属性、IP_LIMIT_MAP限流和初始化尾部；真实域名与网络/认证行为未完整还原。",
+      "disabled": true,
+      "restart_disabled": true,
+      "duration_ms": 20,
+      "exit_code": 0,
+      "command": "SOURCE_INDEX=4 timeout 30 xvfb-run -a --server-args=-screen 0 1280x1024x24 /home/administrator/.hermes/cache/scratch/all-sources-retest-20261011/work/node_modules/electron/dist/electron /home/administrator/.hermes/cache/scratch/all-sources-retest-20261011/run.cjs"
+    },
+    {
+      "index": 5,
+      "file": "stellarwave-v3.2.0.js",
+      "sha256": "a1c565851dea2e4209a2695a4e5af27f6425121aea3510510d3cc70c317b7c34",
+      "import": "passed-no-execution",
+      "static_review": {
+        "decision": "blocked",
+        "note": "blocked：_u逐字符+5译码、wy Cookie/eapi、并发回退、QQ getQQExploit伪造cookie/越权策略及内置卡密；不得执行权限绕过。",
+        "derived": {
+          "version": "lexical-1",
+          "riskVersion": "browser-webrtc-1",
+          "method": "lexical",
+          "findings": [
+            "browser-network",
+            "unsupported-api"
+          ],
+          "domains": [
+            "ffapi.cn",
+            "github.com",
+            "music.163.com",
+            "music.migu.cn",
+            "www.kugou.com",
+            "www.kuwo.cn",
+            "y.qq.com"
+          ],
+          "platforms": [
+            "kg",
+            "kw",
+            "mg",
+            "tx",
+            "wy"
+          ],
+          "apis": [
+            "inited",
+            "musicUrl",
+            "request"
+          ]
+        }
+      },
+      "init": "blocked-static-review",
+      "qualities": null,
+      "realm": null,
+      "grants": [],
+      "network": [],
+      "candidate_host": null,
+      "media_decision": null,
+      "media_decision_note": null,
+      "deny_path": null,
+      "token_issued": false,
+      "audio": {
+        "attempted": false
+      },
+      "reason": "blocked：_u逐字符+5译码、wy Cookie/eapi、并发回退、QQ getQQExploit伪造cookie/越权策略及内置卡密；不得执行权限绕过。",
+      "disabled": true,
+      "restart_disabled": true,
+      "duration_ms": 23,
+      "exit_code": 0,
+      "command": "SOURCE_INDEX=5 timeout 30 xvfb-run -a --server-args=-screen 0 1280x1024x24 /home/administrator/.hermes/cache/scratch/all-sources-retest-20261011/work/node_modules/electron/dist/electron /home/administrator/.hermes/cache/scratch/all-sources-retest-20261011/run.cjs"
+    },
+    {
+      "index": 6,
+      "file": "stellarwave-v4.0.0（酷我稍后支持）.js",
+      "sha256": "c27f8d8ff94b9cdc02721430c46632f51a7c2a15ef0618e8c3bbfc6c08ef0092",
+      "import": "passed-no-execution",
+      "static_review": {
+        "decision": "blocked",
+        "note": "blocked：_u译码、getQQExploit三策略和伪造Cookie、内置卡密、wy加密eapi/并发链；不执行越权或卡密路径。",
+        "derived": {
+          "version": "lexical-1",
+          "riskVersion": "browser-webrtc-1",
+          "method": "lexical",
+          "findings": [
+            "browser-network",
+            "unsupported-api"
+          ],
+          "domains": [
+            "ffapi.cn",
+            "github.com",
+            "music.163.com",
+            "music.migu.cn",
+            "www.kugou.com",
+            "www.kuwo.cn",
+            "y.qq.com"
+          ],
+          "platforms": [
+            "kg",
+            "kw",
+            "mg",
+            "tx",
+            "wy"
+          ],
+          "apis": [
+            "inited",
+            "musicUrl",
+            "request"
+          ]
+        }
+      },
+      "init": "blocked-static-review",
+      "qualities": null,
+      "realm": null,
+      "grants": [],
+      "network": [],
+      "candidate_host": null,
+      "media_decision": null,
+      "media_decision_note": null,
+      "deny_path": null,
+      "token_issued": false,
+      "audio": {
+        "attempted": false
+      },
+      "reason": "blocked：_u译码、getQQExploit三策略和伪造Cookie、内置卡密、wy加密eapi/并发链；不执行越权或卡密路径。",
+      "disabled": true,
+      "restart_disabled": true,
+      "duration_ms": 18,
+      "exit_code": 0,
+      "command": "SOURCE_INDEX=6 timeout 30 xvfb-run -a --server-args=-screen 0 1280x1024x24 /home/administrator/.hermes/cache/scratch/all-sources-retest-20261011/work/node_modules/electron/dist/electron /home/administrator/.hermes/cache/scratch/all-sources-retest-20261011/run.cjs"
+    },
+    {
+      "index": 7,
+      "file": "全豆要-聚合音源-V4.1（酷狗挂了）.js",
+      "sha256": "e501fa90f8136a714e0b8e7b44a50d9ee344083a9a5164da7f87a07b6f763650",
+      "import": "passed-no-execution",
+      "static_review": {
+        "decision": "blocked",
+        "note": "blocked：汽水VIP分支data.ekey传proxy解密，wy含裸IP模板；不执行DRM解密路径，名称本身不是原因。",
+        "derived": {
+          "version": "lexical-1",
+          "riskVersion": "browser-webrtc-1",
+          "method": "lexical",
+          "findings": [
+            "obfuscation-hint"
+          ],
+          "domains": [
+            "175.27.166.236",
+            "api.vsaa.cn",
+            "api.xcvts.cn",
+            "music-api.gdstudio.xyz",
+            "music-dl.sayqz.com",
+            "music.haitangw.cc",
+            "music.nxinxz.com",
+            "musicapi.haitangw.net",
+            "oiapi.net",
+            "proxy.qishui.vsaa.cn"
+          ],
+          "platforms": [
+            "kg",
+            "kw",
+            "mg",
+            "tx",
+            "wy"
+          ],
+          "apis": [
+            "inited",
+            "musicUrl",
+            "request"
+          ]
+        }
+      },
+      "init": "blocked-static-review",
+      "qualities": null,
+      "realm": null,
+      "grants": [],
+      "network": [],
+      "candidate_host": null,
+      "media_decision": null,
+      "media_decision_note": null,
+      "deny_path": null,
+      "token_issued": false,
+      "audio": {
+        "attempted": false
+      },
+      "reason": "blocked：汽水VIP分支data.ekey传proxy解密，wy含裸IP模板；不执行DRM解密路径，名称本身不是原因。",
+      "disabled": true,
+      "restart_disabled": true,
+      "duration_ms": 14,
+      "exit_code": 0,
+      "command": "SOURCE_INDEX=7 timeout 30 xvfb-run -a --server-args=-screen 0 1280x1024x24 /home/administrator/.hermes/cache/scratch/all-sources-retest-20261011/work/node_modules/electron/dist/electron /home/administrator/.hermes/cache/scratch/all-sources-retest-20261011/run.cjs"
+    },
+    {
+      "index": 8,
+      "file": "回避聚合V0.0.1.js",
+      "sha256": "9c35f66bf39c6b66e6dc64d3df27535f329a5e146fe80921406f5db910f63e33",
+      "import": "passed-no-execution",
+      "static_review": {
+        "decision": "blocked",
+        "note": "blocked：_u字符+5编码、Cookie解析和QQ越权三策略、内置卡密/签名、动态后端；不执行越权脚本。",
+        "derived": {
+          "version": "lexical-1",
+          "riskVersion": "browser-webrtc-1",
+          "method": "lexical",
+          "findings": [
+            "browser-network",
+            "unsupported-api"
+          ],
+          "domains": [
+            "api.chksz.com",
+            "ffapi.cn",
+            "github.com",
+            "music.163.com",
+            "music.migu.cn",
+            "www.kugou.com",
+            "www.kuwo.cn",
+            "y.qq.com"
+          ],
+          "platforms": [
+            "kg",
+            "kw",
+            "mg",
+            "tx",
+            "wy"
+          ],
+          "apis": [
+            "inited",
+            "musicUrl",
+            "request"
+          ]
+        }
+      },
+      "init": "blocked-static-review",
+      "qualities": null,
+      "realm": null,
+      "grants": [],
+      "network": [],
+      "candidate_host": null,
+      "media_decision": null,
+      "media_decision_note": null,
+      "deny_path": null,
+      "token_issued": false,
+      "audio": {
+        "attempted": false
+      },
+      "reason": "blocked：_u字符+5编码、Cookie解析和QQ越权三策略、内置卡密/签名、动态后端；不执行越权脚本。",
+      "disabled": true,
+      "restart_disabled": true,
+      "duration_ms": 20,
+      "exit_code": 0,
+      "command": "SOURCE_INDEX=8 timeout 30 xvfb-run -a --server-args=-screen 0 1280x1024x24 /home/administrator/.hermes/cache/scratch/all-sources-retest-20261011/work/node_modules/electron/dist/electron /home/administrator/.hermes/cache/scratch/all-sources-retest-20261011/run.cjs"
+    },
+    {
+      "index": 9,
+      "file": "墨澜音乐源v2.3.4.js",
+      "sha256": "328e06c473dfc0ba6de338a7b04f00e3b67a69f59205ca6903d553a80b57c706",
+      "import": "passed-no-execution",
+      "static_review": {
+        "decision": "blocked",
+        "note": "blocked需人工复核：jsjiami.cn.v7标记、字符串表旋转、带key解码和计算属性控制流；执行/网络风险无法闭合。",
+        "derived": {
+          "version": "lexical-1",
+          "riskVersion": "browser-webrtc-1",
+          "method": "lexical",
+          "findings": [
+            "browser-network",
+            "obfuscation-hint"
+          ],
+          "domains": [
+            "github.com"
+          ],
+          "platforms": [
+            "kg",
+            "kw",
+            "mg",
+            "tx",
+            "wy"
+          ],
+          "apis": [
+            "request"
+          ]
+        }
+      },
+      "init": "blocked-static-review",
+      "qualities": null,
+      "realm": null,
+      "grants": [],
+      "network": [],
+      "candidate_host": null,
+      "media_decision": null,
+      "media_decision_note": null,
+      "deny_path": null,
+      "token_issued": false,
+      "audio": {
+        "attempted": false
+      },
+      "reason": "blocked需人工复核：jsjiami.cn.v7标记、字符串表旋转、带key解码和计算属性控制流；执行/网络风险无法闭合。",
+      "disabled": true,
+      "restart_disabled": true,
+      "duration_ms": 17,
+      "exit_code": 0,
+      "command": "SOURCE_INDEX=9 timeout 30 xvfb-run -a --server-args=-screen 0 1280x1024x24 /home/administrator/.hermes/cache/scratch/all-sources-retest-20261011/work/node_modules/electron/dist/electron /home/administrator/.hermes/cache/scratch/all-sources-retest-20261011/run.cjs"
+    },
+    {
+      "index": 10,
+      "file": "屿溪-终章.js",
+      "sha256": "b45e05b8c043f0e715f9856ea400707bdf131b9c05b5014e1de9d0821a9972a7",
+      "import": "passed-no-execution",
+      "static_review": {
+        "decision": "blocked",
+        "note": "blocked需人工复核：旋转表、多层解码别名、URL_CONFIG拼接和getMgUrl；未完整还原wy端点及危险分支。",
+        "derived": {
+          "version": "lexical-1",
+          "riskVersion": "browser-webrtc-1",
+          "method": "lexical",
+          "findings": [],
+          "domains": [],
+          "platforms": [
+            "kg",
+            "kw",
+            "mg",
+            "tx",
+            "wy"
+          ],
+          "apis": [
+            "request"
+          ]
+        }
+      },
+      "init": "blocked-static-review",
+      "qualities": null,
+      "realm": null,
+      "grants": [],
+      "network": [],
+      "candidate_host": null,
+      "media_decision": null,
+      "media_decision_note": null,
+      "deny_path": null,
+      "token_issued": false,
+      "audio": {
+        "attempted": false
+      },
+      "reason": "blocked需人工复核：旋转表、多层解码别名、URL_CONFIG拼接和getMgUrl；未完整还原wy端点及危险分支。",
+      "disabled": true,
+      "restart_disabled": true,
+      "duration_ms": 29,
+      "exit_code": 0,
+      "command": "SOURCE_INDEX=10 timeout 30 xvfb-run -a --server-args=-screen 0 1280x1024x24 /home/administrator/.hermes/cache/scratch/all-sources-retest-20261011/work/node_modules/electron/dist/electron /home/administrator/.hermes/cache/scratch/all-sources-retest-20261011/run.cjs"
+    },
+    {
+      "index": 11,
+      "file": "幻音音源 v3.js",
+      "sha256": "4a81129240ecae3ebf6b42f28c73e2d37bbcb6fccac9a73a401d90cdd36bee5f",
+      "import": "passed-no-execution",
+      "static_review": {
+        "decision": "approve-free-wy-only",
+        "note": "可读完整脚本；wy只返回固定域名模板；songmid/id兼容。",
+        "derived": {
+          "version": "lexical-1",
+          "riskVersion": "browser-webrtc-1",
+          "method": "lexical",
+          "findings": [],
+          "domains": [
+            "api.xcvts.cn",
+            "music-dl.sayqz.com"
+          ],
+          "platforms": [
+            "kw",
+            "mg",
+            "tx",
+            "wy"
+          ],
+          "apis": [
+            "inited",
+            "musicUrl",
+            "request"
+          ]
+        }
+      },
+      "init": "passed",
+      "qualities": [
+        "128k",
+        "320k",
+        "flac",
+        "flac24bit"
+      ],
+      "realm": {
+        "sandbox": true,
+        "nodeIntegration": false,
+        "contextIsolation": true
+      },
+      "grants": [
+        "music-dl.sayqz.com"
+      ],
+      "network": [
+        {
+          "host": "music-dl.sayqz.com",
+          "result": "denied",
+          "error": "getaddrinfo ENOTFOUND music-dl.sayqz.com"
+        }
+      ],
+      "candidate_host": "music-dl.sayqz.com",
+      "media_decision": "approved",
+      "media_decision_note": "harness decided for the user on the exact returned hostname; not a product auto-approval",
+      "deny_path": null,
+      "token_issued": false,
+      "audio": {
+        "attempted": false
+      },
+      "reason": "getaddrinfo ENOTFOUND music-dl.sayqz.com",
+      "disabled": true,
+      "restart_disabled": true,
+      "duration_ms": 260,
+      "exit_code": 0,
+      "command": "SOURCE_INDEX=11 timeout 30 xvfb-run -a --server-args=-screen 0 1280x1024x24 /home/administrator/.hermes/cache/scratch/all-sources-retest-20261011/work/node_modules/electron/dist/electron /home/administrator/.hermes/cache/scratch/all-sources-retest-20261011/run.cjs"
+    },
+    {
+      "index": 12,
+      "file": "念心音源 v1.0.2.js",
+      "sha256": "86f6c05f8fef7169fd010a1da362824b5c4b7f5695f89d384fe53564f3fa88d2",
+      "import": "passed-no-execution",
+      "static_review": {
+        "decision": "blocked",
+        "note": "blocked需人工复核：自定义base64字母表+RC4解码、旋转表和VERSION_CHECK_URL/平台注册计算属性；音乐域名未核实。",
+        "derived": {
+          "version": "lexical-1",
+          "riskVersion": "browser-webrtc-1",
+          "method": "lexical",
+          "findings": [
+            "obfuscation-hint"
+          ],
+          "domains": [
+            "gitee.com"
+          ],
+          "platforms": [
+            "kg",
+            "kw",
+            "mg",
+            "tx",
+            "wy"
+          ],
+          "apis": [
+            "musicUrl",
+            "request"
+          ]
+        }
+      },
+      "init": "blocked-static-review",
+      "qualities": null,
+      "realm": null,
+      "grants": [],
+      "network": [],
+      "candidate_host": null,
+      "media_decision": null,
+      "media_decision_note": null,
+      "deny_path": null,
+      "token_issued": false,
+      "audio": {
+        "attempted": false
+      },
+      "reason": "blocked需人工复核：自定义base64字母表+RC4解码、旋转表和VERSION_CHECK_URL/平台注册计算属性；音乐域名未核实。",
+      "disabled": true,
+      "restart_disabled": true,
+      "duration_ms": 15,
+      "exit_code": 0,
+      "command": "SOURCE_INDEX=12 timeout 30 xvfb-run -a --server-args=-screen 0 1280x1024x24 /home/administrator/.hermes/cache/scratch/all-sources-retest-20261011/work/node_modules/electron/dist/electron /home/administrator/.hermes/cache/scratch/all-sources-retest-20261011/run.cjs"
+    },
+    {
+      "index": 13,
+      "file": "收集の聚合接口.js",
+      "sha256": "cd4b68b133ef8de80a75ac6f9c5d9c80b383e1fe3c364f4366553d18ca9418a5",
+      "import": "passed-no-execution",
+      "static_review": {
+        "decision": "approve-free-wy-only",
+        "note": "可读完整脚本；wy固定域名standard请求，ID只读hash/songmid，当前宿主只给id；tx内置key未调用/不授权。",
+        "derived": {
+          "version": "lexical-1",
+          "riskVersion": "browser-webrtc-1",
+          "method": "lexical",
+          "findings": [],
+          "domains": [
+            "api.cenguigui.cn",
+            "cyapi.top",
+            "kw-api.cenguigui.cn"
+          ],
+          "platforms": [
+            "kw",
+            "tx",
+            "wy"
+          ],
+          "apis": [
+            "inited",
+            "musicUrl",
+            "request"
+          ]
+        }
+      },
+      "init": "passed",
+      "qualities": [
+        "128k",
+        "320k",
+        "flac",
+        "flac24bit"
+      ],
+      "realm": {
+        "sandbox": true,
+        "nodeIntegration": false,
+        "contextIsolation": true
+      },
+      "grants": [
+        "api.cenguigui.cn"
+      ],
+      "network": [
+        {
+          "host": "api.cenguigui.cn",
+          "result": "public-ip-pinned"
+        },
+        {
+          "reply": 1,
+          "httpStatus": 200
+        },
+        {
+          "host": "iot102.music.126.net",
+          "result": "public-ip-pinned"
+        },
+        {
+          "host": "iot102.music.126.net",
+          "result": "public-ip-pinned"
+        }
+      ],
+      "candidate_host": "iot102.music.126.net",
+      "media_decision": "approved",
+      "media_decision_note": "harness decided for the user on the exact returned hostname; not a product auto-approval",
+      "deny_path": null,
+      "token_issued": true,
+      "audio": {
+        "attempted": true,
+        "played": true,
+        "currentTime": 20,
+        "duration": 62.706667,
+        "readyState": 4,
+        "seeked": true
+      },
+      "reason": null,
+      "disabled": true,
+      "restart_disabled": true,
+      "duration_ms": 4375,
+      "exit_code": 0,
+      "command": "SOURCE_INDEX=13 timeout 30 xvfb-run -a --server-args=-screen 0 1280x1024x24 /home/administrator/.hermes/cache/scratch/all-sources-retest-20261011/work/node_modules/electron/dist/electron /home/administrator/.hermes/cache/scratch/all-sources-retest-20261011/run.cjs"
+    },
+    {
+      "index": 14,
+      "file": "星海音乐源V3.2.15.js",
+      "sha256": "807d6157e4fd7cdd05b8727efd73778b54a3b05a0b5e4c6bb28dedc0668e94e9",
+      "import": "passed-no-execution",
+      "static_review": {
+        "decision": "blocked",
+        "note": "blocked：URL_CONFIG/wy回退、KW ekey提取与解密代理、初始化fetchIp及更新；含密钥配置及认证/解密路径。",
+        "derived": {
+          "version": "lexical-1",
+          "riskVersion": "browser-webrtc-1",
+          "method": "lexical",
+          "findings": [
+            "unsupported-api"
+          ],
+          "domains": [
+            "${domain}${path}",
+            "${url_config.domains.chksznew}${url_config.paths.chksznetease}",
+            "${url_config.domains.chksznew}${url_config.paths.chkszqq}",
+            "anymatch.kuwo.cn",
+            "gc.kxwa.top",
+            "img1.kwcdn.kuwo.cn",
+            "m.kuwo.cn",
+            "mobi.kuwo.cn",
+            "nmobi.kuwo.cn",
+            "zddyr.top"
+          ],
+          "platforms": [
+            "kg",
+            "kw",
+            "mg",
+            "tx",
+            "wy"
+          ],
+          "apis": [
+            "inited",
+            "musicUrl",
+            "request",
+            "updateAlert"
+          ]
+        }
+      },
+      "init": "blocked-static-review",
+      "qualities": null,
+      "realm": null,
+      "grants": [],
+      "network": [],
+      "candidate_host": null,
+      "media_decision": null,
+      "media_decision_note": null,
+      "deny_path": null,
+      "token_issued": false,
+      "audio": {
+        "attempted": false
+      },
+      "reason": "blocked：URL_CONFIG/wy回退、KW ekey提取与解密代理、初始化fetchIp及更新；含密钥配置及认证/解密路径。",
+      "disabled": true,
+      "restart_disabled": true,
+      "duration_ms": 15,
+      "exit_code": 0,
+      "command": "SOURCE_INDEX=14 timeout 30 xvfb-run -a --server-args=-screen 0 1280x1024x24 /home/administrator/.hermes/cache/scratch/all-sources-retest-20261011/work/node_modules/electron/dist/electron /home/administrator/.hermes/cache/scratch/all-sources-retest-20261011/run.cjs"
+    },
+    {
+      "index": 15,
+      "file": "溯音音源_v1.js",
+      "sha256": "d10c9c28823b5c2ce4e3fef3b25b8ff16d2d165bd0883e2b866900ef7c0dc0ee",
+      "import": "passed-no-execution",
+      "static_review": {
+        "decision": "approve-free-wy-only",
+        "note": "可读完整脚本；wy公开id GET、resp.body；QQ key只在tx分支、配置事件未实现。",
+        "derived": {
+          "version": "lexical-1",
+          "riskVersion": "browser-webrtc-1",
+          "method": "lexical",
+          "findings": [
+            "obfuscation-hint",
+            "unsupported-api"
+          ],
+          "domains": [
+            "api.xcvts.cn",
+            "oiapi.net"
+          ],
+          "platforms": [
+            "kw",
+            "mg",
+            "tx",
+            "wy"
+          ],
+          "apis": [
+            "inited",
+            "musicUrl",
+            "request",
+            "showConfigView"
+          ]
+        }
+      },
+      "init": "failed",
+      "qualities": null,
+      "realm": null,
+      "grants": [
+        "oiapi.net"
+      ],
+      "network": [],
+      "candidate_host": null,
+      "media_decision": "not-reached",
+      "media_decision_note": "harness decided for the user on the exact returned hostname; not a product auto-approval",
+      "deny_path": null,
+      "token_issued": false,
+      "audio": {
+        "attempted": false
+      },
+      "reason": "LX realm: LX: native error/unhandledrejection",
+      "disabled": true,
+      "restart_disabled": true,
+      "duration_ms": 66,
+      "exit_code": 0,
+      "command": "SOURCE_INDEX=15 timeout 30 xvfb-run -a --server-args=-screen 0 1280x1024x24 /home/administrator/.hermes/cache/scratch/all-sources-retest-20261011/work/node_modules/electron/dist/electron /home/administrator/.hermes/cache/scratch/all-sources-retest-20261011/run.cjs"
+    },
+    {
+      "index": 16,
+      "file": "稳定版音源 v1.0.3.js",
+      "sha256": "5e5f39c1a51b6c005104f382b22cd0a3e0af2ba30c7003e4fd03bfcf9f6a088a",
+      "import": "passed-no-execution",
+      "static_review": {
+        "decision": "approve-free-wy-only",
+        "note": "可读wy standard映射及HTTP解析/注册；tx内置key仅未调用分支，未授权tx。",
+        "derived": {
+          "version": "lexical-1",
+          "riskVersion": "browser-webrtc-1",
+          "method": "lexical",
+          "findings": [],
+          "domains": [
+            "api.injahow.cn",
+            "cyapi.top",
+            "kw-api.cenguigui.cn",
+            "lxmusic.toside.cn"
+          ],
+          "platforms": [
+            "kw",
+            "tx",
+            "wy"
+          ],
+          "apis": [
+            "inited",
+            "musicUrl",
+            "request"
+          ]
+        }
+      },
+      "init": "passed",
+      "qualities": [
+        "128k",
+        "320k",
+        "flac",
+        "flac24bit"
+      ],
+      "realm": {
+        "sandbox": true,
+        "nodeIntegration": false,
+        "contextIsolation": true
+      },
+      "grants": [
+        "api.injahow.cn"
+      ],
+      "network": [
+        {
+          "host": "api.injahow.cn",
+          "result": "public-ip-pinned"
+        },
+        {
+          "reply": 1,
+          "httpStatus": 404
+        }
+      ],
+      "candidate_host": null,
+      "media_decision": "not-reached",
+      "media_decision_note": "harness decided for the user on the exact returned hostname; not a product auto-approval",
+      "deny_path": null,
+      "token_issued": false,
+      "audio": {
+        "attempted": false
+      },
+      "reason": "LX script: 获取链接失败，可能是该歌曲无版权或接口维护",
+      "disabled": true,
+      "restart_disabled": true,
+      "duration_ms": 339,
+      "exit_code": 0,
+      "command": "SOURCE_INDEX=16 timeout 30 xvfb-run -a --server-args=-screen 0 1280x1024x24 /home/administrator/.hermes/cache/scratch/all-sources-retest-20261011/work/node_modules/electron/dist/electron /home/administrator/.hermes/cache/scratch/all-sources-retest-20261011/run.cjs"
+    },
+    {
+      "index": 17,
+      "file": "统一音乐源.js",
+      "sha256": "a18bdd58fd3f5e26d00c8c18d7b0825367f54a1c01bb8f8321ac7f5d374f1a7c",
+      "import": "passed-no-execution",
+      "static_review": {
+        "decision": "approve-free-wy-only",
+        "note": "可读完整脚本；延迟inited，wy按id请求GDAPI，resp.body解析；无认证、动态代码。",
+        "derived": {
+          "version": "lexical-1",
+          "riskVersion": "browser-webrtc-1",
+          "method": "lexical",
+          "findings": [],
+          "domains": [
+            "music-api.gdstudio.xyz"
+          ],
+          "platforms": [
+            "kw",
+            "wy"
+          ],
+          "apis": [
+            "inited",
+            "musicUrl",
+            "request"
+          ]
+        }
+      },
+      "init": "passed",
+      "qualities": [
+        "128k",
+        "320k",
+        "flac"
+      ],
+      "realm": {
+        "sandbox": true,
+        "nodeIntegration": false,
+        "contextIsolation": true
+      },
+      "grants": [
+        "music-api.gdstudio.xyz"
+      ],
+      "network": [
+        {
+          "host": "music-api.gdstudio.xyz",
+          "result": "public-ip-pinned"
+        },
+        {
+          "reply": 1,
+          "httpStatus": 200
+        },
+        {
+          "host": "m701.music.126.net",
+          "result": "public-ip-pinned"
+        },
+        {
+          "host": "m701.music.126.net",
+          "result": "public-ip-pinned"
+        }
+      ],
+      "candidate_host": "m701.music.126.net",
+      "media_decision": "approved",
+      "media_decision_note": "harness decided for the user on the exact returned hostname; not a product auto-approval",
+      "deny_path": null,
+      "token_issued": true,
+      "audio": {
+        "attempted": true,
+        "played": true,
+        "currentTime": 20,
+        "duration": 62.706667,
+        "readyState": 4,
+        "seeked": true
+      },
+      "reason": null,
+      "disabled": true,
+      "restart_disabled": true,
+      "duration_ms": 2786,
+      "exit_code": 0,
+      "command": "SOURCE_INDEX=17 timeout 30 xvfb-run -a --server-args=-screen 0 1280x1024x24 /home/administrator/.hermes/cache/scratch/all-sources-retest-20261011/work/node_modules/electron/dist/electron /home/administrator/.hermes/cache/scratch/all-sources-retest-20261011/run.cjs"
+    },
+    {
+      "index": 18,
+      "file": "聚合API接口 (CF) v3.js",
+      "sha256": "47648623f242fa8bccc8965d33666ac36147f63b68bd7776bb082e44e1c2d6f8",
+      "import": "passed-no-execution",
+      "static_review": {
+        "decision": "blocked",
+        "note": "blocked：init.conf远程决定声明，code303按服务端D.url/D.options发请求，未知动态域名不能预先审查授权；未发现eval，不误称远程代码执行。",
+        "derived": {
+          "version": "lexical-1",
+          "riskVersion": "browser-webrtc-1",
+          "method": "lexical",
+          "findings": [
+            "unsupported-api"
+          ],
+          "domains": [
+            "api.music.lerd.dpdns.org"
+          ],
+          "platforms": [],
+          "apis": [
+            "inited",
+            "request",
+            "updateAlert"
+          ]
+        }
+      },
+      "init": "blocked-static-review",
+      "qualities": null,
+      "realm": null,
+      "grants": [],
+      "network": [],
+      "candidate_host": null,
+      "media_decision": null,
+      "media_decision_note": null,
+      "deny_path": null,
+      "token_issued": false,
+      "audio": {
+        "attempted": false
+      },
+      "reason": "blocked：init.conf远程决定声明，code303按服务端D.url/D.options发请求，未知动态域名不能预先审查授权；未发现eval，不误称远程代码执行。",
+      "disabled": true,
+      "restart_disabled": true,
+      "duration_ms": 10,
+      "exit_code": 0,
+      "command": "SOURCE_INDEX=18 timeout 30 xvfb-run -a --server-args=-screen 0 1280x1024x24 /home/administrator/.hermes/cache/scratch/all-sources-retest-20261011/work/node_modules/electron/dist/electron /home/administrator/.hermes/cache/scratch/all-sources-retest-20261011/run.cjs"
+    },
+    {
+      "index": 19,
+      "file": "裤佬SVIP音源(二改整合版) v3.0.0.js",
+      "sha256": "58e8cb1403a0eb394d6405dc560c3cd4329fa62aa19c5d753d048a9a6e626d97",
+      "import": "passed-no-execution",
+      "static_review": {
+        "decision": "approve-free-wy-only",
+        "note": "可读完整脚本；wy空ChKSz key跳过；KW解密代理默认false且url空不测；SVIP名称不作违规证明。",
+        "derived": {
+          "version": "lexical-1",
+          "riskVersion": "browser-webrtc-1",
+          "method": "lexical",
+          "findings": [],
+          "domains": [
+            "api.chksz.com",
+            "api.music.lerd.dpdns.org",
+            "api.qs.la",
+            "api.qs.vip",
+            "api.vkeys.cn",
+            "c.wwwweb.top",
+            "jsnzkpg.github.io",
+            "music-api.gdstudio.xyz",
+            "nmobi.kuwo.cn",
+            "yy.zddyr.top",
+            "zrcdy.dpdns.org"
+          ],
+          "platforms": [
+            "kg",
+            "kw",
+            "mg",
+            "tx",
+            "wy"
+          ],
+          "apis": [
+            "inited",
+            "musicUrl",
+            "request"
+          ]
+        }
+      },
+      "init": "passed",
+      "qualities": [
+        "128k",
+        "320k",
+        "flac",
+        "flac24bit"
+      ],
+      "realm": {
+        "sandbox": true,
+        "nodeIntegration": false,
+        "contextIsolation": true
+      },
+      "grants": [
+        "music-api.gdstudio.xyz",
+        "c.wwwweb.top",
+        "yy.zddyr.top",
+        "zrcdy.dpdns.org"
+      ],
+      "network": [
+        {
+          "host": "music-api.gdstudio.xyz",
+          "result": "public-ip-pinned"
+        },
+        {
+          "reply": 1,
+          "httpStatus": 200
+        },
+        {
+          "host": "m801.music.126.net",
+          "result": "public-ip-pinned"
+        },
+        {
+          "host": "m801.music.126.net",
+          "result": "public-ip-pinned"
+        }
+      ],
+      "candidate_host": "m801.music.126.net",
+      "media_decision": "approved",
+      "media_decision_note": "harness decided for the user on the exact returned hostname; not a product auto-approval",
+      "deny_path": null,
+      "token_issued": true,
+      "audio": {
+        "attempted": true,
+        "played": true,
+        "currentTime": 20,
+        "duration": 62.706667,
+        "readyState": 4,
+        "seeked": true
+      },
+      "reason": null,
+      "disabled": true,
+      "restart_disabled": true,
+      "duration_ms": 3405,
+      "exit_code": 0,
+      "command": "SOURCE_INDEX=19 timeout 30 xvfb-run -a --server-args=-screen 0 1280x1024x24 /home/administrator/.hermes/cache/scratch/all-sources-retest-20261011/work/node_modules/electron/dist/electron /home/administrator/.hermes/cache/scratch/all-sources-retest-20261011/run.cjs"
+    },
+    {
+      "index": 20,
+      "file": "西瓜聚合.js",
+      "sha256": "d38afb4498fa72c6c34e98891bf3d454a01d2683d4a7e5144602f8298308948d",
+      "import": "passed-no-execution",
+      "static_review": {
+        "decision": "blocked",
+        "note": "blocked：聚合回退和初始化；可选内置卡密认证、动态服务端请求配置及裸IP模板，未完整证明禁用分支不达。",
+        "derived": {
+          "version": "lexical-1",
+          "riskVersion": "browser-webrtc-1",
+          "method": "lexical",
+          "findings": [
+            "unsupported-api"
+          ],
+          "domains": [
+            "175.27.166.236",
+            "api.cenguigui.cn",
+            "api.chksz.top",
+            "api.music.lerd.dpdns.org",
+            "api.vsaa.cn",
+            "api.xcvts.cn",
+            "cp.chksz.top",
+            "cyapi.top",
+            "kw-api.cenguigui.cn",
+            "lxmusicapi.onrender.com",
+            "m-api.ceseet.me",
+            "music-api.gdstudio.xyz",
+            "music-dl.sayqz.com",
+            "music.bxa241d4.shop",
+            "music.haitangw.cc",
+            "music.nxinxz.com",
+            "musicapi.haitangw.net",
+            "oiapi.net",
+            "yy.fangqihang.cn",
+            "zrcdy.dpdns.org"
+          ],
+          "platforms": [
+            "kg",
+            "kw",
+            "mg",
+            "tx",
+            "wy"
+          ],
+          "apis": [
+            "inited",
+            "musicUrl",
+            "request",
+            "updateAlert"
+          ]
+        }
+      },
+      "init": "blocked-static-review",
+      "qualities": null,
+      "realm": null,
+      "grants": [],
+      "network": [],
+      "candidate_host": null,
+      "media_decision": null,
+      "media_decision_note": null,
+      "deny_path": null,
+      "token_issued": false,
+      "audio": {
+        "attempted": false
+      },
+      "reason": "blocked：聚合回退和初始化；可选内置卡密认证、动态服务端请求配置及裸IP模板，未完整证明禁用分支不达。",
+      "disabled": true,
+      "restart_disabled": true,
+      "duration_ms": 16,
+      "exit_code": 0,
+      "command": "SOURCE_INDEX=20 timeout 30 xvfb-run -a --server-args=-screen 0 1280x1024x24 /home/administrator/.hermes/cache/scratch/all-sources-retest-20261011/work/node_modules/electron/dist/electron /home/administrator/.hermes/cache/scratch/all-sources-retest-20261011/run.cjs"
+    },
+    {
+      "index": 21,
+      "file": "长青SVIP音源(二改修复版) v1.2.0.js",
+      "sha256": "48d5fed8b46344e9298d55427382ce573485a264a2ae287ed829e2f2548223e8",
+      "import": "passed-no-execution",
+      "static_review": {
+        "decision": "blocked",
+        "note": "blocked需人工复核：双解码器base64/带key与旋转表、URL_CONFIG拼接及平台音质/更新逻辑；音乐端点未完全还原。",
+        "derived": {
+          "version": "lexical-1",
+          "riskVersion": "browser-webrtc-1",
+          "method": "lexical",
+          "findings": [
+            "obfuscation-hint"
+          ],
+          "domains": [
+            "13413.kstore.vip"
+          ],
+          "platforms": [
+            "kg",
+            "kw",
+            "tx",
+            "wy"
+          ],
+          "apis": [
+            "request"
+          ]
+        }
+      },
+      "init": "blocked-static-review",
+      "qualities": null,
+      "realm": null,
+      "grants": [],
+      "network": [],
+      "candidate_host": null,
+      "media_decision": null,
+      "media_decision_note": null,
+      "deny_path": null,
+      "token_issued": false,
+      "audio": {
+        "attempted": false
+      },
+      "reason": "blocked需人工复核：双解码器base64/带key与旋转表、URL_CONFIG拼接及平台音质/更新逻辑；音乐端点未完全还原。",
+      "disabled": true,
+      "restart_disabled": true,
+      "duration_ms": 17,
+      "exit_code": 0,
+      "command": "SOURCE_INDEX=21 timeout 30 xvfb-run -a --server-args=-screen 0 1280x1024x24 /home/administrator/.hermes/cache/scratch/all-sources-retest-20261011/work/node_modules/electron/dist/electron /home/administrator/.hermes/cache/scratch/all-sources-retest-20261011/run.cjs"
+    },
+    {
+      "index": 22,
+      "file": "长青SVIP音源v1.3.0.protected.js",
+      "sha256": "a212b016c8983bf0e2d45885959b5fa2b67bd2f0f41418324ee38bb6cca6330d",
+      "import": "passed-no-execution",
+      "static_review": {
+        "decision": "blocked",
+        "note": "blocked需人工复核：累积XOR/加减数字数组解码、_ru固定yinyue.haitangw.net模板；wy仅songmid宿主缺失；字符串未完全静态解码。",
+        "derived": {
+          "version": "lexical-1",
+          "riskVersion": "browser-webrtc-1",
+          "method": "lexical",
+          "findings": [
+            "unsupported-api"
+          ],
+          "domains": [
+            "13413.kstore.vip",
+            "yinyue.haitangw.net"
+          ],
+          "platforms": [
+            "kg",
+            "kw",
+            "mg",
+            "tx",
+            "wy"
+          ],
+          "apis": [
+            "inited",
+            "musicUrl",
+            "request",
+            "updateAlert"
+          ]
+        }
+      },
+      "init": "blocked-static-review",
+      "qualities": null,
+      "realm": null,
+      "grants": [],
+      "network": [],
+      "candidate_host": null,
+      "media_decision": null,
+      "media_decision_note": null,
+      "deny_path": null,
+      "token_issued": false,
+      "audio": {
+        "attempted": false
+      },
+      "reason": "blocked需人工复核：累积XOR/加减数字数组解码、_ru固定yinyue.haitangw.net模板；wy仅songmid宿主缺失；字符串未完全静态解码。",
+      "disabled": true,
+      "restart_disabled": true,
+      "duration_ms": 14,
+      "exit_code": 0,
+      "command": "SOURCE_INDEX=22 timeout 30 xvfb-run -a --server-args=-screen 0 1280x1024x24 /home/administrator/.hermes/cache/scratch/all-sources-retest-20261011/work/node_modules/electron/dist/electron /home/administrator/.hermes/cache/scratch/all-sources-retest-20261011/run.cjs"
+    },
+    {
+      "index": 23,
+      "file": "非常刀 v5.js",
+      "sha256": "49486cab064e64d5ad63723e670c44ee55eadadcc790ccf493351fbde64284d7",
+      "import": "passed-no-execution",
+      "static_review": {
+        "decision": "approve-free-wy-only",
+        "note": "可读完整脚本；wy128并发三公开API再模板回退；IP不获授权，QQ内置key未调用；无动态代码。",
+        "derived": {
+          "version": "lexical-1",
+          "riskVersion": "browser-webrtc-1",
+          "method": "lexical",
+          "findings": [],
+          "domains": [
+            "175.27.166.236",
+            "api-vehicle.volcengine.com",
+            "api.chksz.top",
+            "api.qishui.com",
+            "api.xcvts.cn",
+            "cp.chksz.top",
+            "music-api.gdstudio.xyz",
+            "music.haitangw.cc",
+            "music.nxinxz.com",
+            "musicapi.haitangw.net",
+            "oiapi.net",
+            "t.me"
+          ],
+          "platforms": [
+            "kg",
+            "kw",
+            "mg",
+            "tx",
+            "wy"
+          ],
+          "apis": [
+            "inited",
+            "musicUrl",
+            "request"
+          ]
+        }
+      },
+      "init": "passed",
+      "qualities": [
+        "128k",
+        "320k",
+        "flac",
+        "flac24bit"
+      ],
+      "realm": {
+        "sandbox": true,
+        "nodeIntegration": false,
+        "contextIsolation": true
+      },
+      "grants": [
+        "api.chksz.top",
+        "music-api.gdstudio.xyz",
+        "oiapi.net",
+        "music.nxinxz.com"
+      ],
+      "network": [
+        {
+          "reply": 1,
+          "httpStatus": null,
+          "error": "LX: unsupported header"
+        },
+        {
+          "host": "music-api.gdstudio.xyz",
+          "result": "public-ip-pinned"
+        },
+        {
+          "host": "oiapi.net",
+          "result": "public-ip-pinned"
+        },
+        {
+          "reply": 3,
+          "httpStatus": 200
+        },
+        {
+          "host": "m801.music.126.net",
+          "result": "public-ip-pinned"
+        },
+        {
+          "host": "m801.music.126.net",
+          "result": "public-ip-pinned"
+        },
+        {
+          "reply": 2,
+          "httpStatus": 200
+        }
+      ],
+      "candidate_host": "m801.music.126.net",
+      "media_decision": "approved",
+      "media_decision_note": "harness decided for the user on the exact returned hostname; not a product auto-approval",
+      "deny_path": {
+        "candidate_host": "m801.music.126.net",
+        "decision": "denied",
+        "rejected": true,
+        "error": "LX: media approval denied",
+        "token_after_deny": false,
+        "domains_after_deny": [],
+        "skipped": null
+      },
+      "token_issued": true,
+      "audio": {
+        "attempted": true,
+        "played": true,
+        "currentTime": 20,
+        "duration": 62.706667,
+        "readyState": 4,
+        "seeked": true
+      },
+      "reason": null,
+      "disabled": true,
+      "restart_disabled": true,
+      "duration_ms": 2069,
+      "exit_code": 0,
+      "command": "SOURCE_INDEX=23 timeout 30 xvfb-run -a --server-args=-screen 0 1280x1024x24 /home/administrator/.hermes/cache/scratch/all-sources-retest-20261011/work/node_modules/electron/dist/electron /home/administrator/.hermes/cache/scratch/all-sources-retest-20261011/run.cjs"
+    }
+  ]
+}
