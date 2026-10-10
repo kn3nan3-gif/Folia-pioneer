@@ -16,6 +16,7 @@ export default function LxSourceHost({ theme }: { theme: Theme }) {
     useEffect(() => {
         const unsubscribe = bridge?.onStateChanged(next => {
             updates.current++; setRecords(next); setApproved({});
+            if (next.some(record => record.mediaChallenges?.length)) setOpen(true);
         });
         return () => { unsubscribe?.(); updates.current++; operation.current++; };
     }, [bridge]);
@@ -44,6 +45,14 @@ export default function LxSourceHost({ theme }: { theme: Theme }) {
                 <code className="block break-all text-xs">SHA-256: {record.digest}</code>
                 <p>{record.qualities.join(' / ')}</p>
                 {record.failure && <p role="alert">{t('lxSources.runtimeFailure')}: {record.failure}</p>}
+                {record.mediaFailure && <p role="alert">{t('lxSources.mediaFailure')}: {record.mediaFailure}</p>}
+                <p>{t('lxSources.mediaGrants')}{record.mediaDomains?.join(', ') || t('lxSources.mediaNone')}</p>
+                {record.mediaChallenges?.map(challenge => <div key={challenge.id} className="my-3 rounded-xl border border-current/20 p-3">
+                    <p>{t('lxSources.mediaSource')}{record.name} · {t('lxSources.mediaCdn')}<strong>{challenge.hostname}</strong> ({challenge.origin})</p>
+                    <p>{t('lxSources.mediaConsent')}</p>
+                    <button disabled={busy} onClick={() => void run(() => bridge.decideMedia({ id: challenge.id, digest: record.digest, approved: true, acknowledged: true }))}>{t('lxSources.mediaApprove')}</button>
+                    <button disabled={busy} className="ml-6" onClick={() => void run(() => bridge.decideMedia({ id: challenge.id, digest: record.digest, approved: false, acknowledged: true }))}>{t('lxSources.mediaDeny')}</button>
+                </div>)}
                 {record.review && <LxReviewReport review={record.review} />}
                 <label className="my-3 block">{t('lxSources.domains')}<input aria-label={`${record.name} ${t('lxSources.domains')}`} className="ml-3 border border-current/20 bg-transparent p-2" value={domains[record.digest] ?? record.domains.join(', ')} onChange={e => { setDomains({ ...domains, [record.digest]: e.target.value }); setApproved({ ...approved, [record.digest]: false }); }} /></label>
                 <label className="block"><input type="checkbox" checked={approved[record.digest] ?? false} onChange={e => setApproved({ ...approved, [record.digest]: e.target.checked })} /> {t('lxSources.authorize')}</label>

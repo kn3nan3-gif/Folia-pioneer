@@ -2,7 +2,12 @@
 
 export default {
   "lxSources": {
-    "runtimeFailure": "Runtime berhenti karena kegagalan"
+    "runtimeFailure": "Runtime berhenti karena kegagalan",
+    "mediaGrants": "Izin khusus media (sesi ini): ", "mediaNone": "tidak ada",
+    "mediaSource": "Sumber: ", "mediaCdn": "CDN media: ",
+    "mediaConsent": "Izinkan domain persis ini hanya untuk pemutaran audio, dalam sesi ini. Ini tidak mengizinkan permintaan API skrip. Persetujuan kedaluwarsa setelah 60 detik; tanpa izin wildcard atau subdomain.",
+    "mediaApprove": "Setujui domain media", "mediaDeny": "Tolak domain media",
+    "mediaFailure": "Pemutaran media berhenti karena kegagalan"
   },
   "libraryTui": {
     "back": "Kembali",

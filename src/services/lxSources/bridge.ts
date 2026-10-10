@@ -4,9 +4,12 @@ import { getPlaybackSourceRef } from '../../utils/appPlaybackGuards';
 // Desktop bridge returns null ONLY when disabled or outside the wy mapping.
 export interface LxReview { digest: string; version: string; riskVersion: string; method: string; findings: string[]; domains: string[]; platforms: string[]; apis: string[]; limits: string }
 export interface LxApproval { digest: string; reviewVersion: string; riskVersion: string; acknowledged: true }
-export interface LxSourceRecord { name: string; digest: string; domains: string[]; enabled: boolean; qualities: string[]; failure?: string; review: LxReview }
+export interface LxMediaChallenge { id: string; digest: string; hostname: string; origin: string; expires: number }
+export interface LxMediaDecision { id: string; digest: string; approved: boolean; acknowledged: true }
+export interface LxSourceRecord { mediaDomains?: string[]; mediaChallenges?: LxMediaChallenge[]; mediaFailure?: string; name: string; digest: string; domains: string[]; enabled: boolean; qualities: string[]; failure?: string; review: LxReview }
 export interface LxSourceBridge {
     onStateChanged(callback: (records: LxSourceRecord[]) => void): () => void;
+    decideMedia(payload: LxMediaDecision): Promise<LxSourceRecord[]>;
     list(): Promise<LxSourceRecord[]>;
     importLocal(): Promise<LxSourceRecord[]>;
     enable(digest: string, domains: string[], approval: LxApproval): Promise<LxSourceRecord[]>;

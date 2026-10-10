@@ -31,7 +31,7 @@ electron.app.whenReady().then(async () => {
   });
   await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
   const base = `http://127.0.0.1:${server.address().port}`;
-  const authorize = async value => { const url = new URL(value); assert.equal(url.origin, base); return { url, address: '127.0.0.1' }; };
+  const authorize = async value => { const url = new URL(value); if(url.hostname!=='fixture.example') assert.equal(url.origin, base); return { url, address: '127.0.0.1' }; };
   const script = `let index=0; const paths=['/json','/text','/http-error','/broken'];
     lx.on('request',()=>new Promise((resolve,reject)=>{const path=paths[index++];
       lx.request(${JSON.stringify(base)}+path,{},(err,resp,body)=>{try{
@@ -40,11 +40,11 @@ electron.app.whenReady().then(async () => {
           if(path==='/json'&&(!body.ok||body.nested.n!==1))throw Error('JSON body');
           if(path==='/text'&&body!=='plain text')throw Error('text body');
           if(path==='/http-error'&&(resp.statusCode!==404||body!=='missing'))throw Error('HTTP error body');}
-        resolve(${JSON.stringify(base + '/audio')});
+        resolve(${JSON.stringify('https://fixture.example/audio')});
       }catch(e){reject(e)}});
     })); lx.send('inited',{sources:{wy:{type:'music',actions:['musicUrl'],qualitys:['128k']}}});`;
   runtime = new ScriptRuntime(electron, { script, domains: [] }, { authorize, timeout: 5000 });
-  await runtime.start();
+  runtime.mediaApproval.onChanged = () => { const c=runtime.mediaApproval.list()[0]; if(c) runtime.mediaApproval.decide({id:c.id,digest:c.digest,approved:true,acknowledged:true}); }; await runtime.start();
   assert.equal(runtime.window.webContents.getLastWebPreferences().sandbox, true);
   for (let i = 0; i < 4; i++) await runtime.resolve({ mediaId: '123' }, 'standard');
   assert.deepEqual(hits, ['/json', '/text', '/http-error', '/broken']);
@@ -56,18 +56,19 @@ electron.app.whenReady().then(async () => {
       const path=Object.keys(expected)[index++];
       lx.request(${JSON.stringify(base)}+path,{},(err,resp,body)=>{try{
         if(err||!resp||resp.body!==body||body!==expected[path])throw Error('scalar/UTF8 body contract: '+path);
-        resolve(${JSON.stringify(base + '/audio')});
+        resolve(${JSON.stringify('https://fixture.example/audio')});
       }catch(e){reject(e)}});
     }));lx.send('inited',{sources:{wy:{actions:['musicUrl'],qualitys:['128k']}}});`;
   runtime = new ScriptRuntime(electron, { script: extraScript, domains: [] }, { authorize, timeout: 5000 });
-  await runtime.start();
+  runtime.mediaApproval.onChanged = () => { const c=runtime.mediaApproval.list()[0]; if(c) runtime.mediaApproval.decide({id:c.id,digest:c.digest,approved:true,acknowledged:true}); }; await runtime.start();
   assert.equal(runtime.window.webContents.getLastWebPreferences().sandbox, true);
   for (const path of Object.keys(extraBodies)) await runtime.resolve({ mediaId: '123' }, 'standard');
   assert.deepEqual(hits.slice(4), Object.keys(extraBodies));
   runtime.destroy();
-  const initScript = sources => `lx.on('request',()=>${JSON.stringify(base + '/audio')});lx.send('inited',{sources:${JSON.stringify(sources)}});`;
+  const initScript = sources => `lx.on('request',()=>${JSON.stringify('https://fixture.example/audio')});lx.send('inited',{sources:${JSON.stringify(sources)}});`;
   const mixed = { wy: { type: 'music', actions: ['musicUrl'], qualitys: ['flac', 'future', '128k', 'flac'] }, kw: { type: 'music', actions: ['musicUrl'], qualitys: ['320k'] } };
   runtime = new ScriptRuntime(electron, { script: initScript(mixed), domains: [] }, { authorize });
+  runtime.mediaApproval.onChanged = () => { const c=runtime.mediaApproval.list()[0]; if(c) runtime.mediaApproval.decide({id:c.id,digest:c.digest,approved:true,acknowledged:true}); };
   assert.deepEqual(await runtime.start(), ['128k', 'flac']);
   await runtime.resolve({ mediaId: '123' }, 'lossless');
   await assert.rejects(runtime.resolve({ mediaId: '123' }, 'high'), /unsupported/);
@@ -83,18 +84,18 @@ electron.app.whenReady().then(async () => {
   // A caught duplicate is rejected to the caller; discarded rejection remains fatal (native monitor).
   const first = initScript({ wy: { actions: ['musicUrl'], qualitys: ['128k'] } });
   runtime = new ScriptRuntime(electron, { script: first + `lx.send('inited',{}).then(()=>{throw Error('duplicate accepted')},()=>{});`, domains: [] }, { authorize });
-  await runtime.start(); assert.deepEqual(runtime.qualities, ['128k']); runtime.destroy();
+  runtime.mediaApproval.onChanged = () => { const c=runtime.mediaApproval.list()[0]; if(c) runtime.mediaApproval.decide({id:c.id,digest:c.digest,approved:true,acknowledged:true}); }; await runtime.start(); assert.deepEqual(runtime.qualities, ['128k']); runtime.destroy();
   runtime = new ScriptRuntime(electron, { script: first + `lx.send('inited',{});`, domains: [] }, { authorize });
   await assert.rejects(runtime.start(), /LX: initialization|native error\/unhandledrejection/); assert.equal(runtime.closed, true);
   // A callback-local catch must not be confused with an uncaught bridge callback failure.
   const caughtScript = `lx.on('request',()=>new Promise(resolve=>{
     lx.request(${JSON.stringify(base + '/text')},{},()=>{
       try{throw Error('owned caught callback');}catch(e){if(e.message!=='owned caught callback')throw e;}
-      resolve(${JSON.stringify(base + '/audio')});
+      resolve(${JSON.stringify('https://fixture.example/audio')});
     });
   }));lx.send('inited',{sources:{wy:{actions:['musicUrl'],qualitys:['128k']}}});`;
   runtime = new ScriptRuntime(electron, { script: caughtScript, domains: [] }, { authorize, timeout: 5000 });
-  await runtime.start();
+  runtime.mediaApproval.onChanged = () => { const c=runtime.mediaApproval.list()[0]; if(c) runtime.mediaApproval.decide({id:c.id,digest:c.digest,approved:true,acknowledged:true}); }; await runtime.start();
   for (let i = 0; i < 2; i++) assert.match(await runtime.resolve({ mediaId: '123' }, 'standard'), /^folia-lx-media:/);
   assert.equal(runtime.closed, false); runtime.destroy();
   // Gate the throwing response on two real server arrivals, not a sleep or retry.
@@ -107,7 +108,7 @@ electron.app.whenReady().then(async () => {
   process.on('unhandledRejection', onUnhandled);
   try {
     runtime = new ScriptRuntime(electron, { script: callbackScript, domains: [] }, { authorize, timeout: 5000 });
-    await runtime.start();
+    runtime.mediaApproval.onChanged = () => { const c=runtime.mediaApproval.list()[0]; if(c) runtime.mediaApproval.decide({id:c.id,digest:c.digest,approved:true,acknowledged:true}); }; await runtime.start();
     assert.equal(runtime.window.webContents.getLastWebPreferences().sandbox, true);
     const settled = Promise.allSettled([
       runtime.resolve({ mediaId: '123' }, 'standard'),
@@ -128,7 +129,7 @@ electron.app.whenReady().then(async () => {
     await abortedRequest;
     await assert.rejects(runtime.resolve({ mediaId: '123' }, 'standard'), /stopped/);
     runtime = new ScriptRuntime(electron, { script: caughtScript, domains: [] }, { authorize, timeout: 5000 });
-    await runtime.start();
+    runtime.mediaApproval.onChanged = () => { const c=runtime.mediaApproval.list()[0]; if(c) runtime.mediaApproval.decide({id:c.id,digest:c.digest,approved:true,acknowledged:true}); }; await runtime.start();
     assert.match(await runtime.resolve({ mediaId: '123' }, 'standard'), /^folia-lx-media:/);
     assert.equal(runtime.closed, false); runtime.destroy();
     await new Promise(resolve => setImmediate(resolve));

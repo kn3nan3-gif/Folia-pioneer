@@ -35,7 +35,7 @@ electron.app.whenReady().then(async () => {
         const removing = manager.remove(other.digest), importing = manager.importLocal(), saving = manager.save();
         release(); await Promise.all([enabling, removing, importing, saving]);
     } finally { release(); fs.rename = rename; }
-    assert.equal(manager.active, record.digest); assert.equal(manager.busy, false);
+    assert.equal(manager.active, null); assert.equal(manager.busy, false); // import revokes the session
     const restarted = new SourceManager({}, manager.directory); await restarted.load();
     assert.deepEqual(restarted.records, manager.records); assert.equal(restarted.records.length, 2);
     assert.deepEqual(restarted.records.find(r => r.digest === record.digest).domains, ['fixture.example']);

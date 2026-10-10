@@ -295,6 +295,7 @@ contextBridge.exposeInMainWorld('electron', {
             ipcRenderer.on('folia-lx:state-changed', listener);
             return () => ipcRenderer.removeListener('folia-lx:state-changed', listener);
         },
+        decideMedia: payload => ipcRenderer.invoke('folia-lx:decideMedia', payload),
         list: () => ipcRenderer.invoke('folia-lx:list'),
         importLocal: () => ipcRenderer.invoke('folia-lx:import'),
         enable: (digest, domains, approval) => ipcRenderer.invoke('folia-lx:enable', digest, domains, approval),

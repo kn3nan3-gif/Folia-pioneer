@@ -36,9 +36,10 @@ async function run() {
         await assert.rejects(request(base + '/denied', {}, [], undefined, authorize), /private/);
         await assert.rejects(requestStream(base + '/denied', { method: 'GET', onClose() {} }, [], undefined, authorize), /private/);
         const broker = new MediaBroker({ domains: [] }, authorize);
-        const bad = broker.issue(base + '/bad');
         for (let i = 0; i < 8; i++) {
+            const bad = broker.issue(base + '/bad');
             assert.equal((await broker.fetch(new Request(bad))).status, 502);
+            assert.equal((await broker.fetch(new Request(bad))).status, 410);
             assert.equal(broker.pending.size, 0);
         }
         const good = await broker.fetch(new Request(broker.issue(base + '/relative')));

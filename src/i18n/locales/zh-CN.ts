@@ -12,7 +12,12 @@ export default {
     "title": "LX 自定义音源", "close": "关闭", "import": "导入本地 .js",
     "hint": "仅桌面 wy → 网易云 musicUrl，不提供搜索。重启后须重新启用。不提供 Cookie、登录及加密工具。启用后的错误不会静默回退。仅导入可信且有权使用的脚本。",
     "domains": "授权域名（英文逗号分隔）", "authorize": "我已审阅报告，明确批准执行此 SHA-256 脚本，接受浏览器/WebRTC风险，并授权这些公网 HTTP(S) 域名。",
-    "enable": "授权并启用", "disable": "停用", "enabled": "已启用", "disabled": "已停用", "remove": "移除", "removeConfirm": "移除此脚本及其域名授权？"
+    "enable": "授权并启用", "disable": "停用", "enabled": "已启用", "disabled": "已停用", "remove": "移除", "removeConfirm": "移除此脚本及其域名授权？",
+    "mediaGrants": "本次会话的媒体域名授权：", "mediaNone": "无",
+    "mediaSource": "来源：", "mediaCdn": "媒体 CDN：",
+    "mediaConsent": "仅本次会话内，为该精确域名授予音频播放权限；不授权脚本 API 请求。审批将于 60 秒后过期；不支持通配符或子域名授权。",
+    "mediaApprove": "批准媒体域名", "mediaDeny": "拒绝媒体域名",
+    "mediaFailure": "媒体播放异常，已停用"
   },
   "appPlaylists": {
     "title": "应用列表",

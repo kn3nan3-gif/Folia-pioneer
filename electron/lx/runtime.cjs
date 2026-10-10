@@ -3,11 +3,16 @@ const crypto = require('node:crypto');
 const { validateInit, validateAudioUrl, musicRequest, scriptInfo } = require('./contract.cjs');
 const { request, authorizeUrl } = require('./network.cjs');
 const { MediaBroker } = require('./media.cjs');
+const { MediaApproval } = require('./media-approval.cjs');
 // Approved browser extension realm; WebRTC is reachable, not an untrusted-code sandbox.
 class ScriptRuntime {
     constructor(electron, record, { authorize = authorizeUrl, timeout = 15000 } = {}) {
         this.record = record; this.authorize = authorize; this.timeout = timeout;
-        this.media = new MediaBroker(record, authorize);
+        this.mediaApproval = new MediaApproval(record.digest, authorize);
+        this.media = new MediaBroker({ ...record, domains: this.mediaApproval.domains }, value => this.mediaApproval.authorizeStream(value));
+        this.mediaApproval.onChanged = () => this.onStateChanged?.();
+        this.mediaEpoch = 0;
+        this.mediaApproval.onRejected = () => { this.mediaEpoch++; this.media.revoke(); };
         this.pending = new Map(); this.network = new Map(); this.operations = 0; this.closed = false;
         this.electron = electron;
         this.channel = 'folia-lx-realm-' + crypto.randomUUID();
@@ -92,10 +97,15 @@ class ScriptRuntime {
                 this.pending.delete(message.id); clearTimeout(pending.timer);
                 error ? pending.reject(error) : pending.resolve(value);
             };
+            if (pending.candidate) return;
             if (message.error) finish(new Error(`LX script: ${message.error}`));
             else {
-                Promise.resolve().then(() => this.authorize(validateAudioUrl(message.value), this.record.domains))
-                    .then(() => { if (this.closed) throw new Error('LX: stopped'); finish(null, this.media.issue(message.value)); })
+                pending.candidate = true;
+                clearTimeout(pending.timer);
+                pending.timer = setTimeout(() => { finish(new Error('LX: media resolution timeout')); this.destroy(); }, 75000);
+                const epoch = this.mediaEpoch;
+                Promise.resolve().then(() => this.mediaApproval.authorizeCandidate(validateAudioUrl(message.value), message.id))
+                    .then(() => { if (this.closed || epoch !== this.mediaEpoch || !this.pending.has(message.id)) throw new Error('LX: media resolution revoked'); finish(null, this.media.issue(message.value)); })
                     .catch(error => finish(error));
             }
         } else if (message.kind === 'network') {
@@ -133,7 +143,7 @@ class ScriptRuntime {
     }
     fail(error) { this.initReject(error); this.destroy(error); }
     destroy(error = new Error('LX: stopped')) {
-        if (this.closed) return; this.closed = true; this.failure = error; this.onClosed?.(error); this.media.destroy(); clearTimeout(this.initTimer);
+        if (this.closed) return; this.closed = true; this.failure = error; this.onClosed?.(error); this.mediaApproval.destroy(); this.media.destroy(); clearTimeout(this.initTimer);
         this.initReject(error); clearTimeout(this.settleTimer); this.electron.ipcMain.removeListener(this.channel, this.listener);
         for (const item of this.pending.values()) { clearTimeout(item.timer); item.reject(error); }
         this.pending.clear(); for (const item of this.network.values()) item.abort(); this.network.clear();

@@ -1,5 +1,7 @@
 # 浏览器脚本兼容路线
 
+当前新增媒体CDN独立审批第一切片合同/证据见 `media-cdn-approval.md`。session-only媒体授权、opaque pending挑战、真实app preload/React UI审批闭环及owned Audio已实跑；待独立spec→quality，不代表第三方播放/全LX验收。AGENTS由父维护，未提交推送。
+
 ## 1. 决策与信任合同
 
 用户已确认切换浏览器兼容主线，QuickJS 留在实验分支。用户授权通过验证的本地检查点提交及 GitHub 同步；不等于发布或完整验收批准。

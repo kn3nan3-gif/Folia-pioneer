@@ -38,8 +38,9 @@ class MediaBroker {
             }
             if (result.status === 416) headers['content-length'] = '0';
             return new Response(result.body, { status: result.status, headers });
-        } catch { controller.abort(); release(); return deny(this.closed ? 410 : 502); }
+        } catch { this.tokens.delete(token); controller.abort(); release(); return deny(this.closed ? 410 : 502); }
     }
-    destroy() { this.closed = true; this.tokens.clear(); for (const item of this.pending) item.abort(); this.pending.clear(); }
+    revoke() { this.tokens.clear(); for (const item of this.pending) item.abort(); this.pending.clear(); }
+    destroy() { this.closed = true; this.revoke(); }
 }
 module.exports = { MediaBroker };

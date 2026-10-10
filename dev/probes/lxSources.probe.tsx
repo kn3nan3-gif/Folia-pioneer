@@ -16,6 +16,11 @@ const stop = (failure: string) => {
 let delayEnable = false, finishEnable: (() => void) | undefined;
 const bridge = {
     onStateChanged: (listener: (records: any[]) => void) => { listeners.add(listener); return () => { listeners.delete(listener); }; },
+    decideMedia: async (payload: unknown) => {
+        localStorage.setItem('lx-probe-media-decision', JSON.stringify(payload));
+        const records = write(read().map((r: any) => ({ ...r, mediaChallenges: [], mediaDomains: (payload as any).approved ? ['cdn.example'] : [] })));
+        listeners.forEach(listener => listener(records)); return records;
+    },
     list: async () => read(),
     importLocal: async () => write([{ name: 'Owned.js', digest: review.digest, domains: [], qualities: [], enabled: false, review }]),
     enable: async (digest: string, domains: string[], approval: LxApproval) => {
@@ -30,6 +35,9 @@ const bridge = {
 };
 function Component() {
     (window as any).electron = { lxSources: bridge };
-    return <><button onClick={() => { delayEnable = true; }}>Probe delay enable</button><button onClick={() => finishEnable?.()}>Probe finish enable</button><button onClick={() => stop('LX realm: native script error')}>Probe late fatal</button><button onClick={() => stop('LX: realm destroyed')}>Probe destroyed</button><button onClick={() => stop('LX: renderer gone')}>Probe renderer gone</button><LxSourceHost theme={theme} /></>;
+    return <><button onClick={() => {
+        const records = write(read().map((r: any) => ({ ...r, mediaChallenges: [{ id: 'b'.repeat(64), digest: r.digest, hostname: 'cdn.example', origin: 'https://cdn.example', expires: Date.now() + 60000 }] })));
+        listeners.forEach(listener => listener(records));
+    }}>Probe media candidate</button><button onClick={() => { delayEnable = true; }}>Probe delay enable</button><button onClick={() => finishEnable?.()}>Probe finish enable</button><button onClick={() => stop('LX realm: native script error')}>Probe late fatal</button><button onClick={() => stop('LX: realm destroyed')}>Probe destroyed</button><button onClick={() => stop('LX: renderer gone')}>Probe renderer gone</button><LxSourceHost theme={theme} /></>;
 }
 export default { id: 'lxSources', title: 'LX source management', description: 'Explicit approval UI with mocked IPC', Component } satisfies ProbeDefinition;

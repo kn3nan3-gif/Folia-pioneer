@@ -12,7 +12,12 @@ export default {
     "title": "LX custom sources", "close": "Close", "import": "Import local .js",
     "hint": "Desktop only: wy → Netease musicUrl; not search. Scripts start disabled after restart. No cookies, login or crypto utilities. Enabled errors do not silently fall back. Only import scripts you trust and have permission to use.",
     "domains": "Authorized domains (comma-separated)", "authorize": "I have reviewed this report and approve execution of this exact SHA-256 script, accept the browser/WebRTC risk and grant these public HTTP(S) domains.",
-    "enable": "Authorize & enable", "disable": "Disable", "enabled": "Enabled", "disabled": "Disabled", "remove": "Remove", "removeConfirm": "Remove this imported script and its domain grant?"
+    "enable": "Authorize & enable", "disable": "Disable", "enabled": "Enabled", "disabled": "Disabled", "remove": "Remove", "removeConfirm": "Remove this imported script and its domain grant?",
+    "mediaGrants": "Media-only grants (this session): ", "mediaNone": "none",
+    "mediaSource": "Source: ", "mediaCdn": "Media CDN: ",
+    "mediaConsent": "Allow this exact domain for audio playback only, in this session. This does not authorize script API requests. Approval expires after 60 seconds; no wildcard or subdomain grant.",
+    "mediaApprove": "Approve media domain", "mediaDeny": "Deny media domain",
+    "mediaFailure": "Media playback stopped after a failure"
   },
   "appPlaylists": {
     "title": "Application lists",

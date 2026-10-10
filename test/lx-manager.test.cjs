@@ -13,6 +13,11 @@ test('status notifications target the main window and preserve sender authorizat
     const list = handlers.get('folia-lx:list');
     await assert.rejects(list({ sender: {}, senderFrame: wc.mainFrame }), /unauthorized/);
     await assert.rejects(list({ sender: wc, senderFrame: {} }), /unauthorized/);
+    const decide = handlers.get('folia-lx:decideMedia');
+    await assert.rejects(decide({ sender: {}, senderFrame: wc.mainFrame }, {}), /unauthorized/);
+    await assert.rejects(decide({ sender: wc, senderFrame: {} }, {}), /unauthorized/);
+    await assert.rejects(decide({ sender: wc, senderFrame: wc.mainFrame }, { id: 'x'.repeat(9000) }), /payload/);
+    await assert.rejects(decide({ sender: wc, senderFrame: wc.mainFrame }, { digest: 'old' }), /stale/);
     await list({ sender: wc, senderFrame: wc.mainFrame });
     manager.disable();assert.deepEqual(messages, [['folia-lx:state-changed', []]]);
     window = null;manager.disable();assert.equal(messages.length, 1);

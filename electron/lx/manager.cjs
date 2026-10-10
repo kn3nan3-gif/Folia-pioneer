@@ -12,7 +12,7 @@ class SourceManager {
         for (const r of this.records) if (typeof r.script !== 'string' || scriptDigest(r.script) !== r.digest) throw new Error('LX: stored digest mismatch');
         return this.list();
     }
-    list() { return this.records.map(({ name, digest, domains, script }) => ({ name, digest, domains, review: reviewScript(script), ...(this.failures.has(digest) ? { failure: this.failures.get(digest) } : {}), enabled: this.active === digest && !this.runtime?.closed, qualities: this.active === digest && !this.runtime?.closed ? this.runtime?.qualities || [] : [] })); }
+    list() { return this.records.map(({ name, digest, domains, script }) => ({ name, digest, domains, review: reviewScript(script), ...(this.active === digest && this.runtime ? { mediaDomains: [...this.runtime.mediaApproval.domains], mediaChallenges: this.runtime.mediaApproval.list(), mediaFailure: this.runtime.mediaApproval.failure } : {}), ...(this.failures.has(digest) ? { failure: this.failures.get(digest) } : {}), enabled: this.active === digest && !this.runtime?.closed, qualities: this.active === digest && !this.runtime?.closed ? this.runtime?.qualities || [] : [] })); }
     notify() { this.onStateChanged?.(this.list()); }
     // Serialize snapshot creation and commit; a failed operation must not poison the next one.
     enqueueWrite(operation) {
@@ -34,7 +34,10 @@ class SourceManager {
         const file = selected.filePaths[0], stat = await fs.stat(file);
         if (!stat.isFile() || stat.size > 262144 || !file.endsWith('.js')) throw new Error('LX: script size/type/count rejected');
         const script = await fs.readFile(file, 'utf8'), digest = scriptDigest(script);
+        // Any new import/reimport ends the current session and all media capabilities.
+        this.disable();
         return this.enqueueWrite(async () => {
+            this.disable(); // Also revoke an enable that raced the disk read/queue.
             if (!this.records.some(r => r.digest === digest)) {
                 if (this.records.length >= 20) throw new Error('LX: script size/type/count rejected');
                 await this.persist([...this.records, { name: path.basename(file), digest, script, domains: [] }]);
@@ -51,6 +54,7 @@ class SourceManager {
         let runtime;
         try {
             runtime = new ScriptRuntime(this.electron, { ...record, domains }); this.runtime = runtime;
+            runtime.onStateChanged = () => { if (this.runtime === runtime) this.notify(); };
             runtime.onClosed = error => {
                 if (this.runtime !== runtime) return;
                 this.active = null;
@@ -71,6 +75,7 @@ class SourceManager {
     disable() {
         // Detach before destroy: explicit disable/switch is not a runtime failure.
         const runtime = this.runtime; this.runtime = null; this.active = null;
+        if (runtime) runtime.onStateChanged = null;
         this.failures.clear(); runtime?.destroy(); this.notify(); return this.list();
     }
     async remove(digest) {
@@ -80,6 +85,13 @@ class SourceManager {
             await this.persist(this.records.filter(r => r.digest !== digest));
             return this.list();
         });
+    }
+    decideMedia(payload) {
+        if (!this.active || this.active !== payload?.digest || this.runtime?.closed) {
+            const error = new Error('LX: stale media approval');
+            this.runtime?.mediaApproval.revoke(error); throw error;
+        }
+        this.runtime.mediaApproval.decide(payload); return this.list();
     }
     async resolve(song, quality) {
         if (!this.active) { if (this.runtime) throw this.runtime.failure || new Error('LX: initialization pending'); return null; }
@@ -95,7 +107,7 @@ function registerLxSources(electron, getMainWindow) {
     };
     const loaded = manager.load();
     electron.protocol.handle('folia-lx-media', request => manager.runtime?.media.fetch(request) ?? new Response(null, { status: 410 }));
-    for (const [operation, run] of Object.entries({ list: () => manager.list(), import: () => manager.importLocal(), enable: (digest, domains, approval) => manager.enable(digest, domains, approval), disable: () => manager.disable(), remove: digest => manager.remove(digest), resolve: (song, quality) => manager.resolve(song, quality) })) {
+    for (const [operation, run] of Object.entries({ decideMedia: payload => manager.decideMedia(payload), list: () => manager.list(), import: () => manager.importLocal(), enable: (digest, domains, approval) => manager.enable(digest, domains, approval), disable: () => manager.disable(), remove: digest => manager.remove(digest), resolve: (song, quality) => manager.resolve(song, quality) })) {
         electron.ipcMain.handle(`folia-lx:${operation}`, async (event, ...args) => {
             const wc = getMainWindow()?.webContents;
             if (event.sender !== wc || event.senderFrame !== wc?.mainFrame || JSON.stringify(args).length > 8192) throw new Error('LX: unauthorized sender/payload');

@@ -22,7 +22,7 @@ electron.app.whenReady().then(async () => {
   runtime=new ScriptRuntime(electron,{name,digest:'owned',domains:[],script},{timeout:2000,authorize:async()=>{}});
   try {
    if(reject){await assert.rejects(runtime.start(),/owned .* failure|native error\/unhandledrejection|invalid quality/);assert.equal(runtime.closed,true);}
-   else {assert.deepEqual(await runtime.start(),['128k']);assert.match(await runtime.resolve({mediaId:'123'},'standard'),/^folia-lx-media:/);}
+   else {assert.deepEqual(await runtime.start(),['128k']); runtime.mediaApproval.onChanged = () => { const c=runtime.mediaApproval.list()[0]; if(c) runtime.mediaApproval.decide({id:c.id,digest:c.digest,approved:true,acknowledged:true}); }; assert.match(await runtime.resolve({mediaId:'123'},'standard'),/^folia-lx-media:/);}
    cases.push({name,pass:true});
   }catch(e){cases.push({name,pass:false,error:e.message});}finally{runtime.destroy();}
  }

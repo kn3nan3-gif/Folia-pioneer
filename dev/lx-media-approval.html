@@ -1,0 +1,9 @@
+<div id="root"></div><script type="module">
+import React from '/node_modules/.vite/deps/react.js';
+import ReactDOM from '/node_modules/.vite/deps/react-dom_client.js';
+const { createRoot } = ReactDOM;
+import i18n from '/src/i18n/config.ts';
+await i18n.changeLanguage(new URLSearchParams(location.search).get('locale') || 'en');
+import LxSourceHost from '/src/components/app/lxSources/LxSourceHost.tsx';
+createRoot(document.getElementById('root')).render(React.createElement(LxSourceHost,{theme:{primaryColor:'#eee',backgroundColor:'#222'}}));
+</script>
