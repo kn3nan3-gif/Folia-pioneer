@@ -1,0 +1,235 @@
+{
+  "title": "V261006 媒体 CDN 审批流程真实复测（裤佬SVIP / 非常刀）",
+  "baseline": "eb346c383ce58fef960cb8ddfb5882a49b361e87",
+  "env": {
+    "node": "24.21.0",
+    "electron": "43.7.5",
+    "chrome": "150.0.7871.250",
+    "display": "Xvfb 1280x1024x24",
+    "sandbox": true,
+    "copy": "ext4 folia-media-work"
+  },
+  "sync": {
+    "file_count": 34,
+    "all_match": true
+  },
+  "sample": {
+    "providerId": "netease",
+    "mediaId": "5275429",
+    "quality": "standard/128k"
+  },
+  "sources": [
+    {
+      "file": "裤佬SVIP音源(二改整合版) v3.0.0.js",
+      "sha256": "58e8cb1403a0eb394d6405dc560c3cd4329fa62aa19c5d753d048a9a6e626d97",
+      "apiGrants": [
+        "music-api.gdstudio.xyz",
+        "c.wwwweb.top",
+        "yy.zddyr.top",
+        "zrcdy.dpdns.org"
+      ],
+      "import": "passed-no-execution",
+      "init": "passed",
+      "qualities": [
+        "128k",
+        "320k",
+        "flac",
+        "flac24bit"
+      ],
+      "realm": {
+        "sandbox": true,
+        "nodeIntegration": false,
+        "contextIsolation": true
+      },
+      "review": {
+        "version": "lexical-1",
+        "riskVersion": "browser-webrtc-1",
+        "method": "lexical",
+        "findings": [],
+        "limits": "Text patterns only: comments/strings can cause false positives; aliases, computed properties, escapes, templates and remote code may evade detection. No AST, dataflow or safety proof."
+      },
+      "endpoint": "media-token-issued",
+      "network": [
+        {
+          "host": "music-api.gdstudio.xyz",
+          "method": "GET",
+          "headerNames": []
+        },
+        {
+          "host": "music-api.gdstudio.xyz",
+          "authorized": true,
+          "status": "public-ip-pinned",
+          "error": null
+        },
+        {
+          "host": null,
+          "status": 200,
+          "error": null
+        },
+        {
+          "host": "m701.music.126.net",
+          "authorized": true,
+          "status": "public-ip-pinned",
+          "error": null
+        },
+        {
+          "host": "m701.music.126.net",
+          "authorized": true,
+          "status": "public-ip-pinned",
+          "error": null
+        }
+      ],
+      "candidateHostname": "m701.music.126.net",
+      "challengeOriginScheme": "https",
+      "mediaDecision": "approved",
+      "token": true,
+      "audio": {
+        "attempted": true,
+        "played": true,
+        "currentTime": 20,
+        "duration": 62.706667,
+        "readyState": 4,
+        "seeked": true
+      },
+      "denyPath": null,
+      "disabled": true,
+      "restartDisabled": true,
+      "versions": {
+        "node": "24.21.0",
+        "electron": "43.7.5",
+        "chrome": "150.0.7871.250"
+      },
+      "exit_code": 0,
+      "command": "cd /home/administrator/.hermes/cache/scratch/folia-media-work && SOURCE_INDEX=0 timeout 180 xvfb-run -a --server-args='-screen 0 1280x1024x24' ./node_modules/electron/dist/electron /home/administrator/.hermes/cache/scratch/media-approval-retest-20261010/run.cjs"
+    },
+    {
+      "file": "非常刀 v5.js",
+      "sha256": "49486cab064e64d5ad63723e670c44ee55eadadcc790ccf493351fbde64284d7",
+      "apiGrants": [
+        "api.chksz.top",
+        "music-api.gdstudio.xyz",
+        "oiapi.net",
+        "music.nxinxz.com"
+      ],
+      "import": "passed-no-execution",
+      "init": "passed",
+      "qualities": [
+        "128k",
+        "320k",
+        "flac",
+        "flac24bit"
+      ],
+      "realm": {
+        "sandbox": true,
+        "nodeIntegration": false,
+        "contextIsolation": true
+      },
+      "review": {
+        "version": "lexical-1",
+        "riskVersion": "browser-webrtc-1",
+        "method": "lexical",
+        "findings": [],
+        "limits": "Text patterns only: comments/strings can cause false positives; aliases, computed properties, escapes, templates and remote code may evade detection. No AST, dataflow or safety proof."
+      },
+      "endpoint": "media-token-issued",
+      "network": [
+        {
+          "host": "api.chksz.top",
+          "method": "GET",
+          "headerNames": [
+            "Accept",
+            "Referer"
+          ]
+        },
+        {
+          "host": null,
+          "status": null,
+          "error": "LX: unsupported header"
+        },
+        {
+          "host": "music-api.gdstudio.xyz",
+          "method": "GET",
+          "headerNames": [
+            "Accept"
+          ]
+        },
+        {
+          "host": "music-api.gdstudio.xyz",
+          "authorized": true,
+          "status": "public-ip-pinned",
+          "error": null
+        },
+        {
+          "host": "oiapi.net",
+          "method": "GET",
+          "headerNames": [
+            "Accept"
+          ]
+        },
+        {
+          "host": "oiapi.net",
+          "authorized": true,
+          "status": "public-ip-pinned",
+          "error": null
+        },
+        {
+          "host": null,
+          "status": 200,
+          "error": null
+        },
+        {
+          "host": "m701.music.126.net",
+          "authorized": true,
+          "status": "public-ip-pinned",
+          "error": null
+        },
+        {
+          "host": "m701.music.126.net",
+          "authorized": true,
+          "status": "public-ip-pinned",
+          "error": null
+        },
+        {
+          "host": null,
+          "status": null,
+          "error": "LX: request cancelled"
+        }
+      ],
+      "candidateHostname": "m701.music.126.net",
+      "challengeOriginScheme": "http",
+      "mediaDecision": "approved",
+      "token": true,
+      "audio": {
+        "attempted": true,
+        "played": true,
+        "currentTime": 20,
+        "duration": 62.706667,
+        "readyState": 4,
+        "seeked": true
+      },
+      "denyPath": {
+        "challenge": {
+          "id": "af07a006368bc07566407dce868d59f75e7f822ff5121680c292934c93fcc9da",
+          "digest": "49486cab064e64d5ad63723e670c44ee55eadadcc790ccf493351fbde64284d7",
+          "hostname": "m701.music.126.net",
+          "origin": "http://m701.music.126.net",
+          "expires": 1791648448899
+        },
+        "decision": "denied",
+        "rejected": true,
+        "error": "LX: media approval denied",
+        "token": false,
+        "domainsAfterDeny": []
+      },
+      "disabled": true,
+      "restartDisabled": true,
+      "versions": {
+        "node": "24.21.0",
+        "electron": "43.7.5",
+        "chrome": "150.0.7871.250"
+      },
+      "exit_code": 0,
+      "command": "cd /home/administrator/.hermes/cache/scratch/folia-media-work && SOURCE_INDEX=1 timeout 180 xvfb-run -a --server-args='-screen 0 1280x1024x24' ./node_modules/electron/dist/electron /home/administrator/.hermes/cache/scratch/media-approval-retest-20261010/run.cjs"
+    }
+  ]
+}
